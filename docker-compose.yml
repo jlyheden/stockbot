@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  ircbot:
+    build:
+      context: .
+    environment:
+      SERVER_NAME: "ircserver"
+      SERVER_PORT: "6667"
+      CHANNEL_NAME: "#testchannel"
+      NICK: "stockmurph"
+
+  ircserver:
+    image: inspircd/inspircd-docker:latest
+    ports:
+    - "6667:6667"
