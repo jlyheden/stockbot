@@ -1,35 +1,62 @@
-import socket
 import os
 import logging
-import time
 import requests
 import json
-import re
 
-from threading import Thread
-from queue import Queue, Empty
-
+from irc.bot import SingleServerIRCBot
+from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
+import irc.client
+import irc.strings
 
 LOGGER = logging.getLogger(__name__)
 
 
-# Global message queue between cron and ircbot threads
-QUEUE = Queue()
+class StockTickerMessage(object):
 
-# TODO: move this to a database that can be manipulated via bot commands
-IDX_MAPPER = {
-    "omxs30": "https://www.bloomberg.com/markets/api/quote-page/OMX%3AIND?locale=en"
-}
+    def __init__(self, *args, **kwargs):
+        data = kwargs.get('message')
+        for k, v in data["basicQuote"].items():
+            setattr(self, k, v)
+        self.marketstatus = data["marketStatus"]["marketStatus"]
+
+    def __str__(self):
+        if self.marketstatus == "ACTV":
+            return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}"\
+                .format(n=self.name, p=self.price, op=self.openPrice, lp=self.lowPrice, hp=self.highPrice,
+                        p1d=self.percentChange1Day)
+        else:
+            return "Name: {n} is closed".format(n=self.name)
 
 
-def get_stock_index(idx):
-    try:
-        url = IDX_MAPPER[idx]
-        req = requests.get(url)
-        if req.ok:
-            return json.loads(req.text)
-    except:
-        LOGGER.error("Failed to retrieve ticker")
+class StockChecker(object):
+
+    indexes = {
+        "omxs30": "https://www.bloomberg.com/markets/api/quote-page/OMX%3AIND?locale=en",
+        "dax": "https://www.bloomberg.com/markets/api/quote-page/DAX%3AIND?locale=en"
+    }
+
+    def __init__(self, default_idx):
+        self.default_idx = default_idx
+
+    def get_default(self):
+        return self.get(self.default_idx)
+
+    def get(self, idx):
+        try:
+            url = self.indexes[idx]
+            req = requests.get(url)
+            if req.ok:
+                j = json.loads(req.text)
+                return StockTickerMessage(message=j)
+        except Exception as e:
+            LOGGER.exception("Failed to retrieve stock ticker")
+
+    def add(self, name, url):
+        self.indexes[name] = url
+
+    def show_all(self):
+        return "Indexes: {i}".format(i=",".join(["name={key} url={value}".format(key=key, value=value) for key, value in
+                                                 self.indexes.items()]))
 
 
 class Configuration(object):
@@ -42,255 +69,124 @@ class Configuration(object):
             return value
 
 
-class IRCMessage(object):
+class IRCBot(SingleServerIRCBot):
 
-    @classmethod
-    def factory(cls, *args, **kwargs):
-        message = kwargs.get('message')
-        message_split = message.split()
-
-        if message_split[0] == "PING":
-            return IRCPingMessage(ping_message=message_split[1])
-
-        elif re.match(".* PRIVMSG .*#[^ ]+ .*", message):
-            return IRCChannelMessage(sender=message_split[0], channel=message_split[2], message=message_split[3:])
-
-        elif re.match("[^ ]+ [0-9]+ .*", message):
-            return IRCStatusMessage(server=message_split[0], code=message_split[1], message=" ".join(message_split[3:]))
-
-        else:
-            return IRCUnknownMessage(message=message)
-
-    def __str__(self):
-        """We override str so that we can easily print debug what the hell we are creating"""
-        return "{klass}: {attrs}".format(
-            klass=type(self),
-            attrs=",".join(
-                ["{k}={v}".format(k=x, v=getattr(self, x))
-                 for x in dir(self) if not callable(getattr(self, x)) and not x.startswith("__")
-                 ])
-        )
-
-
-class IRCPingMessage(IRCMessage):
-
-    def __init__(self, ping_message):
-        self.ping_message = ping_message.lstrip(":")
-
-
-class IRCStatusMessage(IRCMessage):
-
-    def __init__(self, server, code, message):
-        self.server = server
-        self.code = int(code)
-        self.message = message
-
-    def is_ok(self):
-        return self.code < 400
-
-
-class IRCUnknownMessage(IRCMessage):
-
-    def __init__(self, message):
-        self.message = message
-
-
-class IRCChannelMessage(IRCMessage):
-
-    def __init__(self, sender, channel, message):
-        self.sender = sender.split("!")[0].lstrip(":")
+    def __init__(self, channel, nickname, server, port, default_idx="omxs30"):
+        super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
         self.channel = channel
 
-        if message[0].endswith(":"):
-            self.recipient = message[0].lstrip(":").rstrip(":")
-            message.pop(0)
-        else:
-            self.recipient = None
+        # TODO: would be nice to be able to disable or reconfigure the scheduler from outside
+        self.reactor.scheduler.execute_every(3600, self.stock_check_scheduler)
+        self.stockchecker = StockChecker(default_idx)
 
-        self.message = message
+    def stock_check_scheduler(self):
+        resp = self.stockchecker.get_default()
+        self.connection.privmsg(self.channel, str(resp))
 
+    def on_nicknameinuse(self, c, e):
+        c.nick(c.get_nickname() + "_")
 
-class IRCMessageResponses(object):
+    def on_welcome(self, c, e):
+        c.join(self.channel)
 
-    def __init__(self, *args, **kwargs):
-        self.messages = []
+    def on_privmsg(self, c, e):
+        pass
 
-    def size(self):
-        return len(self.messages)
+    def on_pubmsg(self, c, e):
+        message = e.arguments[0]
+        split = message.split(" ")
+        to_me = split[0].endswith(":") and irc.strings.lower(split[0].rstrip(":")) == irc.strings.lower(
+            self.connection.get_nickname())
 
-    def is_empty(self):
-        return len(self.messages) == 0
+        #
+        # TODO: fugly, can we avoid this spaghetti mess?
+        #
+        if to_me:
 
-    def extend_from_raw(self, messages):
-        self.messages.extend([IRCMessage.factory(message=x) for x in messages.decode().splitlines()])
+            # strip nick from message
+            commands = split[1:]
 
-    def __contains__(self, item):
-        """
-        Allows you to do:
-        m = IRCMessageResponse(messages=b'bunch of irc messages')
-        IRCPingMessage in m
+            try:
+                if irc.strings.lower(commands[0]) == "stock":
 
-        :param item:
-        :return:
-        """
-        return item in [type(x) for x in self.messages]
+                    if irc.strings.lower(commands[1]) == "get":
 
-    def get_of_type(self, t):
-        return [x for x in self.messages if type(x) == t]
+                        idx = irc.strings.lower(commands[2])
+                        msg = self.stockchecker.get(idx)
+                        self.connection.privmsg(self.channel, str(msg))
 
+                    elif irc.strings.lower(commands[1]) == "show":
 
-class IRCBot(Thread):
+                        self.connection.privmsg(self.channel, self.stockchecker.show_all())
 
-    buffersize = 2048
+                    elif irc.strings.lower(commands[1]) == "add":
 
-    def __init__(self, *args, **kwargs):
-        super(IRCBot, self).__init__(name='ircbot_thread')
-        self.server_name = kwargs.get('server_name')
-        self.server_port = int(kwargs.get('server_port'))
-        self.channel = kwargs.get('channel')
-        self.nick = kwargs.get('nick')
-        self.irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        name = irc.strings.lower(commands[2])
+                        url = irc.strings.lower(commands[3])
 
-    def connect(self):
-        LOGGER.info("Connecting to {s}:{p}".format(s=self.server_name, p=self.server_port))
+                        self.stockchecker.add(name, url)
+                        self.connection.privmsg(self.channel, "Added {name}".format(name=name))
 
-        self.irc.connect((self.server_name, self.server_port))
-        self.irc.setblocking(True)
-        self.send_with_callback("NICK {}".format(self.nick), callback=self.pong_callback)
-        self.send_with_callback("USER {} {} {} :I am bot {}".format(self.nick, self.nick, self.nick, self.nick),
-                                callback=self.pong_callback)
+                elif irc.strings.lower(commands[0]) == "help":
 
-        self.send_retry_until_callback("JOIN {}".format(self.channel), callback=self.until_ok_callback, retries=20)
+                    self.connection.privmsg(self.channel, "Usage: stock get <idx>       -- returns the data for <idx>")
+                    self.connection.privmsg(self.channel, "Usage: stock show            -- returns list of idx available")
+                    self.connection.privmsg(self.channel, "Usage: stock add <idx> <url> -- adds idx")
 
-    def send_retry_until_callback(self, msg, callback, retries=5):
-        for i in range(retries):
-            self.irc.setblocking(True)
-            self.__irc_send_msg(msg)
-            self.irc.setblocking(False)
-            imr = IRCMessageResponses()
-            for ii in range(5):
-                try:
-                    response = self.irc.recv(self.buffersize)
-                    imr.extend_from_raw(response)
-                except Exception as e:
-                    pass
-                time.sleep(1)
-            if callback(imr):
-                self.irc.setblocking(True)
+            except IndexError as e:
+                self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
+
+    def on_dccmsg(self, c, e):
+        # non-chat DCC messages are raw bytes; decode as text
+        text = e.arguments[0].decode('utf-8')
+        c.privmsg("You said: " + text)
+
+    def on_dccchat(self, c, e):
+        if len(e.arguments) != 2:
+            return
+        args = e.arguments[1].split()
+        if len(args) == 4:
+            try:
+                address = ip_numstr_to_quad(args[2])
+                port = int(args[3])
+            except ValueError:
                 return
-        raise RuntimeError("Failed to send command")
+            self.dcc_connect(address, port)
 
-    def send_with_callback(self, msg, callback):
-        self.__irc_send_msg(msg)
-        self.irc.setblocking(False)
-        imr = IRCMessageResponses()
-        for i in range(5):
-            try:
-                response = self.irc.recv(self.buffersize)
-                imr.extend_from_raw(response)
-            except Exception as e:
-                pass
-            time.sleep(1)
-        self.irc.setblocking(True)
-        callback(imr)
+    def do_command(self, e, cmd):
+        nick = e.source.nick
+        c = self.connection
 
-    def until_ok_callback(self, imr):
-        rv = []
-        for m in imr.messages:
-            LOGGER.debug(m)
-            if type(m) is IRCStatusMessage:
-                rv.append(m.is_ok())
-        return False not in rv
-
-    def pong_callback(self, imr):
-        for m in imr.messages:
-            LOGGER.debug(m)
-            if type(m) is IRCPingMessage:
-                self.send_pong(m.ping_message)
-
-    def send_pong(self, p):
-        self.__irc_send_msg("PONG {}".format(p))
-
-    def send_channel_msg(self, m):
-        self.__irc_send_msg("PRIVMSG {channel} :{message}".format(channel=self.channel, message=m))
-
-    def __irc_send_msg(self, msg):
-        self.irc.send("{}\r\n".format(msg).encode('utf-8'))
-
-    def run(self):
-
-        while True:
-            try:
-                self.connect()
-            except ConnectionRefusedError:
-                LOGGER.warning("Got connection refused, trying again real soon")
-            else:
-                break
-            time.sleep(10)
-
-        self.irc.setblocking(False)
-
-        while True:
-
-            LOGGER.debug("In the loop")
-            # non block listen on messages
-            try:
-                messages = self.irc.recv(self.buffersize)
-                imr = IRCMessageResponses()
-                imr.extend_from_raw(messages=messages)
-                self._msgs_handler(imr)
-            except socket.error:
-                pass
-
-            # non block listen on work queue
-            try:
-                item = QUEUE.get(block=False)
-                self.send_channel_msg(item)
-            except Empty:
-                pass
-
-            time.sleep(1)
-
-    def _msgs_handler(self, imr):
-
-        for m in imr.messages:
-
-            if type(m) is IRCPingMessage:
-                self.send_pong(m.ping_message)
-                continue
-
-            if type(m) is IRCChannelMessage:
-
-                if m.recipient == self.nick:
-
-                    if m.message[0].lower() == "stock":
-                        self.send_channel_msg("{sender}: i will support this one day".format(sender=m.sender))
-
-                    else:
-                        self.send_channel_msg("{sender}: {message} too".format(sender=m.sender,
-                                                                               message=" ".join(m.message)))
-
-                continue
-
-
-class CronThread(Thread):
-
-    def run(self):
-
-        while True:
-            values = get_stock_index("omxs30")
-            price = values["basicQuote"]["price"]
-            QUEUE.put("Current stock price for omxs30 is {price}".format(price=price))
-            time.sleep(300)
+        cmd_split = cmd.split(" ")
+        if cmd == "disconnect":
+            self.disconnect()
+        elif cmd == "die":
+            self.die()
+        elif cmd == "stats":
+            for chname, chobj in self.channels.items():
+                c.notice(nick, "--- Channel statistics ---")
+                c.notice(nick, "Channel: " + chname)
+                users = sorted(chobj.users())
+                c.notice(nick, "Users: " + ", ".join(users))
+                opers = sorted(chobj.opers())
+                c.notice(nick, "Opers: " + ", ".join(opers))
+                voiced = sorted(chobj.voiced())
+                c.notice(nick, "Voiced: " + ", ".join(voiced))
+        elif cmd == "dcc":
+            dcc = self.dcc_listen()
+            c.ctcp("DCC", nick, "CHAT chat %s %d" % (
+                ip_quad_to_numstr(dcc.localaddress),
+                dcc.localport))
+        elif cmd_split[0].lower() == "stock":
+            idx = cmd_split[1]
+            resp = self.stockchecker.get(idx)
+            self.connection.privmsg(self.channel, str(resp))
+        else:
+            c.notice(nick, "Not understood: " + cmd)
 
 
 if __name__ == '__main__':
 
-    bot = IRCBot(server_name=Configuration().server_name, server_port=Configuration().server_port,
-                 channel=Configuration().channel_name, nick=Configuration().nick)
+    bot = IRCBot(server=Configuration().server_name, port=Configuration().server_port,
+                 channel=Configuration().channel_name, nickname=Configuration().nick)
     bot.start()
-
-    #cron = CronThread()
-    #cron.start()
-
-    bot.join()

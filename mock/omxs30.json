@@ -1,0 +1,475 @@
+{
+  "securityType": "INDEX",
+  "mediaSecurityType": "Index",
+  "mediaSecuritySubtype": "Equity",
+  "basicQuote": {
+    "id": "OMX:IND",
+    "totalReturnYtd": 8.25818928,
+    "name": "OMX Stockholm 30 Index",
+    "primaryExchange": "",
+    "price": 1642.49,
+    "issuedCurrency": "SEK",
+    "priceChange1Day": -5.434,
+    "percentChange1Day": -0.329748,
+    "priceMinDecimals": 3,
+    "nyTradeStartTime": "03:00:00.000",
+    "nyTradeEndTime": "11:35:00.000",
+    "timeZoneOffset": -4,
+    "lastUpdateEpoch": "1507645468",
+    "openPrice": 1647.925,
+    "lowPrice": 1642.214,
+    "highPrice": 1651.131,
+    "volume": 78347792,
+    "previousClosingPriceOneTradingDayAgo": 1647.924,
+    "lowPrice52Week": 1391.806,
+    "highPrice52Week": 1658.873,
+    "totalReturn1Year": 15.89318,
+    "priceDate": "10/10/2017",
+    "priceTime": "10:24 AM",
+    "lastUpdateTime": "10:24 AM",
+    "lastUpdateISO": "2017-10-10T14:24:28.000Z",
+    "userTimeZone": "EDT"
+  },
+  "detailedQuote": {
+    "id": "OMX:IND",
+    "openPrice": 1647.925,
+    "lowPrice": 1642.214,
+    "highPrice": 1651.131,
+    "undefined": 78347792,
+    "previousClosingPriceOneTradingDayAgo": 1647.924,
+    "lowPrice52Week": 1391.806,
+    "highPrice52Week": 1658.873,
+    "totalReturn1Year": 15.89318,
+    "totalReturnYtd": 8.25818928,
+    "priceMinDecimals": 3,
+    "userTimeZone": "EDT"
+  },
+  "marketStatus": {
+    "marketStatus": "ACTV",
+    "ultimateParentTicker": null,
+    "parentMarketStatus": null,
+    "id": "OMX:IND",
+    "userTimeZone": "EDT"
+  },
+  "priceTimeSeries": [
+    {
+      "id": "OMX:IND",
+      "dateTimeRanges": {
+        "start": "2017-10-10T07:00:00Z",
+        "end": "2017-10-10T15:35:00Z"
+      },
+      "price": [
+        {
+          "dateTime": "2017-10-10T07:00:00Z",
+          "value": 1645.168
+        },
+        {
+          "dateTime": "2017-10-10T07:05:00Z",
+          "value": 1644.195
+        },
+        {
+          "dateTime": "2017-10-10T07:10:00Z",
+          "value": 1645.577
+        },
+        {
+          "dateTime": "2017-10-10T07:15:00Z",
+          "value": 1646.345
+        },
+        {
+          "dateTime": "2017-10-10T07:20:00Z",
+          "value": 1646.03
+        },
+        {
+          "dateTime": "2017-10-10T07:25:00Z",
+          "value": 1644.628
+        },
+        {
+          "dateTime": "2017-10-10T07:30:00Z",
+          "value": 1646.904
+        },
+        {
+          "dateTime": "2017-10-10T07:35:00Z",
+          "value": 1647.045
+        },
+        {
+          "dateTime": "2017-10-10T07:40:00Z",
+          "value": 1647.724
+        },
+        {
+          "dateTime": "2017-10-10T07:45:00Z",
+          "value": 1648.8
+        },
+        {
+          "dateTime": "2017-10-10T07:50:00Z",
+          "value": 1649.266
+        },
+        {
+          "dateTime": "2017-10-10T07:55:00Z",
+          "value": 1650.814
+        },
+        {
+          "dateTime": "2017-10-10T08:00:00Z",
+          "value": 1650.417
+        },
+        {
+          "dateTime": "2017-10-10T08:05:00Z",
+          "value": 1650.301
+        },
+        {
+          "dateTime": "2017-10-10T08:10:00Z",
+          "value": 1649.346
+        },
+        {
+          "dateTime": "2017-10-10T08:15:00Z",
+          "value": 1648.682
+        },
+        {
+          "dateTime": "2017-10-10T08:20:00Z",
+          "value": 1647.674
+        },
+        {
+          "dateTime": "2017-10-10T08:25:00Z",
+          "value": 1647.162
+        },
+        {
+          "dateTime": "2017-10-10T08:30:00Z",
+          "value": 1646.067
+        },
+        {
+          "dateTime": "2017-10-10T08:35:00Z",
+          "value": 1646.489
+        },
+        {
+          "dateTime": "2017-10-10T08:40:00Z",
+          "value": 1646.932
+        },
+        {
+          "dateTime": "2017-10-10T08:45:00Z",
+          "value": 1647.505
+        },
+        {
+          "dateTime": "2017-10-10T08:50:00Z",
+          "value": 1647.439
+        },
+        {
+          "dateTime": "2017-10-10T08:55:00Z",
+          "value": 1648.094
+        },
+        {
+          "dateTime": "2017-10-10T09:00:00Z",
+          "value": 1647.053
+        },
+        {
+          "dateTime": "2017-10-10T09:05:00Z",
+          "value": 1647.034
+        },
+        {
+          "dateTime": "2017-10-10T09:10:00Z",
+          "value": 1646.588
+        },
+        {
+          "dateTime": "2017-10-10T09:15:00Z",
+          "value": 1646.365
+        },
+        {
+          "dateTime": "2017-10-10T09:20:00Z",
+          "value": 1646.243
+        },
+        {
+          "dateTime": "2017-10-10T09:25:00Z",
+          "value": 1646.363
+        },
+        {
+          "dateTime": "2017-10-10T09:30:00Z",
+          "value": 1645.837
+        },
+        {
+          "dateTime": "2017-10-10T09:35:00Z",
+          "value": 1645.976
+        },
+        {
+          "dateTime": "2017-10-10T09:40:00Z",
+          "value": 1646.088
+        },
+        {
+          "dateTime": "2017-10-10T09:45:00Z",
+          "value": 1645.683
+        },
+        {
+          "dateTime": "2017-10-10T09:50:00Z",
+          "value": 1646.029
+        },
+        {
+          "dateTime": "2017-10-10T09:55:00Z",
+          "value": 1646.366
+        },
+        {
+          "dateTime": "2017-10-10T10:00:00Z",
+          "value": 1646.279
+        },
+        {
+          "dateTime": "2017-10-10T10:05:00Z",
+          "value": 1647.026
+        },
+        {
+          "dateTime": "2017-10-10T10:10:00Z",
+          "value": 1647.009
+        },
+        {
+          "dateTime": "2017-10-10T10:15:00Z",
+          "value": 1646.775
+        },
+        {
+          "dateTime": "2017-10-10T10:20:00Z",
+          "value": 1646.728
+        },
+        {
+          "dateTime": "2017-10-10T10:25:00Z",
+          "value": 1646.797
+        },
+        {
+          "dateTime": "2017-10-10T10:30:00Z",
+          "value": 1646.704
+        },
+        {
+          "dateTime": "2017-10-10T10:35:00Z",
+          "value": 1645.767
+        },
+        {
+          "dateTime": "2017-10-10T10:40:00Z",
+          "value": 1645.879
+        },
+        {
+          "dateTime": "2017-10-10T10:45:00Z",
+          "value": 1645.478
+        },
+        {
+          "dateTime": "2017-10-10T10:50:00Z",
+          "value": 1645.626
+        },
+        {
+          "dateTime": "2017-10-10T10:55:00Z",
+          "value": 1646.113
+        },
+        {
+          "dateTime": "2017-10-10T11:00:00Z",
+          "value": 1646.354
+        },
+        {
+          "dateTime": "2017-10-10T11:05:00Z",
+          "value": 1646.207
+        },
+        {
+          "dateTime": "2017-10-10T11:10:00Z",
+          "value": 1645.977
+        },
+        {
+          "dateTime": "2017-10-10T11:15:00Z",
+          "value": 1645.531
+        },
+        {
+          "dateTime": "2017-10-10T11:20:00Z",
+          "value": 1645.628
+        },
+        {
+          "dateTime": "2017-10-10T11:25:00Z",
+          "value": 1645.68
+        },
+        {
+          "dateTime": "2017-10-10T11:30:00Z",
+          "value": 1645.674
+        },
+        {
+          "dateTime": "2017-10-10T11:35:00Z",
+          "value": 1645.992
+        },
+        {
+          "dateTime": "2017-10-10T11:40:00Z",
+          "value": 1645.907
+        },
+        {
+          "dateTime": "2017-10-10T11:45:00Z",
+          "value": 1645.824
+        },
+        {
+          "dateTime": "2017-10-10T11:50:00Z",
+          "value": 1645.417
+        },
+        {
+          "dateTime": "2017-10-10T11:55:00Z",
+          "value": 1645.383
+        },
+        {
+          "dateTime": "2017-10-10T12:00:00Z",
+          "value": 1645.362
+        },
+        {
+          "dateTime": "2017-10-10T12:05:00Z",
+          "value": 1644.856
+        },
+        {
+          "dateTime": "2017-10-10T12:10:00Z",
+          "value": 1644.957
+        },
+        {
+          "dateTime": "2017-10-10T12:15:00Z",
+          "value": 1644.997
+        },
+        {
+          "dateTime": "2017-10-10T12:20:00Z",
+          "value": 1645.016
+        },
+        {
+          "dateTime": "2017-10-10T12:25:00Z",
+          "value": 1645.193
+        },
+        {
+          "dateTime": "2017-10-10T12:30:00Z",
+          "value": 1644.889
+        },
+        {
+          "dateTime": "2017-10-10T12:35:00Z",
+          "value": 1645.431
+        },
+        {
+          "dateTime": "2017-10-10T12:40:00Z",
+          "value": 1645.731
+        },
+        {
+          "dateTime": "2017-10-10T12:45:00Z",
+          "value": 1645.849
+        },
+        {
+          "dateTime": "2017-10-10T12:50:00Z",
+          "value": 1646.443
+        },
+        {
+          "dateTime": "2017-10-10T12:55:00Z",
+          "value": 1646.675
+        },
+        {
+          "dateTime": "2017-10-10T13:00:00Z",
+          "value": 1646.782
+        },
+        {
+          "dateTime": "2017-10-10T13:05:00Z",
+          "value": 1646.986
+        },
+        {
+          "dateTime": "2017-10-10T13:10:00Z",
+          "value": 1646.344
+        },
+        {
+          "dateTime": "2017-10-10T13:15:00Z",
+          "value": 1645.64
+        },
+        {
+          "dateTime": "2017-10-10T13:20:00Z",
+          "value": 1645.63
+        },
+        {
+          "dateTime": "2017-10-10T13:25:00Z",
+          "value": 1645.087
+        },
+        {
+          "dateTime": "2017-10-10T13:30:00Z",
+          "value": 1645.317
+        },
+        {
+          "dateTime": "2017-10-10T13:35:00Z",
+          "value": 1646.723
+        },
+        {
+          "dateTime": "2017-10-10T13:40:00Z",
+          "value": 1646.391
+        },
+        {
+          "dateTime": "2017-10-10T13:45:00Z",
+          "value": 1645.9
+        },
+        {
+          "dateTime": "2017-10-10T13:50:00Z",
+          "value": 1644.95
+        },
+        {
+          "dateTime": "2017-10-10T13:55:00Z",
+          "value": 1644.789
+        },
+        {
+          "dateTime": "2017-10-10T14:00:00Z",
+          "value": 1644.489
+        },
+        {
+          "dateTime": "2017-10-10T14:05:00Z",
+          "value": 1643.452
+        },
+        {
+          "dateTime": "2017-10-10T14:10:00Z",
+          "value": 1643.708
+        },
+        {
+          "dateTime": "2017-10-10T14:15:00Z",
+          "value": 1642.789
+        },
+        {
+          "dateTime": "2017-10-10T14:20:00Z",
+          "value": 1642.376
+        }
+      ],
+      "previousClosingPriceOneTradingDayAgo": 1647.924,
+      "tradingDayCloseUTC": "1507649700",
+      "lastUpdateUTC": "1507645468",
+      "timeZoneOffset": -4,
+      "nyTradeStartTime": "03:00:00.000",
+      "nyTradeEndTime": "11:35:00.000",
+      "priceMinDecimals": 3,
+      "lastUpdateDate": "2017-10-10",
+      "lastPrice": 1642.49
+    }
+  ],
+  "companyNews": {
+    "news": [
+      {
+        "type": "article",
+        "id": "OUNVOH6JTSER01",
+        "headline": "Securitas of Sweden Replaces CEO With 43-Year-Old Insider",
+        "publishedAt": "8/14/2017",
+        "url": "https://www.bloomberg.com/news/articles/2017-08-14/securitas-of-sweden-replaces-its-ceo-with-43-year-old-insider",
+        "primaryCategory": "world",
+        "thumbnail": {
+          "baseUrl": "https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iqfKcOJfWKOs/v0/-1x-1.jpg",
+          "origWidth": 2200
+        },
+        "duration": null,
+        "publishedAtISO": "2017-08-14T07:30:24.948Z"
+      }
+    ],
+    "id": "OMX:IND",
+    "userTimeZone": "EDT"
+  },
+  "pressReleases": {
+    "pressReleases": [],
+    "id": "OMX:IND",
+    "userTimeZone": "EDT"
+  },
+  "profile": {
+    "id": "OMX:IND",
+    "indexDescription": "The OMX Stockholm 30 Index consists of the 30 most actively traded stocks on the Stockholm Stock Exchange and is a market weighted price index. The composition of the OMXS30 index is revised twice a year. The index was developed with a base level of 125 as of September 30, 1986. Effective on April 27, 1998 there was a 4-1 split of the index value.",
+    "description": "",
+    "address": [],
+    "phone": "",
+    "website": "",
+    "userTimeZone": "EDT"
+  },
+  "indexStatistics": {
+    "indexStatistics": {
+      "id": "OMX:IND",
+      "membersUp": 12,
+      "membersDown": 19,
+      "totalMembers": 31
+    },
+    "id": "OMX:IND",
+    "userTimeZone": "EDT"
+  },
+  "chartDefaultTimeFrame": "1_DAY"
+}
