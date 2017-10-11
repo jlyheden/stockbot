@@ -11,7 +11,54 @@ from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
 import irc.client
 import irc.strings
 
+LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
+logging.basicConfig(level=getattr(logging, LOGLEVEL))
 LOGGER = logging.getLogger(__name__)
+
+
+def colorify(msg):
+
+    # split over comma separated "sections"
+    section_split = msg.split(",")
+
+    rv = []
+
+    for section in section_split:
+
+        # split over subject : value
+        s_split = section.split(":", 1)
+
+        # there was no subject, just color everything grey
+        if len(s_split) == 1:
+            s_replace = "\x0314{}\x03".format(s_split[0])
+
+        # we identified subject : value
+        else:
+            try:
+
+                # if value is a number
+                v = float(s_split[1])
+
+                # negative gets colored red
+                if v < 0:
+                    value_replace = "\x0304{}\x03".format(s_split[1])
+
+                # positive gets colored green
+                else:
+                    value_replace = "\x0303{}\x03".format(s_split[1])
+
+            except ValueError as e:
+
+                # a non-number gets colored grey
+                value_replace = "\x0314{}\x03".format(s_split[1])
+            finally:
+                s_replace = "\x0306{k}\x03:{v}".format(k=s_split[0], v=value_replace)
+
+        # append the result into a list
+        rv.append(s_replace)
+
+    # sew the list together into a string again
+    return "\x0300,\x03".join(rv)
 
 
 class BloombergQuote(object):
@@ -20,15 +67,22 @@ class BloombergQuote(object):
         data = kwargs.get('message')
         for k, v in data["basicQuote"].items():
             setattr(self, k, v)
-        self.marketstatus = data["marketStatus"]["marketStatus"]
 
     def __str__(self):
-        if self.marketstatus == "ACTV":
-            return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}"\
-                .format(n=self.name, p=self.price, op=self.openPrice, lp=self.lowPrice, hp=self.highPrice,
-                        p1d=self.percentChange1Day)
-        else:
-            return "Name: {n} is closed".format(n=self.name)
+        return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}"\
+            .format(n=self.name, p=self.price, op=self.openPrice, lp=self.lowPrice, hp=self.highPrice,
+                    p1d=self.percentChange1Day)
+
+    def is_market_open(self):
+        """
+        Have to pick self.userTimeZone, self.nyTradeStartTime and self.nyTradeEndTime
+        Parse the funky freeform time format into epoch
+        Get time of now in timezone
+        Compare if now in timezone is more than starttime and less than endtime
+        TODO: fix some other time
+        :return:
+        """
+        pass
 
 
 class BloombergSearchResult(object):
@@ -56,7 +110,7 @@ class BloombergSearchResult(object):
 
 class BloombergQueryService(object):
 
-    # search probably don't change that much, cache results
+    # search results probably don't change that much so cache them
     search_cache = {}
 
     def __init__(self, default_ticker):
@@ -177,25 +231,28 @@ class IRCBot(SingleServerIRCBot):
 
                         idx = irc.strings.lower(commands[2])
                         msg = self.quote_service.get_quote(idx)
-                        self.connection.privmsg(self.channel, str(msg))
+                        self.colorify_send(self.channel, str(msg))
 
                     elif irc.strings.lower(commands[1]) == "search":
 
                         query = irc.strings.lower(commands[2])
                         msg = self.quote_service.search(query)
                         if msg.is_empty():
-                            self.connection.privmsg(self.channel, "Nothing found for {query}".format(query=query))
+                            self.colorify_send(self.channel, "Nothing found for {query}".format(query=query))
                         else:
                             for m in msg.result_as_list():
-                                self.connection.privmsg(self.channel, str(m))
+                                self.colorify_send(self.channel, str(m))
 
                 elif irc.strings.lower(commands[0]) == "help":
 
-                    self.connection.privmsg(self.channel, "Usage: quote get <idx>      - returns the data for <idx>")
-                    self.connection.privmsg(self.channel, "Usage: quote search <query> - returns list of idx available")
+                    self.colorify_send(self.channel, "Usage: quote get <idx>      - returns the data for <idx>")
+                    self.colorify_send(self.channel, "Usage: quote search <query> - returns list of idx available")
 
             except IndexError as e:
                 self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
+
+    def colorify_send(self, target, msg):
+        self.connection.privmsg(target, colorify(msg))
 
     def on_dccmsg(self, c, e):
         # non-chat DCC messages are raw bytes; decode as text
@@ -213,37 +270,6 @@ class IRCBot(SingleServerIRCBot):
             except ValueError:
                 return
             self.dcc_connect(address, port)
-
-    def do_command(self, e, cmd):
-        nick = e.source.nick
-        c = self.connection
-
-        cmd_split = cmd.split(" ")
-        if cmd == "disconnect":
-            self.disconnect()
-        elif cmd == "die":
-            self.die()
-        elif cmd == "stats":
-            for chname, chobj in self.channels.items():
-                c.notice(nick, "--- Channel statistics ---")
-                c.notice(nick, "Channel: " + chname)
-                users = sorted(chobj.users())
-                c.notice(nick, "Users: " + ", ".join(users))
-                opers = sorted(chobj.opers())
-                c.notice(nick, "Opers: " + ", ".join(opers))
-                voiced = sorted(chobj.voiced())
-                c.notice(nick, "Voiced: " + ", ".join(voiced))
-        elif cmd == "dcc":
-            dcc = self.dcc_listen()
-            c.ctcp("DCC", nick, "CHAT chat %s %d" % (
-                ip_quad_to_numstr(dcc.localaddress),
-                dcc.localport))
-        elif cmd_split[0].lower() == "stock":
-            idx = cmd_split[1]
-            resp = self.stockchecker.get(idx)
-            self.connection.privmsg(self.channel, str(resp))
-        else:
-            c.notice(nick, "Not understood: " + cmd)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ import unittest
 import json
 import os
 
-from app import BloombergQuote
+from app import BloombergQuote, colorify
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -40,3 +40,15 @@ class TestBloombergQuote(unittest.TestCase):
         self.assertEquals("10:24 AM", tm.lastUpdateTime)
         self.assertEquals("2017-10-10T14:24:28.000Z", tm.lastUpdateISO)
         self.assertEquals("EDT", tm.userTimeZone)
+
+
+class TestColorify(unittest.TestCase):
+
+    def test_help_string(self):
+        """broken"""
+
+        s = "Usage: quote get <idx>      - returns the data for <idx>"
+        cs = colorify(s)
+        print(cs)
+        self.assertNotEquals(s, cs)
+        self.assertEquals("""\x0303Usage\x03: quote get <idx>      - returns the data for <idx>""", cs)
