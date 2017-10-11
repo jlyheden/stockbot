@@ -2,17 +2,17 @@ import unittest
 import json
 import os
 
-from app import StockTickerMessage
+from app import BloombergQuote
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
 
-class TestStockTickerMessage(unittest.TestCase):
+class TestBloombergQuote(unittest.TestCase):
 
     def test_parse(self):
         with open(os.path.join(CWD, "mock", "omxs30.json"), 'r') as f:
             data = json.load(f)
-        tm = StockTickerMessage(message=data)
+        tm = BloombergQuote(message=data)
 
         self.assertEquals("OMX:IND", tm.id)
         self.assertEquals(8.25818928, tm.totalReturnYtd)

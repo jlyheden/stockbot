@@ -3,6 +3,9 @@ import logging
 import requests
 import json
 
+from datetime import datetime
+from urllib.parse import urlencode
+from urllib.request import pathname2url
 from irc.bot import SingleServerIRCBot
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
 import irc.client
@@ -11,7 +14,7 @@ import irc.strings
 LOGGER = logging.getLogger(__name__)
 
 
-class StockTickerMessage(object):
+class BloombergQuote(object):
 
     def __init__(self, *args, **kwargs):
         data = kwargs.get('message')
@@ -28,35 +31,91 @@ class StockTickerMessage(object):
             return "Name: {n} is closed".format(n=self.name)
 
 
-class StockChecker(object):
+class BloombergSearchResult(object):
 
-    indexes = {
-        "omxs30": "https://www.bloomberg.com/markets/api/quote-page/OMX%3AIND?locale=en",
-        "dax": "https://www.bloomberg.com/markets/api/quote-page/DAX%3AIND?locale=en"
-    }
+    def __init__(self, *args, **kwargs):
+        self.result = kwargs.get('result')["results"]
 
-    def __init__(self, default_idx):
-        self.default_idx = default_idx
+    def __str__(self):
+        return "Result: {r}".format(r=" | ".join(
+            ["Ticker: {t}, Country: {c}, Name: {n}, Type: {tt}".format(t=x["ticker_symbol"], c=x["country"],
+                                                                       n=x["name"], tt=x["resource_type"])
+             for x in self.result
+             ]
+        ))
 
-    def get_default(self):
-        return self.get(self.default_idx)
+    def result_as_list(self):
+        return ["Ticker: {t}, Country: {c}, Name: {n}, Type: {tt}".format(t=x["ticker_symbol"], c=x["country"],
+                                                                          n=x["name"], tt=x["resource_type"])
+                for x in self.result
+                ]
 
-    def get(self, idx):
+    def is_empty(self):
+        return len(self.result) == 0
+
+
+class BloombergQueryService(object):
+
+    # search probably don't change that much, cache results
+    search_cache = {}
+
+    def __init__(self, default_ticker):
+        self.default_ticker = default_ticker
+
+    def get_default_quote(self):
+        return self.get_quote(self.default_ticker)
+
+    def get_quote(self, ticker):
         try:
-            url = self.indexes[idx]
+            url = self.__quote_url(ticker)
             req = requests.get(url)
             if req.ok:
                 j = json.loads(req.text)
-                return StockTickerMessage(message=j)
+                return BloombergQuote(message=j)
         except Exception as e:
-            LOGGER.exception("Failed to retrieve stock ticker")
+            LOGGER.exception("Failed to retrieve stock quote")
+            return None
 
-    def add(self, name, url):
-        self.indexes[name] = url
+    def search(self, query):
+        if query not in self.search_cache:
+            LOGGER.info("Response from query {q} not in cache, will query bloombergs search api".format(q=query))
+            try:
+                self.search_cache[query] = self.__search_query(query)
+            except Exception as e:
+                return None
+        return self.search_cache[query]
 
-    def show_all(self):
-        return "Indexes: {i}".format(i=",".join(["name={key} url={value}".format(key=key, value=value) for key, value in
-                                                 self.indexes.items()]))
+    def __search_query(self, query):
+        url = self.__search_url(query)
+        try:
+            req = requests.get(url)
+            if req.ok:
+                j = json.loads(req.text)
+                return BloombergSearchResult(result=j)
+            else:
+                raise Exception("Failed to query bloomberg search api. Code: {c}, Text: {t}".format(c=req.status_code,
+                                                                                                    t=req.text))
+        except Exception as e:
+            LOGGER.exception("Failed to search for {q}, search url: {u}".format(q=query, u=url))
+            raise
+
+    def __quote_url(self, ticker):
+        params = {
+            "locale": "en"
+        }
+        path = "/markets/api/quote-page/{}".format(ticker)
+        url = "https://www.bloomberg.com{path}?{params}".format(path=pathname2url(path), params=urlencode(params))
+        LOGGER.debug("quote_url: {}".format(url))
+        return url
+
+    def __search_url(self, query):
+        params = {
+            "sites": "bbiz",
+            "query": query
+        }
+        url = "https://search.bloomberg.com/lookup.json?{params}".format(params=urlencode(params))
+        LOGGER.debug("search url: {}".format(url))
+        return url
 
 
 class Configuration(object):
@@ -77,11 +136,16 @@ class IRCBot(SingleServerIRCBot):
 
         # TODO: would be nice to be able to disable or reconfigure the scheduler from outside
         self.reactor.scheduler.execute_every(3600, self.stock_check_scheduler)
-        self.stockchecker = StockChecker(default_idx)
+        self.quote_service = BloombergQueryService(default_idx)
 
     def stock_check_scheduler(self):
-        resp = self.stockchecker.get_default()
-        self.connection.privmsg(self.channel, str(resp))
+        now = datetime.now()
+        # TODO: not so configurable, fix
+        if now.isoweekday() not in [6, 7] and now.hour > 9 and (now.hour <= 17 and now.minute <= 30):
+            resp = self.quote_service.get_default_quote()
+            self.connection.privmsg(self.channel, str(resp))
+        else:
+            LOGGER.debug("Ignoring notifications since stock market is not open")
 
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
@@ -107,31 +171,28 @@ class IRCBot(SingleServerIRCBot):
             commands = split[1:]
 
             try:
-                if irc.strings.lower(commands[0]) == "stock":
+                if irc.strings.lower(commands[0]) == "quote":
 
                     if irc.strings.lower(commands[1]) == "get":
 
                         idx = irc.strings.lower(commands[2])
-                        msg = self.stockchecker.get(idx)
+                        msg = self.quote_service.get_quote(idx)
                         self.connection.privmsg(self.channel, str(msg))
 
-                    elif irc.strings.lower(commands[1]) == "show":
+                    elif irc.strings.lower(commands[1]) == "search":
 
-                        self.connection.privmsg(self.channel, self.stockchecker.show_all())
-
-                    elif irc.strings.lower(commands[1]) == "add":
-
-                        name = irc.strings.lower(commands[2])
-                        url = irc.strings.lower(commands[3])
-
-                        self.stockchecker.add(name, url)
-                        self.connection.privmsg(self.channel, "Added {name}".format(name=name))
+                        query = irc.strings.lower(commands[2])
+                        msg = self.quote_service.search(query)
+                        if msg.is_empty():
+                            self.connection.privmsg(self.channel, "Nothing found for {query}".format(query=query))
+                        else:
+                            for m in msg.result_as_list():
+                                self.connection.privmsg(self.channel, str(m))
 
                 elif irc.strings.lower(commands[0]) == "help":
 
-                    self.connection.privmsg(self.channel, "Usage: stock get <idx>       -- returns the data for <idx>")
-                    self.connection.privmsg(self.channel, "Usage: stock show            -- returns list of idx available")
-                    self.connection.privmsg(self.channel, "Usage: stock add <idx> <url> -- adds idx")
+                    self.connection.privmsg(self.channel, "Usage: quote get <idx>      - returns the data for <idx>")
+                    self.connection.privmsg(self.channel, "Usage: quote search <query> - returns list of idx available")
 
             except IndexError as e:
                 self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
