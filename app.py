@@ -22,12 +22,21 @@ IDX_MAPPER = {
 }
 
 
+class StockTickerMessage(object):
+
+    def __init__(self, *args, **kwargs):
+        data = kwargs.get('message')
+        for k, v in data["basicQuote"].items():
+            setattr(self, k, v)
+
+
 def get_stock_index(idx):
     try:
         url = IDX_MAPPER[idx]
         req = requests.get(url)
         if req.ok:
-            return json.loads(req.text)
+            j = json.loads(req.text)
+            return StockTickerMessage(message=j)
     except:
         LOGGER.error("Failed to retrieve ticker")
 
