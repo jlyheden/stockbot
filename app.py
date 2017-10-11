@@ -21,7 +21,7 @@ class StockTickerMessage(object):
 
     def __str__(self):
         if self.marketstatus == "ACTV":
-            return "Name: {n} Price: {p} Open Price: {op} Low Price: {lp} High Price: {hp} Percent Change 1 Day: {p1d}"\
+            return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}"\
                 .format(n=self.name, p=self.price, op=self.openPrice, lp=self.lowPrice, hp=self.highPrice,
                         p1d=self.percentChange1Day)
         else:
@@ -51,6 +51,13 @@ class StockChecker(object):
         except Exception as e:
             LOGGER.exception("Failed to retrieve stock ticker")
 
+    def add(self, name, url):
+        self.indexes[name] = url
+
+    def show_all(self):
+        return "Indexes: {i}".format(i=",".join(["name={key} url={value}".format(key=key, value=value) for key, value in
+                                                 self.indexes.items()]))
+
 
 class Configuration(object):
 
@@ -68,7 +75,7 @@ class IRCBot(SingleServerIRCBot):
         super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
         self.channel = channel
 
-        # custom scheduler for stock poller
+        # TODO: would be nice to be able to disable or reconfigure the scheduler from outside
         self.reactor.scheduler.execute_every(3600, self.stock_check_scheduler)
         self.stockchecker = StockChecker(default_idx)
 
@@ -83,13 +90,51 @@ class IRCBot(SingleServerIRCBot):
         c.join(self.channel)
 
     def on_privmsg(self, c, e):
-        self.do_command(e, e.arguments[0])
+        pass
 
     def on_pubmsg(self, c, e):
-        a = e.arguments[0].split(":", 1)
-        if len(a) > 1 and irc.strings.lower(a[0]) == irc.strings.lower(self.connection.get_nickname()):
-            self.do_command(e, a[1].strip())
-        return
+        message = e.arguments[0]
+        split = message.split(" ")
+        to_me = split[0].endswith(":") and irc.strings.lower(split[0].rstrip(":")) == irc.strings.lower(
+            self.connection.get_nickname())
+
+        #
+        # TODO: fugly, can we avoid this spaghetti mess?
+        #
+        if to_me:
+
+            # strip nick from message
+            commands = split[1:]
+
+            try:
+                if irc.strings.lower(commands[0]) == "stock":
+
+                    if irc.strings.lower(commands[1]) == "get":
+
+                        idx = irc.strings.lower(commands[2])
+                        msg = self.stockchecker.get(idx)
+                        self.connection.privmsg(self.channel, str(msg))
+
+                    elif irc.strings.lower(commands[1]) == "show":
+
+                        self.connection.privmsg(self.channel, self.stockchecker.show_all())
+
+                    elif irc.strings.lower(commands[1]) == "add":
+
+                        name = irc.strings.lower(commands[2])
+                        url = irc.strings.lower(commands[3])
+
+                        self.stockchecker.add(name, url)
+                        self.connection.privmsg(self.channel, "Added {name}".format(name=name))
+
+                elif irc.strings.lower(commands[0]) == "help":
+
+                    self.connection.privmsg(self.channel, "Usage: stock get <idx>       -- returns the data for <idx>")
+                    self.connection.privmsg(self.channel, "Usage: stock show            -- returns list of idx available")
+                    self.connection.privmsg(self.channel, "Usage: stock add <idx> <url> -- adds idx")
+
+            except IndexError as e:
+                self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
 
     def on_dccmsg(self, c, e):
         # non-chat DCC messages are raw bytes; decode as text
