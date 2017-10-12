@@ -79,7 +79,12 @@ class BloombergQuote(object):
                     p1d=self.percentChange1Day, ut=self.lastUpdateDatetime)
 
     def __getattribute__(self, item):
-        return getattr(self, item, "N/A")
+        try:
+            # we cannot use this objects getattribute because then we loop until the world collapses
+            return object.__getattribute__(self, item)
+        except Exception as e:
+            LOGGER.exception("Failed to look up attribute {}".format(item))
+            return "N/A"
 
     def is_market_open(self):
         """
