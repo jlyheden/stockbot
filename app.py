@@ -67,7 +67,10 @@ class BloombergQuote(object):
         data = kwargs.get('message')
         for k, v in data["basicQuote"].items():
             if k == "lastUpdateEpoch":
-                setattr(self, "lastUpdateDatetime", datetime.fromtimestamp(v).strftime("%Y-%m-%d %H:%M:%S"))
+                try:
+                    setattr(self, "lastUpdateDatetime", datetime.fromtimestamp(int(v)).strftime("%Y-%m-%d %H:%M:%S"))
+                except Exception as e:
+                    LOGGER.exception("Failed to create attribute from lastUpdateEpoch")
             setattr(self, k, v)
 
     def __str__(self):
