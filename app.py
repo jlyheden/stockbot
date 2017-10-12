@@ -211,7 +211,7 @@ class IRCBot(SingleServerIRCBot):
         # TODO: not so configurable, fix
         if now.isoweekday() not in [6, 7] and now.hour > 9 and (now.hour <= 17 and now.minute <= 30):
             resp = self.quote_service.get_default_quote()
-            self.connection.privmsg(self.channel, str(resp))
+            self.colorify_send(self.channel, str(resp))
         else:
             LOGGER.debug("Ignoring notifications since stock market is not open")
 
