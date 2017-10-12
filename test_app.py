@@ -9,7 +9,8 @@ CWD = os.path.dirname(os.path.realpath(__file__))
 
 class TestBloombergQuote(unittest.TestCase):
 
-    def test_parse(self):
+    def test_parse_withdata(self):
+        """parse bloomberg json quote"""
         with open(os.path.join(CWD, "mock", "omxs30.json"), 'r') as f:
             data = json.load(f)
         tm = BloombergQuote(message=data)
@@ -40,15 +41,33 @@ class TestBloombergQuote(unittest.TestCase):
         self.assertEquals("10:24 AM", tm.lastUpdateTime)
         self.assertEquals("2017-10-10T14:24:28.000Z", tm.lastUpdateISO)
         self.assertEquals("EDT", tm.userTimeZone)
+        self.assertEquals("Name: OMX Stockholm 30 Index, Price: 1642.49, Open Price: 1647.925, Low Price: 1642.214, High Price: 1651.131, Percent Change 1 Day: -0.329748, Update Time: 2017-10-10 16:24:28", str(tm))
+
+    def test_parse_nodata(self):
+        """instantiate without valid quotedata"""
+        tm = BloombergQuote()
+        self.assertEquals("N/A", tm.name)
+        self.assertEquals("Name: N/A, Price: N/A, Open Price: N/A, Low Price: N/A, High Price: N/A, Percent Change 1 Day: N/A, Update Time: N/A", str(tm))
 
 
 class TestColorify(unittest.TestCase):
 
     def test_help_string(self):
-        """broken"""
+        """validate colorify on help string"""
 
         s = "Usage: quote get <idx>      - returns the data for <idx>"
         cs = colorify(s)
-        print(cs)
-        self.assertNotEquals(s, cs)
-        self.assertEquals("""\x0303Usage\x03: quote get <idx>      - returns the data for <idx>""", cs)
+        self.assertEquals("\x0306Usage\x03:\x0314 quote get <idx>      - returns the data for <idx>\x03", cs)
+
+    def test_price_string(self):
+        """validate colorify on price string"""
+
+        # positive price
+        s = "Price: 1.001"
+        cs = colorify(s)
+        self.assertEquals("\x0306Price\x03:\x0303 1.001\x03", cs)
+
+        # negative price
+        s = "Price: -1.001"
+        cs = colorify(s)
+        self.assertEquals("\x0306Price\x03:\x0304 -1.001\x03", cs)

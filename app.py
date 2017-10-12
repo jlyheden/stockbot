@@ -16,6 +16,10 @@ logging.basicConfig(level=getattr(logging, LOGLEVEL),
                     format="%(asctime)s %(levelname)s %(module)s.%(filename)s.%(funcName)s:%(lineno)d : %(message)s")
 LOGGER = logging.getLogger(__name__)
 
+DEFAULT_VALUES = {
+    "scheduler": "false"
+}
+
 
 def colorify(msg):
 
@@ -65,7 +69,9 @@ def colorify(msg):
 class BloombergQuote(object):
 
     def __init__(self, *args, **kwargs):
-        data = kwargs.get('message')
+        data = kwargs.get('message', {})
+        if "basicQuote" not in data:
+            return
         for k, v in data["basicQuote"].items():
             if k == "lastUpdateEpoch":
                 try:
@@ -127,11 +133,8 @@ class BloombergQueryService(object):
     # search results probably don't change that much so cache them
     search_cache = {}
 
-    def __init__(self, default_ticker):
-        self.default_ticker = default_ticker
-
-    def get_default_quote(self):
-        return self.get_quote(self.default_ticker)
+    def __init__(self, *args, **kwargs):
+        pass
 
     def get_quote(self, ticker):
         try:
@@ -188,32 +191,59 @@ class BloombergQueryService(object):
 
 class Configuration(object):
 
-    def __getattribute__(self, item):
-        value = os.getenv(item.upper(), None)
+    def __getattr__(self, item):
+        value = os.getenv(item.upper(), self.default_wrapper(item))
         if value is None:
             raise RuntimeError("Must set environment variable {}".format(item.upper()))
         else:
+            if value.lower() in ["true", "false"]:
+                return True if value.lower() == "true" else False
             return value
+
+    @staticmethod
+    def default_wrapper(item):
+
+        if item in DEFAULT_VALUES:
+            return DEFAULT_VALUES[item]
+        return None
 
 
 class IRCBot(SingleServerIRCBot):
 
-    def __init__(self, channel, nickname, server, port, default_ticker):
+    def __init__(self, channel, nickname, server, port, enable_scheduler=False):
         super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
         self.channel = channel
 
-        # TODO: would be nice to be able to disable or reconfigure the scheduler from outside
-        self.reactor.scheduler.execute_every(3600, self.stock_check_scheduler)
-        self.quote_service = BloombergQueryService(default_ticker)
+        self.scheduler = enable_scheduler
+        self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
+        self.quote_service = BloombergQueryService()
+        self.tickers = []
+        self.scheduler_interval = 3600
+        self.last_check = None
 
     def stock_check_scheduler(self):
+
+        if not self.scheduler:
+            LOGGER.debug("Scheduler is disabled")
+            return
+
         now = datetime.now()
+
+        if self.last_check is not None:
+            if int(now.timestamp()) - self.last_check < self.scheduler_interval:
+                return
+
         # TODO: not so configurable, fix
-        if now.isoweekday() not in [6, 7] and now.hour > 9 and (now.hour <= 17 and now.minute <= 30):
-            resp = self.quote_service.get_default_quote()
+        elif now.isoweekday() in [6, 7] or 9 < now.hour >= 18:
+            return
+
+        print(now.isoweekday())
+        print(now.hour)
+        for ticker in self.tickers:
+            resp = self.quote_service.get_quote(ticker)
             self.colorify_send(self.channel, str(resp))
-        else:
-            LOGGER.debug("Ignoring notifications since stock market is not open")
+
+        self.last_check = int(now.timestamp())
 
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
@@ -257,10 +287,60 @@ class IRCBot(SingleServerIRCBot):
                             for m in msg.result_as_list():
                                 self.colorify_send(self.channel, str(m))
 
+                    elif irc.strings.lower(commands[1]) == "scheduler":
+
+                        if irc.strings.lower(commands[2]) == "tickers":
+
+                            if irc.strings.lower(commands[3]) == "get":
+                                self.colorify_send(self.channel, "Tickers: {t}".format(t=",".join(self.tickers)))
+
+                            elif irc.strings.lower(commands[3]) == "add":
+                                ticker = irc.strings.lower(commands[4])
+                                if ticker in self.tickers:
+                                    self.colorify_send(self.channel, "Ticker already in list")
+                                else:
+                                    self.tickers.append(ticker)
+                                    self.colorify_send(self.channel, "Added ticker: {}".format(ticker))
+
+                            elif irc.strings.lower(commands[3]) == "remove":
+                                ticker = irc.strings.lower(commands[4])
+                                if ticker not in self.tickers:
+                                    self.colorify_send(self.channel, "Ticker not in list")
+                                else:
+                                    self.tickers.remove(ticker)
+                                    self.colorify_send(self.channel, "Removed ticker: {}".format(ticker))
+
+                        elif irc.strings.lower(commands[2]) == "interval":
+
+                            if irc.strings.lower(commands[3]) == "get":
+                                self.colorify_send(self.channel, "Interval: {} seconds".format(self.scheduler_interval))
+
+                            elif irc.strings.lower(commands[3]) == "set":
+                                interval = irc.strings.lower(commands[4])
+                                self.scheduler_interval = int(interval)
+                                self.colorify_send(self.channel, "New interval: {} seconds".format(
+                                    self.scheduler_interval))
+
+                        elif irc.strings.lower(commands[2]) == "enable":
+
+                            self.scheduler = True
+                            self.colorify_send(self.channel, "Scheduler: enabled")
+
+                        elif irc.strings.lower(commands[2]) == "disable":
+                            self.scheduler = False
+                            self.colorify_send(self.channel, "Scheduler: disabled")
+
                 elif irc.strings.lower(commands[0]) == "help":
 
-                    self.colorify_send(self.channel, "Usage: quote get <ticker>   - returns the data for <ticker>")
-                    self.colorify_send(self.channel, "Usage: quote search <query> - returns list of tickers available")
+                    self.colorify_send(self.channel, "Usage: quote get <ticker>                      - returns the data for <ticker>")
+                    self.colorify_send(self.channel, "Usage: quote search <query>                    - returns list of tickers available")
+                    self.colorify_send(self.channel, "Usage: quote scheduler enable                  - enable scheduler")
+                    self.colorify_send(self.channel, "Usage: quote scheduler disable                 - enable scheduler")
+                    self.colorify_send(self.channel, "Usage: quote scheduler tickers get             - show tickers in scheduler")
+                    self.colorify_send(self.channel, "Usage: quote scheduler tickers add <ticker>    - add ticker to scheduler")
+                    self.colorify_send(self.channel, "Usage: quote scheduler tickers remove <ticker> - remove ticker from scheduler")
+                    self.colorify_send(self.channel, "Usage: quote scheduler interval get            - show scheduler interval")
+                    self.colorify_send(self.channel, "Usage: quote scheduler interval set <interval> - set scheduler interval")
 
             except IndexError as e:
                 self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
@@ -290,5 +370,5 @@ if __name__ == '__main__':
 
     bot = IRCBot(server=Configuration().server_name, port=Configuration().server_port,
                  channel=Configuration().channel_name, nickname=Configuration().nick,
-                 default_ticker=Configuration().default_ticker)
+                 enable_scheduler=Configuration().scheduler)
     bot.start()
