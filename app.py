@@ -7,12 +7,13 @@ from datetime import datetime
 from urllib.parse import urlencode
 from urllib.request import pathname2url
 from irc.bot import SingleServerIRCBot
-from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
+from irc.client import ip_numstr_to_quad
 import irc.client
 import irc.strings
 
 LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
-logging.basicConfig(level=getattr(logging, LOGLEVEL))
+logging.basicConfig(level=getattr(logging, LOGLEVEL),
+                    format="%(asctime)s %(levelname)s %(module)s.%(filename)s.%(funcName)s:%(lineno)d : %(message)s")
 LOGGER = logging.getLogger(__name__)
 
 
@@ -197,13 +198,13 @@ class Configuration(object):
 
 class IRCBot(SingleServerIRCBot):
 
-    def __init__(self, channel, nickname, server, port, default_idx="omxs30"):
+    def __init__(self, channel, nickname, server, port, default_ticker):
         super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
         self.channel = channel
 
         # TODO: would be nice to be able to disable or reconfigure the scheduler from outside
         self.reactor.scheduler.execute_every(3600, self.stock_check_scheduler)
-        self.quote_service = BloombergQueryService(default_idx)
+        self.quote_service = BloombergQueryService(default_ticker)
 
     def stock_check_scheduler(self):
         now = datetime.now()
@@ -258,8 +259,8 @@ class IRCBot(SingleServerIRCBot):
 
                 elif irc.strings.lower(commands[0]) == "help":
 
-                    self.colorify_send(self.channel, "Usage: quote get <idx>      - returns the data for <idx>")
-                    self.colorify_send(self.channel, "Usage: quote search <query> - returns list of idx available")
+                    self.colorify_send(self.channel, "Usage: quote get <ticker>   - returns the data for <ticker>")
+                    self.colorify_send(self.channel, "Usage: quote search <query> - returns list of tickers available")
 
             except IndexError as e:
                 self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
@@ -288,5 +289,6 @@ class IRCBot(SingleServerIRCBot):
 if __name__ == '__main__':
 
     bot = IRCBot(server=Configuration().server_name, port=Configuration().server_port,
-                 channel=Configuration().channel_name, nickname=Configuration().nick)
+                 channel=Configuration().channel_name, nickname=Configuration().nick,
+                 default_ticker=Configuration().default_ticker)
     bot.start()
