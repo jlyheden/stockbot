@@ -66,12 +66,17 @@ class BloombergQuote(object):
     def __init__(self, *args, **kwargs):
         data = kwargs.get('message')
         for k, v in data["basicQuote"].items():
+            if k == "lastUpdateEpoch":
+                setattr(self, "lastUpdateDatetime", datetime.fromtimestamp(v).strftime("%Y-%m-%d %H:%M:%S"))
             setattr(self, k, v)
 
     def __str__(self):
-        return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}"\
+        return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Update Time: {ut}"\
             .format(n=self.name, p=self.price, op=self.openPrice, lp=self.lowPrice, hp=self.highPrice,
-                    p1d=self.percentChange1Day)
+                    p1d=self.percentChange1Day, ut=self.lastUpdateDatetime)
+
+    def __getattribute__(self, item):
+        return getattr(self, item, "N/A")
 
     def is_market_open(self):
         """
