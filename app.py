@@ -292,7 +292,7 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
                     elif irc.strings.lower(commands[1]) == "search":
 
-                        query = irc.strings.lower(commands[2])
+                        query = irc.strings.lower(" ".join(commands[2:]))
                         msg = self.quote_service.search(query)
                         if msg.is_empty():
                             self.colorify_send(self.channel, "Nothing found for {query}".format(query=query))
