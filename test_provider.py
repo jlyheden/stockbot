@@ -3,7 +3,8 @@ import os
 import json
 import vcr
 
-from provider.google import GoogleFinanceQueryService
+from provider import Analytics
+from provider.google import GoogleFinanceQueryService, GoogleFinanceQuote
 from provider.bloomberg import BloombergQuote
 
 CWD = os.path.dirname(os.path.realpath(__file__))
@@ -68,3 +69,51 @@ class TestGoogleFinanceQueryService(unittest.TestCase):
         sr = self.service.search("tech")
         self.assertIn("Ticker: TRTC, Market: OTCMKTS, Name: Terra Tech Corp", sr.result_as_list())
         self.assertIn("Ticker: TECD, Market: NASDAQ, Name: Tech Data Corp", sr.result_as_list())
+
+    @vcr.use_cassette('mock/vcr_cassettes/google/quote/aapl.yaml')
+    def test_get_quote_fundamentals(self):
+        q = self.service.get_quote('AAPL')
+        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 19.20%, Operating margin: 23.71%, Return on average assets: 10.29%, Return on average equity: 26.24%", q.fundamentals())
+
+
+class TestAnalytics(unittest.TestCase):
+
+    def setUp(self):
+        self.analytics = Analytics()
+
+    def test_sort_by(self):
+        collection = [
+            GoogleFinanceQuote(message={
+                "pe": 12,
+                "beta": 44,
+                "name": "Foostock1"
+            }),
+            GoogleFinanceQuote(message={
+                "pe": 15,
+                "beta": 74,
+                "name": "Foostock2"
+            }),
+            GoogleFinanceQuote(message={
+                "pe": 4,
+                "beta": 74,
+                "name": "Foostock3"
+            }),
+        ]
+
+        # sort by one key
+        result = self.analytics.sort_by(collection, attributes=["pe"])
+        self.assertNotEquals(collection, result)
+        self.assertEquals("Foostock3", result[0].name)
+        self.assertEquals("Foostock2", result[2].name)
+
+        # sort by two keys
+        result = self.analytics.sort_by(collection, attributes=["beta", "pe"])
+        self.assertNotEquals(collection, result)
+        self.assertEquals("Foostock1", result[0].name)
+        self.assertEquals("Foostock2", result[2].name)
+
+        # max result 1
+        result = self.analytics.sort_by(collection, attributes=["pe"], max_results=1)
+        self.assertNotEquals(collection, result)
+        self.assertEquals("Foostock3", result[0].name)
+        self.assertEquals(1, len(result))

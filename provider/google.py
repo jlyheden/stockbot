@@ -17,9 +17,15 @@ class GoogleFinanceQuote(object):
             # remove + from price change if positive
             if k == 'c' or k == 'cp':
                 v = v.lstrip("+")
+            elif k == 'dy' and len(v) > 0:
+                v = "{}%".format(v)
             # remove comma from values
-            if isinstance(v, str) and pattern.match(v):
-                v = v.replace(",", "")
+            if isinstance(v, str):
+                if pattern.match(v):
+                    v = v.replace(",", "")
+                # don't set attributes that are empty, it will look ugly
+                if len(v) == 0:
+                    continue
             setattr(self, k, v)
 
     def __str__(self):
@@ -33,6 +39,14 @@ class GoogleFinanceQuote(object):
         except Exception as e:
             LOGGER.exception("Failed to look up attribute {}".format(item))
             return "N/A"
+
+    def fundamentals(self):
+        flatten_keyratios = ", ".join(["{t}: {r}".format(t=x["title"], r=x["recent_quarter"].replace(",", ""))
+                                       for x in self.keyratios
+                                       if "title" in x and "recent_quarter" in x and x["title"] != "Employees"
+                                       and len(x["recent_quarter"]) > 0])
+        return "Name: {n}, P/E: {pe}, Yield: {y}, Beta: {b}, Earnings Per Share: {eps}, {fl}".format(
+            n=self.name, pe=self.pe, y=self.dy, b=self.beta, eps=self.eps, fl=flatten_keyratios)
 
 
 class GoogleFinanceSearchResult(object):
@@ -58,11 +72,15 @@ class GoogleFinanceQueryService(object):
     search_cache = {}
 
     def get_quote(self, ticker):
-        url = self.__quote_url(ticker)
-        req = requests.get(url)
-        if req.ok:
-            j = json.loads(req.content[6:-2].decode('unicode_escape'))
-            return GoogleFinanceQuote(message=j)
+        try:
+            url = self.__quote_url(ticker)
+            req = requests.get(url)
+            if req.ok:
+                j = json.loads(req.content[6:-2].decode('unicode_escape'))
+                return GoogleFinanceQuote(message=j)
+        except Exception as e:
+            LOGGER.exception("Failed to get quote for '{ticker}'".format(ticker=ticker))
+            return GoogleFinanceQuote()
 
     def search(self, query):
         if query not in self.search_cache:

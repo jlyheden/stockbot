@@ -158,7 +158,15 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
             commands = split[1:]
 
             try:
-                if irc.strings.lower(commands[0]) == "quote":
+                if irc.strings.lower(commands[0]) == "fundamental":
+
+                    if irc.strings.lower(commands[1]) == "get":
+
+                        idx = irc.strings.lower(commands[2])
+                        msg = self.quote_service.get_quote(idx)
+                        self.colorify_send(self.channel, msg.fundamentals())
+
+                elif irc.strings.lower(commands[0]) == "quote":
 
                     if irc.strings.lower(commands[1]) == "get":
 
@@ -221,6 +229,7 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
                 elif irc.strings.lower(commands[0]) == "help":
 
+                    self.colorify_send(self.channel, "Usage: fundamental get <ticker>                - returns fundamental data for <ticker>")
                     self.colorify_send(self.channel, "Usage: quote get <ticker>                      - returns the data for <ticker>")
                     self.colorify_send(self.channel, "Usage: quote search <query>                    - returns list of tickers available")
                     self.colorify_send(self.channel, "Usage: quote scheduler enable                  - enable scheduler")
@@ -232,7 +241,7 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
                     self.colorify_send(self.channel, "Usage: quote scheduler interval set <interval> - set scheduler interval")
 
             except IndexError as e:
-                self.connection.privmsg(self.channel, "Stack trace: {e}".format(e=e))
+                self.colorify_send(self.channel, "Does not compute, halp?")
 
     def colorify_send(self, target, msg):
         self.connection.privmsg(target, colorify(msg))
