@@ -1,0 +1,41 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.13.0]
+    method: GET
+    uri: https://finance.google.com/finance/match?matchtype=matchall&q=tech
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAHyT22+bMBjF/xWLp01KI3Mxgb4xcBaUcSm4S3d7sMAbSFwiIGqnqv/7TGPAqdK9
+        YeB3ON85H89KTYesYL1y++NZGZRbhSTEVVZKM16yrqOAsKwAbtsd+V3G70bEDfYk5acy50dVtXVV
+        tZSXleCxuxP8Jz+6GY8hlvnQST3nbsIRggbUZhp79wIO2SOIupI1A60Azk8ZHcq2AT9PEGrm2dTn
+        7gg+OF7ycVL+luJJdwMtQ9vMuluC90J4e2LVmfeb7Kon09TtzcKShSVsEImsRnp9HUemipaRnJgI
+        2qmOBQVx1wqFL0O+lqw7AU581wkXGxqUgo0Pztc7oRRHB5zwMwZjvilwowDcpx5cQwjV93qyLKQZ
+        aNZzQ7IVcm5RNuexftNyKMCh7FjF+p7XVtfr1wfr0e31cW3L1Ay5f29Oi4fs0YH+t35N1Wd455Mp
+        6l1588rHBe1qmvElcNv38kYWXDSkjzflkcfiSEVLHWmGuZhWH6btICkGA2cDJ9mDbZudeo7n7EkI
+        +KGHH8aXJiUbGapu6vL83y8ttI+sA+nffmB1L1l5049pbzTt8jcK5BwDykvK+fZJPSwukI2QqS/l
+        ksSf2yWdiHLXVnnZ/LlY3TcukGrphs53/9fLPwAAAP//AwDR0kzSGwQAAA==
+    headers:
+      Alt-Svc: ['quic=":443"; ma=2592000; v="39,38,37,35"']
+      Cache-Control: ['no-cache, no-store, max-age=0, must-revalidate']
+      Content-Disposition: [attachment; filename="json.txt"; filename*=UTF-8''json.txt]
+      Content-Encoding: [gzip]
+      Content-Type: [application/json; charset=utf-8]
+      Date: ['Fri, 13 Oct 2017 19:29:56 GMT']
+      Expires: ['Mon, 01 Jan 1990 00:00:00 GMT']
+      P3P: ['CP="This is not a P3P policy! See https://support.google.com/accounts/answer/151657?hl=en
+          for more info."']
+      Pragma: [no-cache]
+      Server: [GSE]
+      Set-Cookie: ['NID=114=UwIGWUwvl33s6NikK3w_fy7QjugXSI7iGpOGGrQ_osrq6DRjShRi2ppsf6uv8X_ok06goV-RJK5FuK8EB8ITVOj9BOagOwkWn4bVCPTvHDvP4w6Eb-QE5pQEjQxyEnGC;Domain=.google.com;Path=/;Expires=Sat,
+          14-Apr-2018 19:29:56 GMT;HttpOnly']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 200, message: OK}
+version: 1

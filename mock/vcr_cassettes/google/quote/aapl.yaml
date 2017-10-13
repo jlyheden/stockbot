@@ -1,0 +1,95 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.13.0]
+    method: GET
+    uri: https://finance.google.com/finance?q=AAPL&output=json
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAOxbaY/bRhL9Pr+CEJBFgm3R7G6ySRowgrl8xXNkNHE2mw0MDkVJzFBsmcdMtMH+
+        933d1MVjDi7G63WyMOARm82q11XVVa9a1N6zZ8bPe7/vDfLl/EomA+O5MdjfP383IHuD6LdwFqTT
+        SA+e7o+O9r9Xw/F4gGvGqG2ry6L+TGNyGsyrof3FIomMN2loDvaIMZh8yKKyiLL8Q5lVWmdFsXj+
+        j9Ky2Mvq/7yQ4XVulrm5mmqGcr57q/qcBUUsczPIF99mi/CFEHpYVOt5oXCZZwqJ0hhGafHhYxlk
+        EPdhHBQVtO+58fXbMjH0gy51v6mmB2laBsl2GrOoqO4Uxbw27OjhOA3SMA6SHMN7P/+uJy4X1SSs
+        W86jCll6lS/UJ34wKiBkDkwwyaBmh2fPbm9vzamU0yRSy35WSY++neRK5os4/svHF5WVn2vTQ8Dk
+        wySelllU6Vc+LeIiqfSr+/Xl62HbIbblmZal7lfrrdZEHSK4v7qB5VajnBOXOnr0X+RRCoYNwcNd
+        ecNHi/nkOJlLfGa1FVBOCXdFQwG1LWJ5fh8F1CW217ECzyZM8IZ8nxPBRB/xWLDHO+DbhPp2Cz3h
+        rBd4RnzudkiHFWynId0jlnA/Q4j8IcVwmwi7KywdxD1tmp4KhiDrFfdwoSs6wlLAtawZOC4ljFtf
+        sG+p57SXOqTYI01TDn2L97Ij0kRXghIqfbCmHRlx+qUnD/msYwMiLQrPbUh3OOGrPf9FeunPtNY/
+        k8k+LcgvwgR/SDEOigI3nablHeJYlsm8muGJ6yOtuo9Pq6Zwm4TJ5LTGlUzG/ttLtkzBm0zUpLWl
+        UtP3vlCH/l/M/8V8+WIenzr2flnJ3OnXD4JEtduthn0WRf2b9aunadafyDAumkuXtkul4xHHaVJ+
+        bhFGWZ9S6QriOn4HE3YJupaGeJsSYdFeRJuhdneIp6gtLfRUEM/u1ek+kY0ZI4KzNkrmE+Y3jytg
+        Y2736jY4obbokE4ob/YaMNdnsQAaS867zjsI85rHHfCd1bNtRRh4bkczRy24XDQt7Pnowrw+CoRH
+        fK9jk6CfY60jDxtedfqdeXCfCL+rGUXHz3irG2XYVF6vAyHwXtG1yYlNm7vEIZT2ks2Ibdtt2Zww
+        q3lSxonn92ukPRsbueuwybWIza3WDreJJfoeeVCn40zF29G7NY3NemU/joaDuh0ncZwh1XlN8zBf
+        7f1e8DklPu2IHO4itbTSNxbg9zqxAUyPd+UWi/gObcK3CRX9jkGB3us0PrXaJ4m230u4wANdltGd
+        SDMtrsceKdsnltthFh+x1HSqD0v1ChpPHR51VAsXSls7yrOIoL2gI/t5omO/uiq6u3rjfofDT3U8
+        8GlRUstDQeogDp5LrFbVFOqIvFfBQBGnfkfCRea2aOsLCpW0eoXIU1VlRFoXSpRT32sdJ6vBft8T
+        4BHX7qj61OdI3k0vqpTu90tP/1s9Boq1bXdlHLCEdrJ0UXt71dknQumD2LMOlL4gXDQrhs9A0D7L
+        2ZjdVZQdv5n/1HE97UW2QIqRQrrIIgMbtZubk1KwRadfTf7kVf/JzupUvXa9FivkqPnUrVMfB5TZ
+        de5okA+DfNbsjl8m8rZ3cxw+TXMM+iO6vqN8ogNgSO/yL7ik0+ItlPZuB57Gu2DOXRXUJv6mE9tg
+        JNzrR2yRQzplM9rkVpjar1cZwkdOB7myvVZDj+1k9zKt7RLf7uBWwiFe6wtOEDEm+kFH19DZx1FY
+        wW5afQj867cAHqsAZcO1OnjLUGe1ZvIa2nbfTnHIBYK4w7fIyMR3m3tn6AjC3H4VQqXsDh+o8da7
+        D0PX6ccI/E2b0BDOdvq8XQ84oteJ0xBszeMdpGmoTnNa1FR18G4/gs4YsTq5I8ZbLSmUcqtf7UAs
+        cqdzAWipW6cxQ4qI+yxEZaha244sOxS8WULR7Lq9IGLjdaUY5EHalO3QXtHtE9fpCG6Uhu0pySZ/
+        cZSGVd5VVfUXsje4zvq9mIb5d72Zhlu1V9MuL0/0cLSsXpLrKKenUWEsMjmJC2MeZNM4VQ902c83
+        mfWVull7/cqkvh7cRKdleu5XbdudLSIFIZ3er4Vx06UtLa7p2XUtQo+0tBwfvLk8ul9DQzY6P+7V
+        ZGOn27RD9kVUlFlqyNQIbrCWaWQEeR4V+V32skzmN1eCwPJ5TRtGeNdK2tqij2VcLO+ymzCZ3dSG
+        TeNb9bUh1HmX3eaLRC6j6M7FUHSxCNq6/OGu6GEV0cQYhPr6r8g3XE1YH8+7q+twoQcsU+iQDcPV
+        S6fhbKqu5WI1X5iunj+LNwKYpwXKzQybqoGb1QAzhafjPbhZDaGF98RJJcVh1SwwJN+u5KyHVPHT
+        oufhigYgrumBGlmxXTQcXvXu5+1qRF1cRUVQ3Yav9cuvi7wSYLr6erxc3Rbadsk4vlkvXq8tnwUV
+        yUXSAf3WGuM0L+RtWpGUKlgiOXiuso8xyOOxvlHmw8uLg8PnjqvFbF6yvYzCWSoTOdWBErdmU0tY
+        FP8qReunDuV8oV6wNV4H2fgWkIyhcXp8qDVmUYJsouXozLESuXn7t+v93gdfCm7FRD1k2m64L2gQ
+        d2QHGXc8W9ShncRhJnM5KYxDmS2kzoXpFuXJ6OXl3ShBgMQuSMt06A5Ix3exp/uCFAI00K2BfB9l
+        8T+x3+GMeZnGoQaZNwz6/u87QH8aHW9hKq65A3NomZztwFRvuNVhDjtwZk2c1KVO3ZavzxWkLaLX
+        59/fBQnVwWc19zq77kUyEmwXkateInnIcL4tKinbwEsWswBbsY7r1dnZq/tiD/nMNx1vBx6HgXbg
+        CZ+b3Ko7lvsP4aOeZXnC9i3KuOv4NaCj/ZPRD6evjON3x4eXF2enbw6N85dHxncXPzqr5FpBH41O
+        T19uoZ9dHp58dznaYlfccvVAuMlF8+3HFdwa1NYu4Zbv1NHJdKn3h/H1/tHFNztwTo/v8jBXdbi+
+        N+wdMLZAEO5aEKX1QQsKwXxWh3b6/s3Rm/3uzXv6/mj/Hjejy6+EbZzMatsC5M9x6hDFIyBSr2G9
+        o6gs8nAWGZdREl3LubH/qmnHo8vjVz/d41bqId5qxqzy9DobYnv49XB0nIeQ2ui76ptlLK8iY7TM
+        i2iuk8vKpsjw26x9dHB8j0kdXt/WlnqrYovTdcAA6zjZg9vadqjrOBZnzHLthvdHiyxOq9S9E5R3
+        haSr3sPaBWc5O+BACFzWSNa8C5xmMnk5B5fUNVz9nOOpfrAyKZPkKMrDLF6oWH74lyvBeAyakKtf
+        3VD4bBKncREZ76RcEOPwh/Pji8s3p2f4uG/4jkVttHUeJ8YPatbY0L8x0cRuMZNpNNCZeGhb3tD3
+        xZoLqCWtVpTXlqTO7gJV2bdL0SwNpPQmjm4blR8hrz5/Y4yjPJ6mOQEXT8tJEBbqMM8I0rEi59dg
+        zcZcXsV4KtytdtWEaBwHEHAThxEEoG/IZRokaqYmKRhT0xC1RXAFCeN4Ghe4Py/zODQWSbDczAmM
+        myCLo2JpyImxIjKG4gGK4xAjV2tYK4kXM/DsBBdpVNzK7Fr1KrlMSl2GK3nFLM7GwwV48XKjNpRp
+        Abpc6cPi14XbNC6RDRSzCtJl1b/lqtEal2FRWWKt3ojTMCnHkRGfKwcR/A3GxDgJQvVR4mNl4Mv3
+        QKHXPZFJLNWaoBwxCuKmLYIuDlESa2utV1nDRLACqDkb6fn48zdDbvqyvMoJ0HmYyHLcYcEgBNpc
+        ZsuN6ap1lAsFCjMmMGM6rS/dgE0l3JnECJn8QbMBYSbL6axCelmmsM+okMpdsEL1cXQCkAdSXufr
+        KyUF9tpOqUMYx3mRxVeIHhi72HED/JyMb2PYfq1W3c5A62OYUAmCPWSaxGm0uVS6xjGapMLIgwQS
+        JzILAS+AuChJ1N/tGrbxEuJemQTZOryMMMhgWRWqtzMJOZClLirlmxC+CZIyGiIBIHKhHkJUWsFm
+        M15GVxlatKWB5p9Vnt2YPESvmEXassM8CrJwZkTpVK3icIY5JjKcoTMctid6S/0LtDXB3/YS8VwW
+        s6VxZEKwvNaJaPVbQEcTx23/eDiLo4lx/FsUYrvcRMbZZILoyIhxpA0lt7xyI/1dGQbwWaQ8UxPN
+        u0S/XP+2bit6FKWxzIz3KgzPYRp4MS0IPmI7xQvM3EdOL1Md26uH2ijeRpOJ8WOcJHEwzx+GsT3F
+        uFPiUZlh342Ng6wEsFGkYqIm2KsLvmMZr6JUpSNYvkzhdbXcUIUGqlFL5fkM0ToK8T+C4z43depC
+        r/fjZhuc6OyMBba17KdTZFDjrWnsz7IoHRf5f6LqotpbOv9U+0rv17yt73g8Bh8to/u8cpeWN0gu
+        GTaaMdqkQSgcrRJuW9dhFsRT7KgxEth0VotH232cyo2mY73RdCbsiI4gjaNEGfEiDkMk8bd1h9mP
+        U7bp0+9V9lbOkAxGyEW/1rcY66llc6oQV8ZD6hjM4TXMlWUWVicYSB7GjvfyIp5r4mEgzdzJmBS9
+        qBjBbVCEsy3JKKRMVnTpYykhZ0Wj0mCRz2ShOZPiSZolVbRpMX2BbJagjA3U+dYOmNHxITJIomrT
+        /XBW31JeZQgXMxpPg2xYZf8tMKVVK20qOQl+hRFfywRB9ICaOL1B3gMcc46CvzTnebpVUN1UKTlf
+        D2BuoXlIkAzlLRJDPour5a9o4kC7fgfMmWaWT2x8WQmldeM37XARVRXnft2rL4HNZTCTcqv54+on
+        3dm3+Xphuk5FN8oeVZipY/O9fwMAAP//AwAhgOxztz4AAA==
+    headers:
+      Alt-Svc: ['quic=":443"; ma=2592000; v="39,38,37,35"']
+      Cache-Control: ['private, max-age=0']
+      Content-Disposition: [attachment; filename="f.txt"]
+      Content-Encoding: [gzip]
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 13 Oct 2017 19:08:45 GMT']
+      Expires: ['Fri, 13 Oct 2017 19:08:45 GMT']
+      P3P: ['CP="This is not a P3P policy! See https://support.google.com/accounts/answer/151657?hl=en
+          for more info."']
+      Server: [GSE]
+      Set-Cookie: ['SC=RV=22144:ED=us; expires=Sat, 14-Apr-2018 19:08:45 GMT; path=/finance;
+          domain=.google.com', 'NID=114=AxafQhn5DxO-4iXgCQXGuwYabSJvcjZoiu50-NHOedvSNuYEk3ZCoH2jErZmUSe-OaB3mc_GTBKblIW65OCJBkvC8dWnnbCF_q7X-mbwHn103G1pe8VlvxGBzuM6EcEg;Domain=.google.com;Path=/;Expires=Sat,
+          14-Apr-2018 19:08:46 GMT;HttpOnly']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 200, message: OK}
+version: 1
