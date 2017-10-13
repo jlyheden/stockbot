@@ -208,7 +208,22 @@ class Configuration(object):
         return None
 
 
-class IRCBot(SingleServerIRCBot):
+class ScheduleHandler(object):
+
+    days = [1, 2, 3, 4, 5]
+    hours = [9, 10, 11, 12, 13, 14, 15, 16, 17]
+
+    def timer_should_execute(self, dt):
+        """
+
+        :param dt:
+        :type dt: datetime
+        :return:
+        """
+        return (dt.isoweekday() in self.days) and (dt.hour in self.hours)
+
+
+class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
     def __init__(self, channel, nickname, server, port, enable_scheduler=False):
         super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
@@ -234,11 +249,9 @@ class IRCBot(SingleServerIRCBot):
                 return
 
         # TODO: not so configurable, fix
-        if now.isoweekday() in [6, 7] or 9 < now.hour >= 18:
+        if not self.timer_should_execute(now):
             return
 
-        print(now.isoweekday())
-        print(now.hour)
         for ticker in self.tickers:
             resp = self.quote_service.get_quote(ticker)
             self.colorify_send(self.channel, str(resp))
