@@ -234,7 +234,7 @@ class IRCBot(SingleServerIRCBot):
                 return
 
         # TODO: not so configurable, fix
-        elif now.isoweekday() in [6, 7] or 9 < now.hour >= 18:
+        if now.isoweekday() in [6, 7] or 9 < now.hour >= 18:
             return
 
         print(now.isoweekday())
