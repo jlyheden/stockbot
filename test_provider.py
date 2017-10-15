@@ -3,6 +3,7 @@ import os
 import json
 import vcr
 
+from datetime import datetime
 from provider import Analytics, root_command
 from provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult
 from provider.bloomberg import BloombergQuote
@@ -64,7 +65,9 @@ class TestBloombergQuote(unittest.TestCase):
         self.assertEquals("10:24 AM", tm.lastUpdateTime)
         self.assertEquals("2017-10-10T14:24:28.000Z", tm.lastUpdateISO)
         self.assertEquals("EDT", tm.userTimeZone)
-        self.assertEquals("Name: OMX Stockholm 30 Index, Price: 1642.49, Open Price: 1647.925, Low Price: 1642.214, High Price: 1651.131, Percent Change 1 Day: -0.329748, Update Time: 2017-10-10 16:24:28", str(tm))
+
+        d_string = datetime.fromtimestamp(1507645468).strftime("%Y-%m-%d %H:%M:%S")
+        self.assertEquals("Name: OMX Stockholm 30 Index, Price: 1642.49, Open Price: 1647.925, Low Price: 1642.214, High Price: 1651.131, Percent Change 1 Day: -0.329748, Update Time: {}".format(d_string), str(tm))
 
     def test_parse_nodata(self):
         """instantiate without valid quotedata"""
