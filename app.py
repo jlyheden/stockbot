@@ -7,7 +7,7 @@ from irc.client import ip_numstr_to_quad
 import irc.client
 import irc.strings
 
-from provider.bloomberg import BloombergQueryService
+from provider import root_command
 from provider.google import GoogleFinanceQueryService
 
 LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
@@ -149,102 +149,21 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
         to_me = split[0].endswith(":") and irc.strings.lower(split[0].rstrip(":")) == irc.strings.lower(
             self.connection.get_nickname())
 
-        #
-        # TODO: fugly, can we avoid this spaghetti mess?
-        #
         if to_me:
 
-            # strip nick from message
-            commands = split[1:]
+            commands = [irc.strings.lower(x) for x in split[1:]]
+            root_command.execute(*commands, command_args={"service": self.quote_service, "instance": self},
+                                 callback=self.command_callback)
 
-            try:
-                if irc.strings.lower(commands[0]) == "fundamental":
-
-                    if irc.strings.lower(commands[1]) == "get":
-
-                        idx = irc.strings.lower(commands[2])
-                        msg = self.quote_service.get_quote(idx)
-                        self.colorify_send(self.channel, msg.fundamentals())
-
-                elif irc.strings.lower(commands[0]) == "quote":
-
-                    if irc.strings.lower(commands[1]) == "get":
-
-                        idx = irc.strings.lower(commands[2])
-                        msg = self.quote_service.get_quote(idx)
-                        self.colorify_send(self.channel, str(msg))
-
-                    elif irc.strings.lower(commands[1]) == "search":
-
-                        query = irc.strings.lower(" ".join(commands[2:]))
-                        msg = self.quote_service.search(query)
-                        if msg.is_empty():
-                            self.colorify_send(self.channel, "Nothing found for {query}".format(query=query))
-                        else:
-                            for m in msg.result_as_list():
-                                self.colorify_send(self.channel, str(m))
-
-                    elif irc.strings.lower(commands[1]) == "scheduler":
-
-                        if irc.strings.lower(commands[2]) == "tickers":
-
-                            if irc.strings.lower(commands[3]) == "get":
-                                self.colorify_send(self.channel, "Tickers: {t}".format(t=",".join(self.tickers)))
-
-                            elif irc.strings.lower(commands[3]) == "add":
-                                ticker = irc.strings.lower(commands[4])
-                                if ticker in self.tickers:
-                                    self.colorify_send(self.channel, "Ticker already in list")
-                                else:
-                                    self.tickers.append(ticker)
-                                    self.colorify_send(self.channel, "Added ticker: {}".format(ticker))
-
-                            elif irc.strings.lower(commands[3]) == "remove":
-                                ticker = irc.strings.lower(commands[4])
-                                if ticker not in self.tickers:
-                                    self.colorify_send(self.channel, "Ticker not in list")
-                                else:
-                                    self.tickers.remove(ticker)
-                                    self.colorify_send(self.channel, "Removed ticker: {}".format(ticker))
-
-                        elif irc.strings.lower(commands[2]) == "interval":
-
-                            if irc.strings.lower(commands[3]) == "get":
-                                self.colorify_send(self.channel, "Interval: {} seconds".format(self.scheduler_interval))
-
-                            elif irc.strings.lower(commands[3]) == "set":
-                                interval = irc.strings.lower(commands[4])
-                                self.scheduler_interval = int(interval)
-                                self.colorify_send(self.channel, "New interval: {} seconds".format(
-                                    self.scheduler_interval))
-
-                        elif irc.strings.lower(commands[2]) == "enable":
-
-                            self.scheduler = True
-                            self.colorify_send(self.channel, "Scheduler: enabled")
-
-                        elif irc.strings.lower(commands[2]) == "disable":
-                            self.scheduler = False
-                            self.colorify_send(self.channel, "Scheduler: disabled")
-
-                elif irc.strings.lower(commands[0]) == "help":
-
-                    self.colorify_send(self.channel, "Usage: fundamental get <ticker>                - returns fundamental data for <ticker>")
-                    self.colorify_send(self.channel, "Usage: quote get <ticker>                      - returns the data for <ticker>")
-                    self.colorify_send(self.channel, "Usage: quote search <query>                    - returns list of tickers available")
-                    self.colorify_send(self.channel, "Usage: quote scheduler enable                  - enable scheduler")
-                    self.colorify_send(self.channel, "Usage: quote scheduler disable                 - enable scheduler")
-                    self.colorify_send(self.channel, "Usage: quote scheduler tickers get             - show tickers in scheduler")
-                    self.colorify_send(self.channel, "Usage: quote scheduler tickers add <ticker>    - add ticker to scheduler")
-                    self.colorify_send(self.channel, "Usage: quote scheduler tickers remove <ticker> - remove ticker from scheduler")
-                    self.colorify_send(self.channel, "Usage: quote scheduler interval get            - show scheduler interval")
-                    self.colorify_send(self.channel, "Usage: quote scheduler interval set <interval> - set scheduler interval")
-
-            except IndexError as e:
-                self.colorify_send(self.channel, "Does not compute, halp?")
+    def command_callback(self, result):
+        if isinstance(result, list):
+            for row in result:
+                self.colorify_send(self.channel, row)
+        elif result is not None:
+            self.colorify_send(self.channel, result)
 
     def colorify_send(self, target, msg):
-        self.connection.privmsg(target, colorify(msg))
+        self.connection.privmsg(target, colorify(str(msg)))
 
     def on_dccmsg(self, c, e):
         # non-chat DCC messages are raw bytes; decode as text

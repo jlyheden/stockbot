@@ -3,11 +3,31 @@ import os
 import json
 import vcr
 
-from provider import Analytics
-from provider.google import GoogleFinanceQueryService, GoogleFinanceQuote
+from provider import Analytics, root_command
+from provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult
 from provider.bloomberg import BloombergQuote
 
 CWD = os.path.dirname(os.path.realpath(__file__))
+
+
+class FakeQuoteService(object):
+
+    def get_quote(self, ticker):
+        return "Here's your fake quote for {}".format(ticker)
+
+    def search(self, query):
+        return GoogleFinanceSearchResult(result={
+            "matches": [
+                {"t": "FOO", "e": "Foo Market", "n": "Foo Company"}
+            ]
+        })
+
+
+class FakeIrcBot(object):
+
+    tickers = []
+    scheduler_interval = 3600
+    scheduler = False
 
 
 class TestBloombergQuote(unittest.TestCase):
@@ -117,3 +137,117 @@ class TestAnalytics(unittest.TestCase):
         self.assertNotEquals(collection, result)
         self.assertEquals("Foostock3", result[0].name)
         self.assertEquals(1, len(result))
+
+
+class TestCommand(unittest.TestCase):
+
+    def setUp(self):
+
+        self.ircbot = FakeIrcBot()
+        self.service = FakeQuoteService()
+
+    def __cmd_wrap(self, *args):
+        """ test helper """
+        return root_command.execute(*args, command_args={"service": self.service, "instance": self.ircbot})
+
+    def test_quote_get_command(self):
+
+        command = ["quote", "get", "aapl"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Here's your fake quote for aapl", res)
+
+    def test_quote_search_command(self):
+
+        command = ["quote", "search", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertIn("Ticker: FOO, Market: Foo Market, Name: Foo Company", res)
+
+    def test_show_help(self):
+
+        res = root_command.show_help()
+        self.assertIn("quote get <ticker>", res)
+        self.assertIn("quote search <ticker>", res)
+
+    def test_execute_help_command(self):
+
+        command = ["help"]
+        res = self.__cmd_wrap(*command)
+        self.assertIn("quote get <ticker>", res)
+        self.assertIn("quote search <ticker>", res)
+
+    def test_execute_scheduler_ticker_commands(self):
+
+        # blank state
+        command = ["quote", "scheduler", "tickers", "get"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("No tickers added", res)
+
+        # add ticker
+        command = ["quote", "scheduler", "tickers", "add", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Added ticker: foobar", res)
+
+        # add ticker again and fail gracefully
+        command = ["quote", "scheduler", "tickers", "add", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Ticker already in list", res)
+
+        # verify ticker is there
+        command = ["quote", "scheduler", "tickers", "get"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Tickers: foobar", res)
+
+        # remove ticker
+        command = ["quote", "scheduler", "tickers", "remove", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Removed ticker: foobar", res)
+
+        # verify ticker is not there
+        command = ["quote", "scheduler", "tickers", "get"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("No tickers added", res)
+
+        # remove it again and fail gracefully
+        command = ["quote", "scheduler", "tickers", "remove", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Ticker not in list", res)
+
+    def test_execute_scheduler_interval_command(self):
+
+        # default state
+        command = ["quote", "scheduler", "interval", "get"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Interval: 3600 seconds", res)
+
+        # update interval
+        command = ["quote", "scheduler", "interval", "set", "60"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("New interval: 60 seconds", res)
+
+        # get updated state
+        command = ["quote", "scheduler", "interval", "get"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Interval: 60 seconds", res)
+
+        # set garbage input
+        command = ["quote", "scheduler", "interval", "set", "horseshit"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Can't set interval from garbage input, must be of an int", res)
+
+    def test_execute_scheduler_toggle_command(self):
+
+        command = ["quote", "scheduler", "enable"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Scheduler: enabled", res)
+        self.assertTrue(self.ircbot.scheduler)
+
+        command = ["quote", "scheduler", "disable"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Scheduler: disabled", res)
+        self.assertFalse(self.ircbot.scheduler)
+
+    def test_execute_unknown_command(self):
+
+        command = ["hi", "stockbot"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals(None, res)
