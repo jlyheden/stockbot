@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/jlyheden/stockbot.svg?branch=master)](https://travis-ci.org/jlyheden/stockbot)
+[![Coverage Status](https://coveralls.io/repos/github/jlyheden/stockbot/badge.svg?branch=master)](https://coveralls.io/github/jlyheden/stockbot?branch=master)
+
 # stockbot
 
 A stupid simple IRC bot that returns stock quotes scheduled and on demand
