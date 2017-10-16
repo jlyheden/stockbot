@@ -2,11 +2,12 @@ FROM python:3.6-slim
 
 ADD requirements.txt /tmp
 
-RUN pip install -r /tmp/requirements.txt && useradd -M botuser
+RUN pip install -r /tmp/requirements.txt
 
+COPY cmd.sh /
 COPY app.py /
-COPY /provider /provider
+COPY /stockbot /stockbot
 
-USER botuser
+VOLUME ["/persistence"]
 
-CMD ["/usr/bin/env", "python", "/app.py"]
+CMD ["/usr/bin/env", "bash", "/cmd.sh"]

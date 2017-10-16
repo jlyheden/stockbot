@@ -1,6 +1,7 @@
 import sys
-from provider import root_command
-from provider.google import GoogleFinanceQueryService
+
+from stockbot.provider import GoogleFinanceQueryService
+from stockbot.provider import root_command
 
 
 def callback(result):

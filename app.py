@@ -1,87 +1,25 @@
-import os
 import logging
-
+import os
 from datetime import datetime
+
+# import irc.client
+import irc.strings
 from irc.bot import SingleServerIRCBot
 from irc.client import ip_numstr_to_quad
-import irc.client
-import irc.strings
 
-from provider import root_command
-from provider.google import GoogleFinanceQueryService
+from stockbot.configuration import Configuration
+from stockbot.db import create_tables
+from stockbot.persistence import DatabaseCollection, ScheduledTicker
+from stockbot.provider import root_command
+from stockbot.provider.google import GoogleFinanceQueryService
+from stockbot.util import colorify
 
+
+# Set up logging
 LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
 logging.basicConfig(level=getattr(logging, LOGLEVEL),
-                    format="%(asctime)s %(levelname)s %(module)s.%(filename)s.%(funcName)s:%(lineno)d : %(message)s")
+                    format="%(asctime)s %(levelname)s %(module)s.%(funcName)s.%(filename)s:%(lineno)d : %(message)s")
 LOGGER = logging.getLogger(__name__)
-
-DEFAULT_VALUES = {
-    "scheduler": "false"
-}
-
-
-def colorify(msg):
-
-    # split over comma separated "sections"
-    section_split = msg.split(",")
-
-    rv = []
-
-    for section in section_split:
-
-        # split over subject : value
-        s_split = section.split(":", 1)
-
-        # there was no subject, just color everything grey
-        if len(s_split) == 1:
-            s_replace = "\x0314{}\x03".format(s_split[0])
-
-        # we identified subject : value
-        else:
-            try:
-
-                # if value is a number
-                v = float(s_split[1])
-
-                # negative gets colored red
-                if v < 0:
-                    value_replace = "\x0304{}\x03".format(s_split[1])
-
-                # positive gets colored green
-                else:
-                    value_replace = "\x0303{}\x03".format(s_split[1])
-
-            except ValueError as e:
-
-                # a non-number gets colored grey
-                value_replace = "\x0314{}\x03".format(s_split[1])
-            finally:
-                s_replace = "\x0306{k}\x03:{v}".format(k=s_split[0], v=value_replace)
-
-        # append the result into a list
-        rv.append(s_replace)
-
-    # sew the list together into a string again
-    return "\x0300,\x03".join(rv)
-
-
-class Configuration(object):
-
-    def __getattr__(self, item):
-        value = os.getenv(item.upper(), self.default_wrapper(item))
-        if value is None:
-            raise RuntimeError("Must set environment variable {}".format(item.upper()))
-        else:
-            if value.lower() in ["true", "false"]:
-                return True if value.lower() == "true" else False
-            return value
-
-    @staticmethod
-    def default_wrapper(item):
-
-        if item in DEFAULT_VALUES:
-            return DEFAULT_VALUES[item]
-        return None
 
 
 class ScheduleHandler(object):
@@ -108,7 +46,7 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
         self.scheduler = enable_scheduler
         self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
         self.quote_service = GoogleFinanceQueryService()
-        self.tickers = []
+        self.tickers = DatabaseCollection(type=ScheduledTicker, attribute="ticker")
         self.scheduler_interval = 3600
         self.last_check = None
 
@@ -184,6 +122,8 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
 
 if __name__ == '__main__':
+
+    create_tables()
 
     bot = IRCBot(server=Configuration().server_name, port=Configuration().server_port,
                  channel=Configuration().channel_name, nickname=Configuration().nick,

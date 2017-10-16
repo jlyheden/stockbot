@@ -1,5 +1,9 @@
 import logging
 
+from sqlalchemy import func
+from stockbot.db import Session
+from .nasdaq import NasdaqIndexScraper, NasdaqCompany
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -173,10 +177,42 @@ def disable_scheduler(*args, **kwargs):
     bot.scheduler = False
     return "Scheduler: disabled"
 
+
+def nasdaq_scraper_task(*args, **kwargs):
+    session = Session()
+    nasdaq_scraper = NasdaqIndexScraper()
+    try:
+        session.query(NasdaqCompany).delete()
+        session.commit()
+    except Exception as e:
+        LOGGER.exception("Failed to delete all records")
+        session.rollback()
+    else:
+        try:
+            rv = []
+            for index in nasdaq_scraper.indexes.keys():
+                rv.extend(nasdaq_scraper.scrape(index))
+            session.add_all(rv)
+            session.commit()
+            return "Scraped {} companies from Nasdaq".format(len(rv))
+        except Exception as e:
+            LOGGER.exception("Failed to fetch and store nasdaq companies")
+            session.rollback()
+    finally:
+        session.close()
+
+
+def scrape_stats(*args, **kwargs):
+    session = Session()
+    result = session.query(NasdaqCompany.segment, func.count(NasdaqCompany.segment)).group_by(NasdaqCompany.segment)\
+        .all()
+    return "Scraped: {}".format(", ".join([
+        "{k}={v}".format(k=x[0], v=x[1]) for x in result
+    ]))
+
 #
 # Register the command tree
 #
-
 scheduler_tickers_command = Command(name="tickers")
 scheduler_tickers_command.register(ExecuteCommand(name="get", execute_command=get_scheduler_ticker))
 scheduler_tickers_command.register(ExecuteCommand(name="add", execute_command=add_scheduler_ticker,
@@ -203,7 +239,12 @@ quote_command.register(scheduler_command)
 fundamental_command = Command(name="fundamental")
 fundamental_command.register(ExecuteCommand(name="get", execute_command=get_fundamental, help="get <ticker>"))
 
+scrape_command = Command(name="scrape")
+scrape_command.register(ExecuteCommand(name="nasdaq", execute_command=nasdaq_scraper_task))
+scrape_command.register(ExecuteCommand(name="stats", execute_command=scrape_stats))
+
 root_command = Command(name="root")
 root_command.register(quote_command)
 root_command.register(fundamental_command)
+root_command.register(scrape_command)
 root_command.register(HelpCommand(name="help"))

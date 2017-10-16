@@ -1,12 +1,15 @@
-import unittest
-import os
 import json
+import os
+import unittest
+from datetime import datetime
+
 import vcr
 
-from datetime import datetime
-from provider import Analytics, root_command
-from provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult
-from provider.bloomberg import BloombergQuote
+from stockbot.db import create_tables
+from stockbot.provider import Analytics, root_command
+from stockbot.provider.bloomberg import BloombergQuote
+from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult
+from stockbot.provider.nasdaq import NasdaqIndexScraper
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -254,3 +257,39 @@ class TestCommand(unittest.TestCase):
         command = ["hi", "stockbot"]
         res = self.__cmd_wrap(*command)
         self.assertEquals(None, res)
+
+    @vcr.use_cassette('mock/vcr_cassettes/nasdaq/scraper.yaml')
+    def test_execute_scrape_nasdaq_command(self):
+
+        create_tables()
+        command = ["scrape", "nasdaq"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Scraped 657 companies from Nasdaq", res)
+
+    def test_execute_scrape_stats(self):
+        # TODO: this test smells because it relies on data generated from the previous test
+
+        command = ["scrape", "stats"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Scraped: Nordic Large Cap=201, Nordic Mid Cap=219, Nordic Small Cap=237", res)
+
+
+class TestNasdaqIndexScraper(unittest.TestCase):
+
+    @vcr.use_cassette('mock/vcr_cassettes/nasdaq/large_cap.yaml')
+    def test_scrape_large_cap(self):
+        scraper = NasdaqIndexScraper()
+        res = scraper.scrape("Nordic Large Cap")
+        self.assertIn("Avanza Bank Holding", res)
+
+    @vcr.use_cassette('mock/vcr_cassettes/nasdaq/mid_cap.yaml')
+    def test_scrape_mid_cap(self):
+        scraper = NasdaqIndexScraper()
+        res = scraper.scrape("Nordic Mid Cap")
+        self.assertIn("AddLife B", res)
+
+    @vcr.use_cassette('mock/vcr_cassettes/nasdaq/small_cap.yaml')
+    def test_scrape_small_cap(self):
+        scraper = NasdaqIndexScraper()
+        res = scraper.scrape("Nordic Small Cap")
+        self.assertIn("Aspocomp Group Oyj", res)
