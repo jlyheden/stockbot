@@ -3,3 +3,4 @@ irc
 lxml
 beautifulsoup4
 SQLAlchemy
+psycopg2

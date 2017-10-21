@@ -6,7 +6,7 @@ from stockbot.configuration import Configuration
 
 Base = declarative_base()
 
-engine = create_engine(Configuration().database)
+engine = create_engine(Configuration().database_url)
 Session = sessionmaker(bind=engine)
 
 
