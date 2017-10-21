@@ -21,7 +21,7 @@ class NasdaqCompany(Base):
         self.ticker = ticker.replace(" ", "-")
         self.currency = currency
         self.category = category
-        self.segment = segment
+        self.segment = segment.lower()
 
     def __repr__(self):
         return "<NasdaqCompany(name='{name}', ticker='{ticker}', currency='{currency}', category='{category}', segment='{segment}')>".\

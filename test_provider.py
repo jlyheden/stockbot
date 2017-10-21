@@ -293,7 +293,7 @@ class TestCommand(unittest.TestCase):
 
         command = ["scrape", "stats"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Scraped: Nordic Large Cap=201, Nordic Mid Cap=219, Nordic Small Cap=237", res)
+        self.assertEquals("Scraped: nordic large cap=201, nordic mid cap=219, nordic small cap=237", res)
 
     @vcr.use_cassette('mock/vcr_cassettes/google/quote/scrape_large_cap.yaml')
     def test_execute_scrape_stocks(self):
@@ -309,10 +309,10 @@ class TestCommand(unittest.TestCase):
         # patch sleep so tests are quicker
         with patch('stockbot.provider.time.sleep') as sleepmock:
             sleepmock.return_value = False
-            command = ["scrape", "stocks", "sek", "Nordic", "Large", "Cap"]
+            command = ["scrape", "stocks", "sek", "nordic", "large", "cap"]
             res = root_command.execute(*command, command_args={'service': GoogleFinanceQueryService()})
 
-        self.assertEquals("Done scraping segment 'Nordic Large Cap' currency 'SEK' - scraped 2 companies", res)
+        self.assertEquals("Done scraping segment 'nordic large cap' currency 'SEK' - scraped 2 companies", res)
 
         for c in companies:
             row = self.session.query(StockDomain).filter(StockDomain.ticker == c.ticker).first()
