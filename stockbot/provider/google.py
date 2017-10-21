@@ -4,8 +4,100 @@ import logging
 import re
 
 from urllib.parse import urlencode
+from stockbot.db import Base
+from sqlalchemy import Column, Integer, String, Float
 
 LOGGER = logging.getLogger(__name__)
+
+
+class StockDomain(Base):
+
+    __tablename__ = "stocks"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String)
+    ticker = Column(String, index=True, unique=True)
+    net_profit_margin_last_q = Column(Float)
+    net_profit_margin_last_y = Column(Float)
+    operating_margin_last_q = Column(Float)
+    operating_margin_last_y = Column(Float)
+    ebitd_margin_last_q = Column(Float)
+    ebitd_margin_last_y = Column(Float)
+
+    # return on average asset
+    roaa_last_q = Column(Float)
+    roaa_last_y = Column(Float)
+
+    # return on average equity
+    roae_last_q = Column(Float)
+    roae_last_y = Column(Float)
+
+    market_cap = Column(String)
+    price_to_earnings = Column(Float)
+    beta = Column(Float)
+    earnings_per_share = Column(Float)
+
+    dividend_yield = Column(Float)
+    latest_dividend = Column(Float)
+
+    def from_google_finance_quote(self, gfq):
+        """
+
+        :param gfq:
+        :type gfq: GoogleFinanceQuote
+        :return:
+        """
+        self.name = gfq.name
+        self.ticker = gfq.symbol
+
+        for r in gfq.keyratios:
+            if r["title"] == "Net profit margin":
+                self.net_profit_margin_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
+                self.net_profit_margin_last_y = self.__safe_percentage_to_float(r, "annual")
+            elif r["title"] == "Operating margin":
+                self.operating_margin_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
+                self.operating_margin_last_y = self.__safe_percentage_to_float(r, "annual")
+            elif r["title"] == "EBITD margin":
+                self.ebitd_margin_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
+                self.ebitd_margin_last_y = self.__safe_percentage_to_float(r, "annual")
+            elif r["title"] == "Return on average assets":
+                self.roaa_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
+                self.roaa_last_y = self.__safe_percentage_to_float(r, "annual")
+            elif r["title"] == "Return on average equity":
+                self.roae_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
+                self.roae_last_y = self.__safe_percentage_to_float(r, "annual")
+
+        self.market_cap = gfq.mc
+        self.price_to_earnings = self.__safe_to_float(gfq, "pe")
+        self.beta = self.__safe_to_float(gfq, "beta")
+        self.earnings_per_share = self.__safe_to_float(gfq, "eps")
+        self.dividend_yield = self.__safe_percentage_to_float(gfq, "dy")
+        self.latest_dividend = self.__safe_to_float(gfq, "ldiv")
+
+    @staticmethod
+    def __safe_to_float(d, key):
+        try:
+            return float(getattr(d, key, "0"))
+        except ValueError as e:
+            LOGGER.exception("failed to set value to float, key '{key}'".format(key=key))
+            return float(0)
+
+    @staticmethod
+    def __safe_percentage_to_float(d, key):
+        s = getattr(d, key, "")
+        try:
+            rv = s.rstrip("%")
+            return float(rv) / 100
+        except Exception as e:
+            LOGGER.exception("failed to convert {} to float".format(key))
+            return float(0)
+
+    def __repr__(self):
+        rv = []
+        for attr, value in self.__dict__.items():
+            if not callable(attr) and not attr.startswith("_"):
+                rv.append("{}='{}'".format(attr, value))
+        return "<StockDomain({})>".format(", ".join(rv))
 
 
 class GoogleFinanceQuote(object):
@@ -37,7 +129,7 @@ class GoogleFinanceQuote(object):
             # we cannot use this objects getattribute because then we loop until the world collapses
             return object.__getattribute__(self, item)
         except Exception as e:
-            LOGGER.exception("Failed to look up attribute {}".format(item))
+            LOGGER.exception("Failed to look up attribute '{}'".format(item))
             return "N/A"
 
     def fundamentals(self):

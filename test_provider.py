@@ -2,14 +2,16 @@ import json
 import os
 import unittest
 from datetime import datetime
+from unittest.mock import patch
 
 import vcr
 
-from stockbot.db import create_tables
+from stockbot.db import create_tables, Session
 from stockbot.provider import Analytics, root_command
 from stockbot.provider.bloomberg import BloombergQuote
-from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult
-from stockbot.provider.nasdaq import NasdaqIndexScraper
+from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult,\
+    StockDomain
+from stockbot.provider.nasdaq import NasdaqIndexScraper, NasdaqCompany
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -102,6 +104,18 @@ class TestGoogleFinanceQueryService(unittest.TestCase):
         self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 19.20%, Operating margin: 23.71%, Return on average assets: 10.29%, Return on average equity: 26.24%", q.fundamentals())
 
 
+class TestStockDomain(unittest.TestCase):
+
+    def setUp(self):
+        self.service = GoogleFinanceQueryService()
+
+    @vcr.use_cassette('mock/vcr_cassettes/google/quote/aapl.yaml')
+    def test_transform_google_quote_to_stockdomain(self):
+        q = self.service.get_quote('AAPL')
+        do = StockDomain()
+        do.from_google_finance_quote(q)
+
+
 class TestAnalytics(unittest.TestCase):
 
     def setUp(self):
@@ -151,6 +165,18 @@ class TestCommand(unittest.TestCase):
 
         self.ircbot = FakeIrcBot()
         self.service = FakeQuoteService()
+
+        # db handler
+        self.session = Session()
+
+        create_tables()
+
+        # wipe data from db
+        self.session.query(NasdaqCompany).delete()
+        self.session.commit()
+
+    def tearDown(self):
+        self.session.close()
 
     def __cmd_wrap(self, *args):
         """ test helper """
@@ -259,19 +285,38 @@ class TestCommand(unittest.TestCase):
         self.assertEquals(None, res)
 
     @vcr.use_cassette('mock/vcr_cassettes/nasdaq/scraper.yaml')
-    def test_execute_scrape_nasdaq_command(self):
+    def test_execute_scrape_nasdaq(self):
 
-        create_tables()
         command = ["scrape", "nasdaq"]
         res = self.__cmd_wrap(*command)
         self.assertEquals("Scraped 657 companies from Nasdaq", res)
 
-    def test_execute_scrape_stats(self):
-        # TODO: this test smells because it relies on data generated from the previous test
-
         command = ["scrape", "stats"]
         res = self.__cmd_wrap(*command)
         self.assertEquals("Scraped: Nordic Large Cap=201, Nordic Mid Cap=219, Nordic Small Cap=237", res)
+
+    @vcr.use_cassette('mock/vcr_cassettes/google/quote/scrape_large_cap.yaml')
+    def test_execute_scrape_stocks(self):
+
+        # add just subset of companies to test doesnt take forever to execute
+        companies = [
+            NasdaqCompany(name="AAK", ticker="AAK", currency="SEK", category="bla", segment="Nordic Large Cap"),
+            NasdaqCompany(name="ABB Ltd", ticker="ABB", currency="SEK", category="bla", segment="Nordic Large Cap")
+        ]
+        self.session.add_all(companies)
+        self.session.commit()
+
+        # patch sleep so tests are quicker
+        with patch('stockbot.provider.time.sleep') as sleepmock:
+            sleepmock.return_value = False
+            command = ["scrape", "stocks", "sek", "Nordic", "Large", "Cap"]
+            res = root_command.execute(*command, command_args={'service': GoogleFinanceQueryService()})
+
+        self.assertEquals("Done scraping segment 'Nordic Large Cap' currency 'SEK' - scraped 2 companies", res)
+
+        for c in companies:
+            row = self.session.query(StockDomain).filter(StockDomain.ticker == c.ticker).first()
+            self.assertNotEquals(None, row)
 
 
 class TestNasdaqIndexScraper(unittest.TestCase):
