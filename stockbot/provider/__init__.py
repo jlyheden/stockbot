@@ -1,5 +1,6 @@
 import logging
 import time
+import threading
 
 from sqlalchemy import func
 from stockbot.db import Session
@@ -78,7 +79,7 @@ class Command(object):
         Command.get_root(command.parent_command)
 
 
-class ExecuteCommand(Command):
+class BlockingExecuteCommand(Command):
 
     def execute(self, *args, **kwargs):
         cb = kwargs.get('callback', None)
@@ -103,6 +104,55 @@ class HelpCommand(Command):
             return cb(result)
         else:
             return result
+
+
+class NonBlockingExecuteCommand(Command):
+
+    def __init__(self, *args, **kwargs):
+        super(NonBlockingExecuteCommand, self).__init__(*args, **kwargs)
+        self.exclusive = kwargs.get('exclusive', True)
+
+    def execute(self, *args, **kwargs):
+        cb = kwargs.get('callback', None)
+        thread_name = "thread-{}".format("_".join(args))
+        if self.exclusive and self.is_already_running(thread_name):
+            if callable(cb):
+                return cb("Task is currently running, hold your horses")
+            return "Task is currently running, hold your horses"
+        if callable(self.execute_command):
+            thread = CommandThread(name=thread_name, target=self.execute_command, args=args,
+                                   kwargs=kwargs.get('command_args'), daemon=False)
+            thread.set_callback(cb)
+            thread.start()
+        else:
+            raise RuntimeError("execute_command not callable")
+        if callable(cb):
+            return cb("Task started")
+        return "Task started"
+
+    @staticmethod
+    def is_already_running(thread_name):
+        return len([t for t in threading.enumerate() if t.name == thread_name]) > 0
+
+
+#
+# Thread wrapper
+#
+class CommandThread(threading.Thread):
+
+    def __init__(self, *args, **kwargs):
+        super(CommandThread, self).__init__(*args, **kwargs)
+        self._callback = None
+
+    def set_callback(self, cb):
+        self._callback = cb
+
+    def run(self):
+        # block until task has finished
+        result = self._target(*self._args, **self._kwargs)
+
+        if callable(self._callback):
+            self._callback(result)
 
 
 #
@@ -258,7 +308,7 @@ def stock_scrape_task(*args, **kwargs):
                 scraped += 1
 
             # arbitrary sleep, avoid getting us blocked, rate-limited etc
-            time.sleep(5)
+            time.sleep(3)
 
     except Exception as e:
         LOGGER.exception("failed to scrape stocks")
@@ -274,35 +324,35 @@ def stock_scrape_task(*args, **kwargs):
 # Register the command tree
 #
 scheduler_tickers_command = Command(name="tickers")
-scheduler_tickers_command.register(ExecuteCommand(name="get", execute_command=get_scheduler_ticker))
-scheduler_tickers_command.register(ExecuteCommand(name="add", execute_command=add_scheduler_ticker,
-                                                  help="add <ticker>"))
-scheduler_tickers_command.register(ExecuteCommand(name="remove", execute_command=remove_scheduler_ticker,
-                                                  help="remove <ticker>"))
+scheduler_tickers_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_ticker))
+scheduler_tickers_command.register(BlockingExecuteCommand(name="add", execute_command=add_scheduler_ticker,
+                                                          help="add <ticker>"))
+scheduler_tickers_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_scheduler_ticker,
+                                                          help="remove <ticker>"))
 
 scheduler_interval_command = Command(name="interval")
-scheduler_interval_command.register(ExecuteCommand(name="get", execute_command=get_scheduler_interval))
-scheduler_interval_command.register(ExecuteCommand(name="set", execute_command=set_scheduler_interval,
-                                                   help="set <interval-int>"))
+scheduler_interval_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_interval))
+scheduler_interval_command.register(BlockingExecuteCommand(name="set", execute_command=set_scheduler_interval,
+                                                           help="set <interval-int>"))
 
 scheduler_command = Command(name="scheduler")
 scheduler_command.register(scheduler_tickers_command)
 scheduler_command.register(scheduler_interval_command)
-scheduler_command.register(ExecuteCommand(name="enable", execute_command=enable_scheduler))
-scheduler_command.register(ExecuteCommand(name="disable", execute_command=disable_scheduler))
+scheduler_command.register(BlockingExecuteCommand(name="enable", execute_command=enable_scheduler))
+scheduler_command.register(BlockingExecuteCommand(name="disable", execute_command=disable_scheduler))
 
 quote_command = Command(name="quote")
-quote_command.register(ExecuteCommand(name="get", execute_command=get_quote, help="get <ticker>"))
-quote_command.register(ExecuteCommand(name="search", execute_command=search_quote, help="search <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote, help="search <ticker>"))
 quote_command.register(scheduler_command)
 
 fundamental_command = Command(name="fundamental")
-fundamental_command.register(ExecuteCommand(name="get", execute_command=get_fundamental, help="get <ticker>"))
+fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental, help="get <ticker>"))
 
 scrape_command = Command(name="scrape")
-scrape_command.register(ExecuteCommand(name="nasdaq", execute_command=nasdaq_scraper_task))
-scrape_command.register(ExecuteCommand(name="stats", execute_command=scrape_stats))
-scrape_command.register(ExecuteCommand(name="stocks", execute_command=stock_scrape_task))
+scrape_command.register(BlockingExecuteCommand(name="nasdaq", execute_command=nasdaq_scraper_task))
+scrape_command.register(BlockingExecuteCommand(name="stats", execute_command=scrape_stats))
+scrape_command.register(NonBlockingExecuteCommand(name="stocks", execute_command=stock_scrape_task, exclusive=True))
 
 root_command = Command(name="root")
 root_command.register(quote_command)
