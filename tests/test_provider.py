@@ -117,9 +117,18 @@ class TestStockDomain(unittest.TestCase):
 
     @vcr.use_cassette('mock/vcr_cassettes/google/quote/aapl.yaml')
     def test_transform_google_quote_to_stockdomain(self):
+
+        accepted_empty_fields = ["ebitd_margin_last_q"]
+
         q = self.service.get_quote('AAPL')
         do = StockDomain()
         do.from_google_finance_quote(q)
+        for field in StockDomain.__table__.columns._data.keys():
+            value = getattr(do, field)
+            if type(value) is float and field not in accepted_empty_fields:
+                if value == 0.0:
+                    print("Failed field: {}".format(field))
+                self.assertNotEquals(0.0, value)
 
 
 class TestAnalytics(unittest.TestCase):

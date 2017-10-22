@@ -340,7 +340,7 @@ def stock_analytics_top(*args, **kwargs):
         sort_field_name = args[1]
         filter_by = getattr(StockDomain, sort_field_name)
     except AttributeError:
-        return ["Error: '{}' is not a valid field".format(sort_field_name)]
+        return ["Error: '{}' is not a valid field".format(args[1])]
 
     sort_descending = len(args) == 3 and args[2] == "desc"
     session = Session()

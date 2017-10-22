@@ -52,20 +52,20 @@ class StockDomain(Base):
 
         for r in gfq.keyratios:
             if r["title"] == "Net profit margin":
-                self.net_profit_margin_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
-                self.net_profit_margin_last_y = self.__safe_percentage_to_float(r, "annual")
+                self.net_profit_margin_last_q = self.__safe_to_float(r, "recent_quarter")
+                self.net_profit_margin_last_y = self.__safe_to_float(r, "annual")
             elif r["title"] == "Operating margin":
-                self.operating_margin_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
-                self.operating_margin_last_y = self.__safe_percentage_to_float(r, "annual")
+                self.operating_margin_last_q = self.__safe_to_float(r, "recent_quarter")
+                self.operating_margin_last_y = self.__safe_to_float(r, "annual")
             elif r["title"] == "EBITD margin":
-                self.ebitd_margin_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
-                self.ebitd_margin_last_y = self.__safe_percentage_to_float(r, "annual")
+                self.ebitd_margin_last_q = self.__safe_to_float(r, "recent_quarter")
+                self.ebitd_margin_last_y = self.__safe_to_float(r, "annual")
             elif r["title"] == "Return on average assets":
-                self.roaa_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
-                self.roaa_last_y = self.__safe_percentage_to_float(r, "annual")
+                self.roaa_last_q = self.__safe_to_float(r, "recent_quarter")
+                self.roaa_last_y = self.__safe_to_float(r, "annual")
             elif r["title"] == "Return on average equity":
-                self.roae_last_q = self.__safe_percentage_to_float(r, "recent_quarter")
-                self.roae_last_y = self.__safe_percentage_to_float(r, "annual")
+                self.roae_last_q = self.__safe_to_float(r, "recent_quarter")
+                self.roae_last_y = self.__safe_to_float(r, "annual")
 
         self.market_cap = gfq.mc
         self.price_to_earnings = self.__safe_to_float(gfq, "pe")
@@ -77,19 +77,15 @@ class StockDomain(Base):
     @staticmethod
     def __safe_to_float(d, key):
         try:
-            return float(getattr(d, key, "0"))
+            if type(d) is dict:
+                value = d.get(key)
+            else:
+                value = getattr(d, key, "0")
+            value = re.sub("[^\d.]", "", value)
+            LOGGER.debug("Got this value '{}' for key '{}'".format(value, key))
+            return float(value)
         except ValueError as e:
             LOGGER.exception("failed to set value to float, key '{key}'".format(key=key))
-            return float(0)
-
-    @staticmethod
-    def __safe_percentage_to_float(d, key):
-        s = getattr(d, key, "")
-        try:
-            rv = s.rstrip("%")
-            return float(rv) / 100
-        except Exception as e:
-            LOGGER.exception("failed to convert {} to float".format(key))
             return float(0)
 
     def __repr__(self):
