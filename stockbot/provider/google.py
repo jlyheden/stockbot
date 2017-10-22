@@ -71,7 +71,7 @@ class StockDomain(Base):
         self.price_to_earnings = self.__safe_to_float(gfq, "pe")
         self.beta = self.__safe_to_float(gfq, "beta")
         self.earnings_per_share = self.__safe_to_float(gfq, "eps")
-        self.dividend_yield = self.__safe_percentage_to_float(gfq, "dy")
+        self.dividend_yield = self.__safe_to_float(gfq, "dy")
         self.latest_dividend = self.__safe_to_float(gfq, "ldiv")
 
     @staticmethod
@@ -93,11 +93,15 @@ class StockDomain(Base):
             return float(0)
 
     def __repr__(self):
+        return "<StockDomain({})>".format(", ".join(["{}={}".format(x, getattr(self, x)) for x in
+                                                     StockDomain.__table__.columns._data.keys()]))
+
+    def fields(self):
         rv = []
         for attr, value in self.__dict__.items():
             if not callable(attr) and not attr.startswith("_"):
-                rv.append("{}='{}'".format(attr, value))
-        return "<StockDomain({})>".format(", ".join(rv))
+                rv.append(attr)
+        return rv
 
 
 class GoogleFinanceQuote(object):

@@ -326,6 +326,27 @@ class TestCommand(unittest.TestCase):
             row = self.session.query(StockDomain).filter(StockDomain.ticker == c.ticker).first()
             self.assertNotEquals(None, row)
 
+    def test_execute_analytics_fields(self):
+
+        command = ["analytics", "fields"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("Fields: id, name, ticker, net_profit_margin_last_q, net_profit_margin_last_y, operating_margin_last_q, operating_margin_last_y, ebitd_margin_last_q, ebitd_margin_last_y, roaa_last_q, roaa_last_y, roae_last_q, roae_last_y, market_cap, price_to_earnings, beta, earnings_per_share, dividend_yield, latest_dividend", res)
+
+    def test_execute_analytics_top(self):
+        # TODO: fix test data
+
+        command = ["analytics", "top", "5", "net_profit_margin_last_q"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals(["Nothing found"], res)
+
+        command = ["analytics", "top", "foobar", "net_profit_margin_last_q"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals(["Error: foobar is not a number sherlock"], res)
+
+        command = ["analytics", "top", "5", "this_field_doesnt_exist"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals(["Error: 'this_field_doesnt_exist' is not a valid field"], res)
+
 
 class TestNasdaqIndexScraper(unittest.TestCase):
 

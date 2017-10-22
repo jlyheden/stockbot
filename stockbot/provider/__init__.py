@@ -270,7 +270,7 @@ def stock_scrape_task(*args, **kwargs):
     session = Session()
     scraped = 0
 
-    # not so pretty but what to do
+    # TODO: not so pretty but what to do when there's no universal ticker naming scheme
     prefix_wrapper = {
         'SEK': 'STO'
     }
@@ -320,6 +320,52 @@ def stock_scrape_task(*args, **kwargs):
         session.close()
 
 
+def stock_analytics_fields(*args, **kwargs):
+    return "Fields: {}".format(", ".join(StockDomain.__table__.columns._data.keys()))
+
+
+def stock_analytics_top(*args, **kwargs):
+    rv = []
+
+    if len(args) < 2:
+        return ["Error: need moar args"]
+
+    try:
+        count = int(args[0])
+    except ValueError:
+        rv.append("Error: {} is not a number sherlock".format(args[0]))
+        count = 5
+
+    try:
+        sort_field_name = args[1]
+        filter_by = getattr(StockDomain, sort_field_name)
+    except AttributeError:
+        return ["Error: '{}' is not a valid field".format(sort_field_name)]
+
+    sort_descending = len(args) == 3 and args[2] == "desc"
+    session = Session()
+
+    if sort_descending:
+        tmp = getattr(StockDomain, sort_field_name)
+        order_by = getattr(tmp, "desc")()
+    else:
+        order_by = filter_by
+
+    try:
+        result = session.query(StockDomain)\
+            .filter(filter_by != 0.0)\
+            .order_by(order_by).limit(count)
+        rv.extend(["Top {}: Ticker: {}, Name: {}, Value: {}".format(i + 1, x.ticker, x.name, getattr(x, sort_field_name))
+                   for i, x in enumerate(result)])
+    except Exception as e:
+        LOGGER.exception("failed to query stockdomain for top '{}'".format(sort_field_name))
+    finally:
+        session.close()
+        if len(rv) == 0:
+            rv.append("Nothing found")
+        return rv
+
+
 #
 # Register the command tree
 #
@@ -352,10 +398,17 @@ fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=
 scrape_command = Command(name="scrape")
 scrape_command.register(BlockingExecuteCommand(name="nasdaq", execute_command=nasdaq_scraper_task))
 scrape_command.register(BlockingExecuteCommand(name="stats", execute_command=scrape_stats))
-scrape_command.register(NonBlockingExecuteCommand(name="stocks", execute_command=stock_scrape_task, exclusive=True))
+scrape_command.register(NonBlockingExecuteCommand(name="stocks", execute_command=stock_scrape_task, exclusive=True,
+                        help="stocks <currency> <nasdaq-market-name>"))
+
+analytics_command = Command(name="analytics")
+analytics_command.register(BlockingExecuteCommand(name="fields", execute_command=stock_analytics_fields))
+analytics_command.register(BlockingExecuteCommand(name="top", execute_command=stock_analytics_top,
+                                                  help="top <count> <field> (optional 'desc')"))
 
 root_command = Command(name="root")
 root_command.register(quote_command)
 root_command.register(fundamental_command)
 root_command.register(scrape_command)
+root_command.register(analytics_command)
 root_command.register(HelpCommand(name="help"))
