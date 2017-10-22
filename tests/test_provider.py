@@ -1,12 +1,14 @@
 import json
 import os
 import unittest
+import threading
+
 from datetime import datetime
 from unittest.mock import patch
 
 import vcr
 
-from stockbot.db import create_tables, Session
+from stockbot.db import create_tables, Session, drop_tables
 from stockbot.provider import Analytics, root_command
 from stockbot.provider.bloomberg import BloombergQuote
 from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult,\
@@ -34,6 +36,10 @@ class FakeIrcBot(object):
     tickers = []
     scheduler_interval = 3600
     scheduler = False
+    callback_args = None
+
+    def callback(self, *args):
+        self.callback_args = args
 
 
 class TestBloombergQuote(unittest.TestCase):
@@ -165,17 +171,11 @@ class TestCommand(unittest.TestCase):
 
         self.ircbot = FakeIrcBot()
         self.service = FakeQuoteService()
-
-        # db handler
         self.session = Session()
-
         create_tables()
 
-        # wipe data from db
-        self.session.query(NasdaqCompany).delete()
-        self.session.commit()
-
     def tearDown(self):
+        drop_tables()
         self.session.close()
 
     def __cmd_wrap(self, *args):
@@ -295,24 +295,32 @@ class TestCommand(unittest.TestCase):
         res = self.__cmd_wrap(*command)
         self.assertEquals("Scraped: nordic large cap=201, nordic mid cap=219, nordic small cap=237", res)
 
+    @patch('time.sleep')
     @vcr.use_cassette('mock/vcr_cassettes/google/quote/scrape_large_cap.yaml')
-    def test_execute_scrape_stocks(self):
+    def test_execute_nonblocking_scrape_stocks(self, sleep_mock):
 
-        # add just subset of companies to test doesnt take forever to execute
+        # Mock sleep in the scrape task
+        sleep_mock.return_value = False
+
         companies = [
-            NasdaqCompany(name="AAK", ticker="AAK", currency="SEK", category="bla", segment="Nordic Large Cap"),
-            NasdaqCompany(name="ABB Ltd", ticker="ABB", currency="SEK", category="bla", segment="Nordic Large Cap")
+            NasdaqCompany(name="AAK", ticker="AAK", currency="SEK", category="bla", segment="nordic large cap"),
+            NasdaqCompany(name="ABB Ltd", ticker="ABB", currency="SEK", category="bla", segment="nordic large cap")
         ]
         self.session.add_all(companies)
         self.session.commit()
 
-        # patch sleep so tests are quicker
-        with patch('stockbot.provider.time.sleep') as sleepmock:
-            sleepmock.return_value = False
-            command = ["scrape", "stocks", "sek", "nordic", "large", "cap"]
-            res = root_command.execute(*command, command_args={'service': GoogleFinanceQueryService()})
+        command = ["scrape", "stocks", "sek", "nordic", "large", "cap"]
+        root_command.execute(*command, command_args={'service': GoogleFinanceQueryService()},
+                             callback=self.ircbot.callback)
 
-        self.assertEquals("Done scraping segment 'nordic large cap' currency 'SEK' - scraped 2 companies", res)
+        self.assertEquals("Task started", self.ircbot.callback_args[0])
+
+        for t in threading.enumerate():
+            if t.name == "thread-sek_nordic_large_cap":
+                t.join()
+
+        self.assertEquals("Done scraping segment 'nordic large cap' currency 'SEK' - scraped 2 companies",
+                          self.ircbot.callback_args[0])
 
         for c in companies:
             row = self.session.query(StockDomain).filter(StockDomain.ticker == c.ticker).first()

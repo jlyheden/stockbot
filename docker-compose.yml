@@ -10,8 +10,17 @@ services:
       SERVER_PORT: "6667"
       CHANNEL_NAME: "#testchannel"
       NICK: "stockmurph"
+      LOGLEVEL: "DEBUG"
+      DATABASE_URL: "postgres://bot:password@database:5432/ircbotdb"
 
   ircserver:
     image: inspircd/inspircd-docker:latest
     ports:
     - "6667:6667"
+
+  database:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_DB: "ircbotdb"
+      POSTGRES_USER: "bot"
+      POSTGRES_PASSWORD: "password"
