@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 from datetime import datetime
 
 # import irc.client
@@ -127,6 +128,16 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
 
 if __name__ == '__main__':
+
+    if os.path.exists(".heroku"):
+        LOGGER.info("Apparently I'm running in Heroku")
+        # do some polling until version.txt is available
+        for i in range(50):
+            if os.path.exists("version.txt"):
+                LOGGER.info("Found version.txt, continuing with startup")
+                break
+            LOGGER.info("No version.txt file found, checking again in one second")
+            time.sleep(1)
 
     create_tables()
 
