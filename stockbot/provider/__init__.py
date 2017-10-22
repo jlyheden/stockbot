@@ -321,7 +321,9 @@ def stock_scrape_task(*args, **kwargs):
 
 
 def stock_analytics_fields(*args, **kwargs):
-    return "Fields: {}".format(", ".join(StockDomain.__table__.columns._data.keys()))
+    fields = ", ".join(StockDomain.__table__.columns._data.keys())
+    LOGGER.debug("Fields for StockDomain: {}".format(fields))
+    return "Fields: {}".format(fields)
 
 
 def stock_analytics_top(*args, **kwargs):

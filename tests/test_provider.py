@@ -130,6 +130,19 @@ class TestStockDomain(unittest.TestCase):
                     print("Failed field: {}".format(field))
                 self.assertNotEquals(0.0, value)
 
+    def test_transform_negative_number(self):
+        """ catch regression where greedy regex strips negative numbers into positive """
+
+        quote = GoogleFinanceQuote(message={
+            "name": "foo",
+            "ticker": "foo",
+            "pe": "-10.23",
+            "keyratios": []
+        })
+        do = StockDomain()
+        do.from_google_finance_quote(quote)
+        self.assertEquals(-10.23, do.price_to_earnings)
+
 
 class TestAnalytics(unittest.TestCase):
 

@@ -81,7 +81,7 @@ class StockDomain(Base):
                 value = d.get(key)
             else:
                 value = getattr(d, key, "0")
-            value = re.sub("[^\d.]", "", value)
+            value = re.sub("[^-\d.]", "", value)
             LOGGER.debug("Got this value '{}' for key '{}'".format(value, key))
             return float(value)
         except ValueError as e:
