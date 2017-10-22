@@ -77,6 +77,11 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
     def on_welcome(self, c, e):
         c.join(self.channel)
+        if os.path.exists("version.txt"):
+            with open("version.txt", "r") as f:
+                self.connection.privmsg(self.channel,
+                                        "\x0306,13 I'M \x03\x0313,06 BACK! \x03\x0306 Running version\x03: \x0314{}\x03".
+                                        format(f.read().strip()))
 
     def on_privmsg(self, c, e):
         pass
