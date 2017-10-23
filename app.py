@@ -55,6 +55,10 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
             LOGGER.debug("Scheduler is disabled")
             return
 
+        if not self.connection.is_connected():
+            LOGGER.debug("Not connected yet, hold off")
+            return
+
         now = datetime.now()
 
         if self.last_check is not None:
@@ -66,8 +70,13 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
             return
 
         for ticker in self.tickers:
-            resp = self.quote_service.get_quote(ticker)
-            self.colorify_send(self.channel, str(resp))
+            try:
+                resp = self.quote_service.get_quote(ticker)
+            except Exception as e:
+                LOGGER.exception("failed to retrieve ticker '{}'".format(ticker))
+                self.colorify_send(self.channel, "failed to retrieve ticker '{}'".format(ticker))
+            else:
+                self.colorify_send(self.channel, str(resp))
 
         self.last_check = int(now.timestamp())
 
