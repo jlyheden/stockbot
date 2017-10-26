@@ -132,11 +132,11 @@ class GoogleFinanceQuote(object):
             LOGGER.exception("Failed to look up attribute '{}'".format(item))
             return "N/A"
 
-    def fundamentals(self):
-        flatten_keyratios = ", ".join(["{t}: {r}".format(t=x["title"], r=x["recent_quarter"].replace(",", ""))
+    def fundamentals(self, duration):
+        flatten_keyratios = ", ".join(["{t}: {r}".format(t=x["title"], r=x[duration].replace(",", ""))
                                        for x in self.keyratios
-                                       if "title" in x and "recent_quarter" in x and x["title"] != "Employees"
-                                       and len(x["recent_quarter"]) > 0])
+                                       if "title" in x and duration in x and x["title"] != "Employees"
+                                       and len(x[duration]) > 0])
         return "Name: {n}, P/E: {pe}, Yield: {y}, Beta: {b}, Earnings Per Share: {eps}, {fl}".format(
             n=self.name, pe=self.pe, y=self.dy, b=self.beta, eps=self.eps, fl=flatten_keyratios)
 

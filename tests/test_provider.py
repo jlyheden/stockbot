@@ -91,6 +91,7 @@ class TestGoogleFinanceQueryService(unittest.TestCase):
 
     def setUp(self):
         self.service = GoogleFinanceQueryService()
+        self.maxDiff = None
 
     @vcr.use_cassette('mock/vcr_cassettes/google/quote/aapl.yaml')
     def test_get_quote(self):
@@ -107,7 +108,8 @@ class TestGoogleFinanceQueryService(unittest.TestCase):
     @vcr.use_cassette('mock/vcr_cassettes/google/quote/aapl.yaml')
     def test_get_quote_fundamentals(self):
         q = self.service.get_quote('AAPL')
-        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 19.20%, Operating margin: 23.71%, Return on average assets: 10.29%, Return on average equity: 26.24%", q.fundamentals())
+        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 19.20%, Operating margin: 23.71%, Return on average assets: 10.29%, Return on average equity: 26.24%", q.fundamentals("recent_quarter"))
+        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 21.19%, Operating margin: 27.84%, EBITD margin: 32.38%, Return on average assets: 14.93%, Return on average equity: 36.90%", q.fundamentals("annual"))
 
 
 class TestStockDomain(unittest.TestCase):
@@ -216,18 +218,12 @@ class TestCommand(unittest.TestCase):
         res = self.__cmd_wrap(*command)
         self.assertIn("Ticker: FOO, Market: Foo Market, Name: Foo Company", res)
 
-    def test_show_help(self):
-
-        res = root_command.show_help()
-        self.assertIn("quote get <ticker>", res)
-        self.assertIn("quote search <ticker>", res)
-
     def test_execute_help_command(self):
 
         command = ["help"]
         res = self.__cmd_wrap(*command)
-        self.assertIn("quote get <ticker>", res)
-        self.assertIn("quote search <ticker>", res)
+        self.assertIn("quote(q) get <ticker>", res)
+        self.assertIn("quote(q) search <ticker>", res)
 
     def test_execute_scheduler_ticker_commands(self):
 
@@ -350,22 +346,22 @@ class TestCommand(unittest.TestCase):
 
     def test_execute_analytics_fields(self):
 
-        command = ["analytics", "fields"]
+        command = ["fundamental", "fields"]
         res = self.__cmd_wrap(*command)
         self.assertEquals("Fields: id, name, ticker, net_profit_margin_last_q, net_profit_margin_last_y, operating_margin_last_q, operating_margin_last_y, ebitd_margin_last_q, ebitd_margin_last_y, roaa_last_q, roaa_last_y, roae_last_q, roae_last_y, market_cap, price_to_earnings, beta, earnings_per_share, dividend_yield, latest_dividend", res)
 
     def test_execute_analytics_top(self):
         # TODO: fix test data
 
-        command = ["analytics", "top", "5", "net_profit_margin_last_q"]
+        command = ["fundamental", "top", "5", "net_profit_margin_last_q"]
         res = self.__cmd_wrap(*command)
         self.assertEquals(["Nothing found"], res)
 
-        command = ["analytics", "top", "foobar", "net_profit_margin_last_q"]
+        command = ["fundamental", "top", "foobar", "net_profit_margin_last_q"]
         res = self.__cmd_wrap(*command)
         self.assertEquals(["Error: foobar is not a number sherlock"], res)
 
-        command = ["analytics", "top", "5", "this_field_doesnt_exist"]
+        command = ["fundamental", "top", "5", "this_field_doesnt_exist"]
         res = self.__cmd_wrap(*command)
         self.assertEquals(["Error: 'this_field_doesnt_exist' is not a valid field"], res)
 

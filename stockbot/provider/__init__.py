@@ -24,6 +24,7 @@ class Command(object):
 
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get('name')
+        self.short_name = kwargs.get('short_name', None)
         self.execute_command = kwargs.get('execute_command')
         self.help = kwargs.get('help', None)
         self.parent_command = None
@@ -42,7 +43,7 @@ class Command(object):
         """
         e = args[0]
         LOGGER.debug("Item: {}".format(e))
-        c = [x for x in self.subcommands if x.name == e]
+        c = [x for x in self.subcommands if x.name == e or x.short_name == e]
         if len(c) == 0:
             return None
         return c[0].execute(*args[1:], **kwargs)
@@ -51,6 +52,8 @@ class Command(object):
         if self.help is not None:
             return self.help
         else:
+            if self.short_name is not None:
+                return "{}({})".format(self.name, self.short_name)
             return self.name
 
     def show_help(self):
@@ -159,9 +162,24 @@ class CommandThread(threading.Thread):
 # Commands
 #
 def get_fundamental(*args, **kwargs):
-    ticker = " ".join(args)
+    duration_mapper = {
+        "y": "annual",
+        "q": "recent_quarter"
+    }
+    ticker = args[0]
+    try:
+        duration = args[1]
+        if duration not in ["y", "q"]:
+            raise ValueError("duration must be y or q")
+    except IndexError as e:
+        LOGGER.exception("failed to parse arg")
+        duration = "y"
+    except ValueError as e:
+        LOGGER.exception("failed to parse arg")
+        duration = "y"
+
     service = kwargs.get('service')
-    return service.get_quote(ticker).fundamentals()
+    return service.get_quote(ticker).fundamentals(duration_mapper[duration])
 
 
 def get_quote(*args, **kwargs):
@@ -389,13 +407,17 @@ scheduler_command.register(scheduler_interval_command)
 scheduler_command.register(BlockingExecuteCommand(name="enable", execute_command=enable_scheduler))
 scheduler_command.register(BlockingExecuteCommand(name="disable", execute_command=disable_scheduler))
 
-quote_command = Command(name="quote")
+quote_command = Command(name="quote", short_name="q")
 quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <ticker>"))
 quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote, help="search <ticker>"))
 quote_command.register(scheduler_command)
 
-fundamental_command = Command(name="fundamental")
-fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental, help="get <ticker>"))
+fundamental_command = Command(name="fundamental", short_name="fa")
+fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental,
+                                                    help="get <ticker> <q|y>"))
+fundamental_command.register(BlockingExecuteCommand(name="fields", execute_command=stock_analytics_fields))
+fundamental_command.register(BlockingExecuteCommand(name="top", execute_command=stock_analytics_top,
+                                                    help="top <count> <field> (optional 'desc')"))
 
 scrape_command = Command(name="scrape")
 scrape_command.register(BlockingExecuteCommand(name="nasdaq", execute_command=nasdaq_scraper_task))
@@ -403,14 +425,8 @@ scrape_command.register(BlockingExecuteCommand(name="stats", execute_command=scr
 scrape_command.register(NonBlockingExecuteCommand(name="stocks", execute_command=stock_scrape_task, exclusive=True,
                         help="stocks <currency> <nasdaq-market-name>"))
 
-analytics_command = Command(name="analytics")
-analytics_command.register(BlockingExecuteCommand(name="fields", execute_command=stock_analytics_fields))
-analytics_command.register(BlockingExecuteCommand(name="top", execute_command=stock_analytics_top,
-                                                  help="top <count> <field> (optional 'desc')"))
-
 root_command = Command(name="root")
 root_command.register(quote_command)
 root_command.register(fundamental_command)
 root_command.register(scrape_command)
-root_command.register(analytics_command)
 root_command.register(HelpCommand(name="help"))
