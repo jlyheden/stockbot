@@ -133,10 +133,17 @@ class GoogleFinanceQuote(object):
             return "N/A"
 
     def fundamentals(self, duration):
-        flatten_keyratios = ", ".join(["{t}: {r}".format(t=x["title"], r=x[duration].replace(",", ""))
-                                       for x in self.keyratios
-                                       if "title" in x and duration in x and x["title"] != "Employees"
-                                       and len(x[duration]) > 0])
+        _key_ratios = ["{t}: {r}".format(t=x["title"], r=x[duration].replace(",", ""))
+                       for x in self.keyratios
+                       if "title" in x and duration in x and x["title"] != "Employees"
+                       and len(x[duration]) > 0]
+
+        _date_key_name =  "kr_{}_date".format(duration)
+        if hasattr(self, _date_key_name) and len(_key_ratios) > 0:
+            _key_ratios.append("Date: {}".format(getattr(self, _date_key_name)))
+
+        flatten_keyratios = ", ".join(_key_ratios) if len(_key_ratios) > 0 else "Error: duration not found"
+
         return "Name: {n}, P/E: {pe}, Yield: {y}, Beta: {b}, Earnings Per Share: {eps}, {fl}".format(
             n=self.name, pe=self.pe, y=self.dy, b=self.beta, eps=self.eps, fl=flatten_keyratios)
 

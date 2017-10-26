@@ -108,8 +108,10 @@ class TestGoogleFinanceQueryService(unittest.TestCase):
     @vcr.use_cassette('mock/vcr_cassettes/google/quote/aapl.yaml')
     def test_get_quote_fundamentals(self):
         q = self.service.get_quote('AAPL')
-        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 19.20%, Operating margin: 23.71%, Return on average assets: 10.29%, Return on average equity: 26.24%", q.fundamentals("recent_quarter"))
-        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 21.19%, Operating margin: 27.84%, EBITD margin: 32.38%, Return on average assets: 14.93%, Return on average equity: 36.90%", q.fundamentals("annual"))
+        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 19.20%, Operating margin: 23.71%, Return on average assets: 10.29%, Return on average equity: 26.24%, Date: Q3 (Jul '17)", q.fundamentals("recent_quarter"))
+        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Net profit margin: 21.19%, Operating margin: 27.84%, EBITD margin: 32.38%, Return on average assets: 14.93%, Return on average equity: 36.90%, Date: 2016", q.fundamentals("annual"))
+
+        self.assertEquals("Name: Apple Inc., P/E: 17.86, Yield: 1.60%, Beta: 1.29, Earnings Per Share: 8.79, Error: duration not found", q.fundamentals("foobar"))
 
 
 class TestStockDomain(unittest.TestCase):
