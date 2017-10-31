@@ -7,6 +7,8 @@ from urllib.parse import urlencode
 from stockbot.db import Base
 from sqlalchemy import Column, Integer, String, Float
 
+from stockbot.provider.base import BaseQuoteService
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -165,7 +167,7 @@ class GoogleFinanceSearchResult(object):
         return len(self.result) == 0
 
 
-class GoogleFinanceQueryService(object):
+class GoogleFinanceQueryService(BaseQuoteService):
 
     # search results probably don't change that much so cache them
     search_cache = {}
@@ -204,7 +206,8 @@ class GoogleFinanceQueryService(object):
             LOGGER.exception("Failed to search for {q}, search url: {u}".format(q=query, u=url))
             raise
 
-    def __quote_url(self, ticker):
+    @staticmethod
+    def __quote_url(ticker):
         params = {
             "q": ticker,
             "output": "json"
@@ -213,7 +216,8 @@ class GoogleFinanceQueryService(object):
         LOGGER.debug("quote_url: {}".format(url))
         return url
 
-    def __search_url(self, query):
+    @staticmethod
+    def __search_url(query):
         params = {
             "matchtype": "matchall",
             "q": query

@@ -6,6 +6,8 @@ from urllib.parse import urlencode
 from urllib.request import pathname2url
 from datetime import datetime
 
+from stockbot.provider.base import BaseQuoteService
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -60,7 +62,7 @@ class BloombergSearchResult(object):
         return len(self.result) == 0
 
 
-class BloombergQueryService(object):
+class BloombergQueryService(BaseQuoteService):
 
     # search results probably don't change that much so cache them
     search_cache = {}
@@ -102,7 +104,8 @@ class BloombergQueryService(object):
             LOGGER.exception("Failed to search for {q}, search url: {u}".format(q=query, u=url))
             raise
 
-    def __quote_url(self, ticker):
+    @staticmethod
+    def __quote_url(ticker):
         params = {
             "locale": "en"
         }
@@ -111,7 +114,8 @@ class BloombergQueryService(object):
         LOGGER.debug("quote_url: {}".format(url))
         return url
 
-    def __search_url(self, query):
+    @staticmethod
+    def __search_url(query):
         params = {
             "sites": "bbiz",
             "query": query

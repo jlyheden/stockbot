@@ -13,6 +13,16 @@ class ScheduledTicker(Base):
         return "<ScheduledTicker(ticker={})>".format(self.ticker)
 
 
+class ScheduledCommand(Base):
+
+    __tablename__ = "scheduled_command"
+
+    command = Column(String, primary_key=True)
+
+    def __repr__(self):
+        return "<ScheduledCommand(command={})>".format(self.command)
+
+
 def db_session(func):
     """
     decorator that will inject an sqlalchemy session and always close it after

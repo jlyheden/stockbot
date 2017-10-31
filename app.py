@@ -8,9 +8,8 @@ from irc.client import ip_numstr_to_quad
 
 from stockbot.configuration import Configuration
 from stockbot.db import create_tables
-from stockbot.persistence import DatabaseCollection, ScheduledTicker
-from stockbot.provider import root_command
-from stockbot.provider.google import GoogleFinanceQueryService
+from stockbot.persistence import DatabaseCollection, ScheduledCommand
+from stockbot.provider import root_command, QuoteServiceFactory
 from stockbot.util import colorify
 
 
@@ -44,8 +43,8 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
 
         self.scheduler = enable_scheduler
         self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
-        self.quote_service = GoogleFinanceQueryService()
-        self.tickers = DatabaseCollection(type=ScheduledTicker, attribute="ticker")
+        self.quote_service_factory = QuoteServiceFactory()
+        self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
         self.scheduler_interval = 3600
         self.last_check = None
 
@@ -69,14 +68,12 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
         if not self.timer_should_execute(now):
             return
 
-        for ticker in self.tickers:
+        for command in self.commands:
             try:
-                resp = self.quote_service.get_quote(ticker)
+                root_command.execute(*command.split(" "), command_args={"service_factory": self.quote_service_factory,
+                                     "instance": self}, callback=self.command_callback)
             except Exception as e:
-                LOGGER.exception("failed to retrieve ticker '{}'".format(ticker))
-                self.colorify_send(self.channel, "failed to retrieve ticker '{}'".format(ticker))
-            else:
-                self.colorify_send(self.channel, str(resp))
+                LOGGER.exception("failed to execute scheduled command '{}'".format(command))
 
         self.last_check = int(now.timestamp())
 
@@ -103,7 +100,8 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
         if to_me:
 
             commands = [irc.strings.lower(x) for x in split[1:]]
-            root_command.execute(*commands, command_args={"service": self.quote_service, "instance": self},
+            root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
+                                                          "instance": self},
                                  callback=self.command_callback)
 
     def command_callback(self, result):

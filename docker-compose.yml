@@ -12,6 +12,7 @@ services:
       NICK: "stockmurph"
       LOGLEVEL: "DEBUG"
       DATABASE_URL: "postgres://bot:password@database:5432/ircbotdb"
+      SCHEDULER: "true"
 
   ircserver:
     image: inspircd/inspircd-docker:latest

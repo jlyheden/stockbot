@@ -4,13 +4,14 @@ import unittest
 import threading
 
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import vcr
 
 from stockbot.db import create_tables, Session, drop_tables
-from stockbot.provider import Analytics, root_command
-from stockbot.provider.bloomberg import BloombergQuote
+from stockbot.persistence import DatabaseCollection, ScheduledCommand
+from stockbot.provider import Analytics, root_command, QuoteServiceFactory
+from stockbot.provider.bloomberg import BloombergQuote, BloombergQueryService
 from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult,\
     StockDomain
 from stockbot.provider.nasdaq import NasdaqIndexScraper, NasdaqCompany
@@ -33,7 +34,7 @@ class FakeQuoteService(object):
 
 class FakeIrcBot(object):
 
-    tickers = []
+    commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
     scheduler_interval = 3600
     scheduler = False
     callback_args = None
@@ -206,11 +207,13 @@ class TestCommand(unittest.TestCase):
 
     def __cmd_wrap(self, *args):
         """ test helper """
-        return root_command.execute(*args, command_args={"service": self.service, "instance": self.ircbot})
+        factory = QuoteServiceFactory()
+        factory.get_service = MagicMock(return_value=self.service)
+        return root_command.execute(*args, command_args={"service_factory": factory, "instance": self.ircbot})
 
     def test_quote_get_command(self):
 
-        command = ["quote", "get", "aapl"]
+        command = ["quote", "get", "fakeprovider", "aapl"]
         res = self.__cmd_wrap(*command)
         self.assertEquals("Here's your fake quote for aapl", res)
 
@@ -224,45 +227,45 @@ class TestCommand(unittest.TestCase):
 
         command = ["help"]
         res = self.__cmd_wrap(*command)
-        self.assertIn("quote(q) get <ticker>", res)
-        self.assertIn("quote(q) search <ticker>", res)
+        self.assertIn("quote(q) get <provider> <ticker>", res)
+        self.assertIn("quote(q) search <provider> <ticker>", res)
 
     def test_execute_scheduler_ticker_commands(self):
 
         # blank state
-        command = ["quote", "scheduler", "tickers", "get"]
+        command = ["quote", "scheduler", "command", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("No tickers added", res)
+        self.assertEquals("No commands added", res)
 
-        # add ticker
-        command = ["quote", "scheduler", "tickers", "add", "foobar"]
+        # add command
+        command = ["quote", "scheduler", "command", "add", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Added ticker: foobar", res)
+        self.assertEquals("Added command: quote get google foobar", res)
 
-        # add ticker again and fail gracefully
-        command = ["quote", "scheduler", "tickers", "add", "foobar"]
+        # add command again and fail gracefully
+        command = ["quote", "scheduler", "command", "add", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Ticker already in list", res)
+        self.assertEquals("Command already in list", res)
 
-        # verify ticker is there
-        command = ["quote", "scheduler", "tickers", "get"]
+        # verify command is there
+        command = ["quote", "scheduler", "command", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Tickers: foobar", res)
+        self.assertIn("Command: quote get google foobar", res)
 
-        # remove ticker
-        command = ["quote", "scheduler", "tickers", "remove", "foobar"]
+        # remove command
+        command = ["quote", "scheduler", "command", "remove", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Removed ticker: foobar", res)
+        self.assertEquals("Removed command: quote get google foobar", res)
 
-        # verify ticker is not there
-        command = ["quote", "scheduler", "tickers", "get"]
+        # verify command is not there
+        command = ["quote", "scheduler", "command", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("No tickers added", res)
+        self.assertEquals("No commands added", res)
 
         # remove it again and fail gracefully
-        command = ["quote", "scheduler", "tickers", "remove", "foobar"]
+        command = ["quote", "scheduler", "command", "remove", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Ticker not in list", res)
+        self.assertEquals("Command not in list", res)
 
     def test_execute_scheduler_interval_command(self):
 
@@ -387,3 +390,18 @@ class TestNasdaqIndexScraper(unittest.TestCase):
         scraper = NasdaqIndexScraper()
         res = scraper.scrape("Nordic Small Cap")
         self.assertIn("Aspocomp Group Oyj", res)
+
+
+class TestQuoteServiceFactory(unittest.TestCase):
+
+    def test_get_existing_provider(self):
+
+        factory = QuoteServiceFactory()
+
+        # check that correct service is returned
+        self.assertEquals(GoogleFinanceQueryService, type(factory.get_service("google")))
+        self.assertEquals(BloombergQueryService, type(factory.get_service("bloomberg")))
+
+        # check that the same instance is returned on each invocation
+        self.assertEquals(factory.get_service("google"), factory.get_service("google"))
+        self.assertEquals(factory.get_service("bloomberg"), factory.get_service("bloomberg"))

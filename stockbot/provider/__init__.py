@@ -5,7 +5,8 @@ import threading
 from sqlalchemy import func
 from stockbot.db import Session
 from .nasdaq import NasdaqIndexScraper, NasdaqCompany
-from .google import StockDomain
+from .google import StockDomain, GoogleFinanceQueryService
+from .bloomberg import BloombergQueryService
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,6 +19,22 @@ class Analytics(object):
             return result[:max_results]
         else:
             return result
+
+
+class QuoteServiceFactory(object):
+
+    providers = {
+        "google": GoogleFinanceQueryService,
+        "bloomberg": BloombergQueryService
+    }
+
+    def get_service(self, name):
+        if not hasattr(self, name):
+            try:
+                setattr(self, name, self.providers[name]())
+            except KeyError as e:
+                raise NotImplemented("provider '{}' not implemented".format(name))
+        return getattr(self, name)
 
 
 class Command(object):
@@ -178,46 +195,49 @@ def get_fundamental(*args, **kwargs):
         LOGGER.exception("failed to parse arg")
         duration = "y"
 
-    service = kwargs.get('service')
+    # TODO: user provided provider
+    service = kwargs.get('service_factory').get_service('google')
     return service.get_quote(ticker).fundamentals(duration_mapper[duration])
 
 
 def get_quote(*args, **kwargs):
-    ticker = " ".join(args)
-    service = kwargs.get('service')
+    provider = args[0]
+    ticker = " ".join(args[1:])
+    service = kwargs.get('service_factory').get_service(provider)
     return service.get_quote(ticker)
 
 
 def search_quote(*args, **kwargs):
-    ticker = " ".join(args)
-    service = kwargs.get('service')
+    provider = args[0]
+    ticker = " ".join(args[1:])
+    service = kwargs.get('service_factory').get_service(provider)
     result = service.search(ticker)
     return result.result_as_list()
 
 
-def get_scheduler_ticker(*args, **kwargs):
+def get_scheduler_command(*args, **kwargs):
     bot = kwargs.get('instance')
-    if len(bot.tickers) == 0:
-        return "No tickers added"
-    return "Tickers: {t}".format(t=",".join(bot.tickers))
+    if len(bot.commands) == 0:
+        return "No commands added"
+    return ["Command: {}".format(c) for c in bot.commands]
 
 
-def add_scheduler_ticker(*args, **kwargs):
-    ticker = " ".join(args)
+def add_scheduler_command(*args, **kwargs):
+    command = " ".join(args)
     bot = kwargs.get('instance')
-    if ticker in bot.tickers:
-        return "Ticker already in list"
-    bot.tickers.append(ticker)
-    return "Added ticker: {}".format(ticker)
+    if command in bot.commands:
+        return "Command already in list"
+    bot.commands.append(command)
+    return "Added command: {}".format(command)
 
 
-def remove_scheduler_ticker(*args, **kwargs):
-    ticker = " ".join(args)
+def remove_scheduler_command(*args, **kwargs):
+    command = " ".join(args)
     bot = kwargs.get('instance')
-    if ticker not in bot.tickers:
-        return "Ticker not in list"
-    bot.tickers.remove(ticker)
-    return "Removed ticker: {}".format(ticker)
+    if command not in bot.commands:
+        return "Command not in list"
+    bot.commands.remove(command)
+    return "Removed command: {}".format(command)
 
 
 def get_scheduler_interval(*args, **kwargs):
@@ -389,12 +409,12 @@ def stock_analytics_top(*args, **kwargs):
 #
 # Register the command tree
 #
-scheduler_tickers_command = Command(name="tickers")
-scheduler_tickers_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_ticker))
-scheduler_tickers_command.register(BlockingExecuteCommand(name="add", execute_command=add_scheduler_ticker,
-                                                          help="add <ticker>"))
-scheduler_tickers_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_scheduler_ticker,
-                                                          help="remove <ticker>"))
+scheduler_command_command = Command(name="command")
+scheduler_command_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_command))
+scheduler_command_command.register(BlockingExecuteCommand(name="add", execute_command=add_scheduler_command,
+                                                          help="add <command>"))
+scheduler_command_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_scheduler_command,
+                                                          help="remove <command>"))
 
 scheduler_interval_command = Command(name="interval")
 scheduler_interval_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_interval))
@@ -402,14 +422,15 @@ scheduler_interval_command.register(BlockingExecuteCommand(name="set", execute_c
                                                            help="set <interval-int>"))
 
 scheduler_command = Command(name="scheduler")
-scheduler_command.register(scheduler_tickers_command)
+scheduler_command.register(scheduler_command_command)
 scheduler_command.register(scheduler_interval_command)
 scheduler_command.register(BlockingExecuteCommand(name="enable", execute_command=enable_scheduler))
 scheduler_command.register(BlockingExecuteCommand(name="disable", execute_command=disable_scheduler))
 
 quote_command = Command(name="quote", short_name="q")
-quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <ticker>"))
-quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote, help="search <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <provider> <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote,
+                                              help="search <provider> <ticker>"))
 quote_command.register(scheduler_command)
 
 fundamental_command = Command(name="fundamental", short_name="fa")
