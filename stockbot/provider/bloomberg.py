@@ -46,15 +46,19 @@ class BloombergSearchResult(object):
 
     def __str__(self):
         return "Result: {r}".format(r=" | ".join(
-            ["Ticker: {t}, Country: {c}, Name: {n}, Type: {tt}".format(t=x["ticker_symbol"], c=x["country"],
-                                                                       n=x["name"], tt=x["resource_type"])
+            ["Ticker: {t}, Country: {c}, Name: {n}, Type: {tt}".format(t=x.get("ticker_symbol", None),
+                                                                       c=x.get("country", None),
+                                                                       n=x.get("name", None),
+                                                                       tt=x.get("resource_type", None))
              for x in self.result
              ]
         ))
 
     def result_as_list(self):
-        return ["Ticker: {t}, Country: {c}, Name: {n}, Type: {tt}".format(t=x["ticker_symbol"], c=x["country"],
-                                                                          n=x["name"], tt=x["resource_type"])
+        return ["Ticker: {t}, Country: {c}, Name: {n}, Type: {tt}".format(t=x.get("ticker_symbol", None),
+                                                                          c=x.get("country", None),
+                                                                          n=x.get("name", None),
+                                                                          tt=x.get("resource_type", None))
                 for x in self.result
                 ]
 

@@ -1,0 +1,47 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.13.0]
+    method: GET
+    uri: https://search.bloomberg.com/lookup.json?sites=bbiz&query=dax
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA62W23LaOhRAf0WjZw62bGMDbznc2oS2TJPTk0nbYYS8Y2sqJCrJSWin/17ZpFyC
+        OwXKo67ba3lvSd+xVZaKqQZTCGtwNyCdBl63Pn7HlrMvoKdmOZ8pgbu4f3Hbff22jxuYqUJavSz7
+        BrhapArNYMrTnWnrflPM7HIBbnDwteB2uT32PPBapvDk+iWdl80+FNawHNC/CrQBdDFCI9BzKtG1
+        VewLqqYjF8ot4Waa8zQFibv3VBhoYAOs0C7OdCcq+hWDy7Qw1ffLQogGLnSJl1u7MF3Pe3x8bM6E
+        UvMZ6KzJ1Nz7WigL3obLMKXdtkkzaCdBJ/7R2Hc1uiWHuNpMq3E1LGzh4vzZFX169rFagVAfGEkO
+        MjPkkkrGqUC82iEDCZqz5smWNkTPloJmJ/bbQdiu0xQGse+3k7vuf9c7qqrmrqrdqfu6PuKJ5g/U
+        Av68b6yn5gsql1vOLm7RhGrraA0aTw5y9bw/Kjfb8YMDn/gk2DCTJgmioJWEdcwu9N3VXfdyskNc
+        NfcKaT3xHLxXV3+JSSLS2sb0m3ESkjAiJaZ0mKtgq3R5ie1+XhT7e/+vIiVJ0IqjpFNfB784G1jp
+        jEr+jVqu3PfjD1SARDfAcqmEyjgYVwcMl7GtWK0Ewx2r9XqDd15P/TN0vlPQNTU1cYngNt0pqp6m
+        PKt19qdaWGh1zwUYbwFqIcDbAty4a/kRCVsHuWu5bOqE/W7vbY27dtKO/PhId2Oe5fZ6AZCi92Ap
+        Fy/UlcKOs9WnhosHeiZfa6hTfF0ObobvR69u3Em05yvw/TCOW9FvfBUzwdm+rkuwaKihlIbGLtWM
+        C+kODptuKRs8uUqy/AFQn2tgVh1q7iYHh2Pzs6jb4jtFXbss8YTc1acaCfwkOjbVejmVmXqZXzmH
+        ezTRKi2YRe/umV6lG5cZegMl3oHyXtG5exacKevWfCepC0g7JtFvTrg47Li3wpHqrt3RS7m8fSHv
+        w8QbuZPvDZU0O1jUFSxMzqsHxTlUrXlOUUXCOBrXeuqQMPTjoz1JEAJ9Knw/iNH/XMxBo3F1ra+v
+        gtVlf6CrC3eQafh2HlUbpD1Vn3/8BOmyWYOHCwAA
+    headers:
+      Cache-Control: ['max-age=0, private, must-revalidate']
+      Connection: [Keep-Alive]
+      Content-Encoding: [gzip]
+      Content-Length: ['828']
+      Content-Type: [application/json; charset=utf-8]
+      Date: ['Wed, 01 Nov 2017 08:21:58 GMT']
+      ETag: [W/"104de3f6f287f3a8e3dd21ed31316af2-gzip"]
+      Keep-Alive: [timeout=5]
+      Server: [Apache]
+      Set-Cookie: [SRV=NJAP03; path=/]
+      Vary: ['Accept-Encoding,Origin']
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-Request-Id: [07bc49e7-d91b-4065-9a7b-b478c7c0ce8f]
+      X-Runtime: ['0.025741']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 200, message: OK}
+version: 1

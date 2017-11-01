@@ -11,7 +11,7 @@ import vcr
 from stockbot.db import create_tables, Session, drop_tables
 from stockbot.persistence import DatabaseCollection, ScheduledCommand
 from stockbot.provider import Analytics, root_command, QuoteServiceFactory
-from stockbot.provider.bloomberg import BloombergQuote, BloombergQueryService
+from stockbot.provider.bloomberg import BloombergQuote, BloombergQueryService, BloombergSearchResult
 from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult,\
     StockDomain
 from stockbot.provider.nasdaq import NasdaqIndexScraper, NasdaqCompany
@@ -86,6 +86,18 @@ class TestBloombergQuote(unittest.TestCase):
         tm = BloombergQuote()
         self.assertEquals("N/A", tm.name)
         self.assertEquals("Name: N/A, Price: N/A, Open Price: N/A, Low Price: N/A, High Price: N/A, Percent Change 1 Day: N/A, Update Time: N/A", str(tm))
+
+
+class TestBloombergQueryService(unittest.TestCase):
+
+    def setUp(self):
+        self.service = BloombergQueryService()
+
+    @vcr.use_cassette('mock/vcr_cassettes/bloomberg/search/dax.yaml')
+    def test_search_result_incomplete_results(self):
+        res = self.service.search("dax")
+        self.assertEquals(BloombergSearchResult, type(res))
+        self.assertIn("Ticker: DAX:IND, Country: DE, Name: Deutsche Boerse AG German Stock Index DAX, Type: Index", res.result_as_list())
 
 
 class TestGoogleFinanceQueryService(unittest.TestCase):
