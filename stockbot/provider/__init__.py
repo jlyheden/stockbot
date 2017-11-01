@@ -33,7 +33,7 @@ class QuoteServiceFactory(object):
             try:
                 setattr(self, name, self.providers[name]())
             except KeyError as e:
-                raise NotImplemented("provider '{}' not implemented".format(name))
+                raise ValueError("provider '{}' not implemented".format(name))
         return getattr(self, name)
 
 
@@ -203,16 +203,23 @@ def get_fundamental(*args, **kwargs):
 def get_quote(*args, **kwargs):
     provider = args[0]
     ticker = " ".join(args[1:])
-    service = kwargs.get('service_factory').get_service(provider)
-    return service.get_quote(ticker)
+    try:
+        service = kwargs.get('service_factory').get_service(provider)
+        return service.get_quote(ticker)
+    except ValueError as e:
+        LOGGER.exception("failed to retrieve service for provider '{}'".format(provider))
+        return "No such provider '{}'".format(provider)
 
 
 def search_quote(*args, **kwargs):
     provider = args[0]
     ticker = " ".join(args[1:])
-    service = kwargs.get('service_factory').get_service(provider)
-    result = service.search(ticker)
-    return result.result_as_list()
+    try:
+        service = kwargs.get('service_factory').get_service(provider)
+        return service.search(ticker).result_as_list()
+    except ValueError as e:
+        LOGGER.exception("failed to retrieve service for provider '{}'".format(provider))
+        return "No such provider '{}'".format(provider)
 
 
 def get_scheduler_command(*args, **kwargs):

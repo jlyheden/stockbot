@@ -4,7 +4,7 @@ import unittest
 import threading
 
 from datetime import datetime
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import vcr
 
@@ -220,7 +220,7 @@ class TestCommand(unittest.TestCase):
     def __cmd_wrap(self, *args):
         """ test helper """
         factory = QuoteServiceFactory()
-        factory.get_service = MagicMock(return_value=self.service)
+        factory.providers = {"fakeprovider": FakeQuoteService}
         return root_command.execute(*args, command_args={"service_factory": factory, "instance": self.ircbot})
 
     def test_quote_get_command(self):
@@ -229,11 +229,31 @@ class TestCommand(unittest.TestCase):
         res = self.__cmd_wrap(*command)
         self.assertEquals("Here's your fake quote for aapl", res)
 
+    def test_quote_get_command_invalid_input(self):
+
+        command = ["quote", "get", "aapl"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("No such provider 'aapl'", res)
+
+        command = ["quote", "get", "invalid-provider", "aapl"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals("No such provider 'invalid-provider'", res)
+
     def test_quote_search_command(self):
+
+        command = ["quote", "search", "fakeprovider", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertIn("Ticker: FOO, Market: Foo Market, Name: Foo Company", res)
+
+    def test_quote_search_command_invalid_input(self):
 
         command = ["quote", "search", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertIn("Ticker: FOO, Market: Foo Market, Name: Foo Company", res)
+        self.assertIn("No such provider 'foobar", res)
+
+        command = ["quote", "search", "invalid-provider", "foobar"]
+        res = self.__cmd_wrap(*command)
+        self.assertIn("No such provider 'invalid-provider", res)
 
     def test_execute_help_command(self):
 
