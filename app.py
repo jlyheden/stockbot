@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+import signal
 from datetime import datetime
 
 import irc.strings
@@ -139,4 +141,11 @@ if __name__ == '__main__':
     bot = IRCBot(server=Configuration().server_name, port=Configuration().server_port,
                  channel=Configuration().channel_name, nickname=Configuration().nick,
                  enable_scheduler=Configuration().scheduler)
+
+    def sigterm_handler(*args):
+        bot.die("kthxbai")
+        sys.exit(0)
+
+    signal.signal(signal.SIGTERM, sigterm_handler)
+
     bot.start()
