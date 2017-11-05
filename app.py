@@ -94,27 +94,30 @@ class IRCBot(SingleServerIRCBot, ScheduleHandler):
         pass
 
     def on_pubmsg(self, c, e):
+        sender = e.source.nick
         message = e.arguments[0]
         split = message.split(" ")
         to_me = split[0].endswith(":") and irc.strings.lower(split[0].rstrip(":")) == irc.strings.lower(
             self.connection.get_nickname())
 
         if to_me:
-
             commands = [irc.strings.lower(x) for x in split[1:]]
             root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
                                                           "instance": self},
-                                 callback=self.command_callback)
+                                 callback=self.command_callback, callback_args={"sender": sender})
 
-    def command_callback(self, result):
+    def command_callback(self, result, **kwargs):
         if isinstance(result, list):
             for row in result:
-                self.colorify_send(self.channel, row)
+                self.colorify_notice(kwargs.get('sender'), row)
         elif result is not None:
             self.colorify_send(self.channel, result)
 
     def colorify_send(self, target, msg):
         self.connection.privmsg(target, colorify(str(msg)))
+
+    def colorify_notice(self, target, msg):
+        self.connection.notice(target, colorify(msg))
 
     def on_dccmsg(self, c, e):
         # non-chat DCC messages are raw bytes; decode as text

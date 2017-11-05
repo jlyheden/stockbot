@@ -103,12 +103,13 @@ class BlockingExecuteCommand(Command):
 
     def execute(self, *args, **kwargs):
         cb = kwargs.get('callback', None)
+        cb_args = kwargs.get('callback_args', {})
         if callable(self.execute_command):
             result = self.execute_command(*args, **kwargs.get('command_args'))
         else:
             raise RuntimeError("execute_command not callable")
         if callable(cb):
-            return cb(result)
+            return cb(result, **cb_args)
         else:
             return result
 
@@ -117,11 +118,12 @@ class HelpCommand(Command):
 
     def execute(self, *args, **kwargs):
         cb = kwargs.get('callback', None)
+        cb_args = kwargs.get('callback_args', {})
         # This is a bit smelly but couldn't get backtracking to work, even though Command.get_root(command)
         # had access to the root object it always returns None
         result = root_command.show_help()
         if callable(cb):
-            return cb(result)
+            return cb(result, **cb_args)
         else:
             return result
 
@@ -134,6 +136,7 @@ class NonBlockingExecuteCommand(Command):
 
     def execute(self, *args, **kwargs):
         cb = kwargs.get('callback', None)
+        cb_args = kwargs.get('callback_args', {})
         thread_name = "thread-{}".format("_".join(args))
         if self.exclusive and self.is_already_running(thread_name):
             if callable(cb):
@@ -142,7 +145,7 @@ class NonBlockingExecuteCommand(Command):
         if callable(self.execute_command):
             thread = CommandThread(name=thread_name, target=self.execute_command, args=args,
                                    kwargs=kwargs.get('command_args'), daemon=False)
-            thread.set_callback(cb)
+            thread.set_callback(cb, cb_args)
             thread.start()
         else:
             raise RuntimeError("execute_command not callable")
@@ -163,16 +166,18 @@ class CommandThread(threading.Thread):
     def __init__(self, *args, **kwargs):
         super(CommandThread, self).__init__(*args, **kwargs)
         self._callback = None
+        self._callback_args = {}
 
-    def set_callback(self, cb):
+    def set_callback(self, cb, cb_args):
         self._callback = cb
+        self._callback_args = cb_args
 
     def run(self):
         # block until task has finished
         result = self._target(*self._args, **self._kwargs)
 
         if callable(self._callback):
-            self._callback(result)
+            self._callback(result, **self._callback_args)
 
 
 #
