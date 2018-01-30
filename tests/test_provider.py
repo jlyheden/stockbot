@@ -229,6 +229,40 @@ class TestCommand(unittest.TestCase):
         res = self.__cmd_wrap(*command)
         self.assertEquals("Here's your fake quote for aapl", res)
 
+    def test_lucky_quote_get_command(self):
+
+        class FakeQuote(object):
+
+            def __init__(self, data={}):
+                self.data = data
+
+            def is_empty(self):
+                return len(self.data.items()) == 0
+
+            def __str__(self):
+                return "Ticker: {}".format(self.data.get("ticker"))
+
+        class FakeQuoteServiceLocal(object):
+
+            def get_quote(self, ticker):
+                if ticker == "fancyticker":
+                    return FakeQuote()
+                else:
+                    return FakeQuote(data={"ticker": "AWESOMO"})
+
+            def search(self, query):
+                return GoogleFinanceSearchResult(result={
+                    "matches": [
+                        {"t": "AWESOMO", "e": "Foo Market", "n": "Foo Company"}
+                    ]
+                })
+
+        factory = QuoteServiceFactory()
+        factory.providers = {"fakeprovider": FakeQuoteServiceLocal}
+        command = ["q", "gl", "fakeprovider", "fancyticker"]
+        res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
+        self.assertEquals("Ticker: AWESOMO", str(res))
+
     def test_quote_get_command_invalid_input(self):
 
         command = ["quote", "get", "aapl"]

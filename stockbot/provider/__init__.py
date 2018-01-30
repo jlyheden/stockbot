@@ -216,6 +216,27 @@ def get_quote(*args, **kwargs):
         return "No such provider '{}'".format(provider)
 
 
+def get_quote_lucky(*args, **kwargs):
+    """ some evil branching here, just want to get it to work though """
+    provider = args[0]
+    ticker = " ".join(args[1:])
+    try:
+        service = kwargs.get('service_factory').get_service(provider)
+        response = service.get_quote(ticker)
+        if response.is_empty():
+            search_result = service.search(ticker)
+            if search_result.is_empty():
+                return "Nothing found for {}".format(ticker)
+            else:
+                first_ticker = [x for x in search_result.get_tickers() if x is not None][0]
+                return service.get_quote(first_ticker)
+        else:
+            return response
+    except ValueError as e:
+        LOGGER.exception("failed to retrieve service for provider '{}'".format(provider))
+        return "No such provider '{}'".format(provider)
+
+
 def search_quote(*args, **kwargs):
     provider = args[0]
     ticker = " ".join(args[1:])
@@ -441,6 +462,8 @@ scheduler_command.register(BlockingExecuteCommand(name="disable", execute_comman
 
 quote_command = Command(name="quote", short_name="q")
 quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <provider> <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="gl", execute_command=get_quote_lucky,
+                                              help="gl <provider> <ticker>"))
 quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote,
                                               help="search <provider> <ticker>"))
 quote_command.register(scheduler_command)

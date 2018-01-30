@@ -149,6 +149,12 @@ class GoogleFinanceQuote(object):
         return "Name: {n}, P/E: {pe}, Yield: {y}, Beta: {b}, Earnings Per Share: {eps}, {fl}".format(
             n=self.name, pe=self.pe, y=self.dy, b=self.beta, eps=self.eps, fl=flatten_keyratios)
 
+    def is_empty(self):
+        try:
+            return self.name is None
+        except Exception:
+            return True
+
 
 class GoogleFinanceSearchResult(object):
 
@@ -162,6 +168,9 @@ class GoogleFinanceSearchResult(object):
 
     def result_as_list(self):
         return ["Ticker: {t}, Market: {m}, Name: {n}".format(t=x["t"], m=x["e"], n=x["n"]) for x in self.result]
+
+    def get_tickers(self):
+        return [x.get("t", None) for x in self.result]
 
     def is_empty(self):
         return len(self.result) == 0

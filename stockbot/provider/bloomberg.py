@@ -38,6 +38,12 @@ class BloombergQuote(object):
             LOGGER.exception("Failed to look up attribute {}".format(item))
             return "N/A"
 
+    def is_empty(self):
+        try:
+            return self.name is None
+        except Exception:
+            return True
+
 
 class BloombergSearchResult(object):
 
@@ -61,6 +67,9 @@ class BloombergSearchResult(object):
                                                                           tt=x.get("resource_type", None))
                 for x in self.result
                 ]
+
+    def get_tickers(self):
+        return [x.get("ticker_symbol", None) for x in self.result]
 
     def is_empty(self):
         return len(self.result) == 0
