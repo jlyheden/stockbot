@@ -223,6 +223,7 @@ def get_quote_lucky(*args, **kwargs):
     try:
         service = kwargs.get('service_factory').get_service(provider)
         response = service.get_quote(ticker)
+        LOGGER.debug("Response from service get_quote: {}".format(str(response)))
         if response.is_empty():
             search_result = service.search(ticker)
             if search_result.is_empty():

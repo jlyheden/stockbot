@@ -151,7 +151,7 @@ class GoogleFinanceQuote(object):
 
     def is_empty(self):
         try:
-            return self.name is None
+            return self.name == "N/A"
         except Exception:
             return True
 

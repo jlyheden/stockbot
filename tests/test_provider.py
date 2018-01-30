@@ -87,6 +87,14 @@ class TestBloombergQuote(unittest.TestCase):
         self.assertEquals("N/A", tm.name)
         self.assertEquals("Name: N/A, Price: N/A, Open Price: N/A, Low Price: N/A, High Price: N/A, Percent Change 1 Day: N/A, Update Time: N/A", str(tm))
 
+    def test_is_empty(self):
+
+        quote = BloombergQuote()
+        self.assertTrue(quote.is_empty())
+
+        quote = BloombergQuote(message={"basicQuote": {"name": "foobar"}})
+        self.assertFalse(quote.is_empty())
+
 
 class TestBloombergQueryService(unittest.TestCase):
 
@@ -98,6 +106,17 @@ class TestBloombergQueryService(unittest.TestCase):
         res = self.service.search("dax")
         self.assertEquals(BloombergSearchResult, type(res))
         self.assertIn("Ticker: DAX:IND, Country: DE, Name: Deutsche Boerse AG German Stock Index DAX, Type: Index", res.result_as_list())
+
+
+class TestGoogleFinanceQuote(unittest.TestCase):
+
+    def test_is_empty(self):
+
+        quote = GoogleFinanceQuote()
+        self.assertTrue(quote.is_empty())
+
+        quote = GoogleFinanceQuote(message={"name": "foobar"})
+        self.assertFalse(quote.is_empty())
 
 
 class TestGoogleFinanceQueryService(unittest.TestCase):
