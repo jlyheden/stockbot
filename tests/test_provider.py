@@ -248,7 +248,7 @@ class TestCommand(unittest.TestCase):
         res = self.__cmd_wrap(*command)
         self.assertEquals("Here's your fake quote for aapl", res)
 
-    def test_lucky_quote_get_command(self):
+    def test_lucky_quote_and_quick_get_command(self):
 
         class FakeQuote(object):
 
@@ -279,6 +279,11 @@ class TestCommand(unittest.TestCase):
         factory = QuoteServiceFactory()
         factory.providers = {"fakeprovider": FakeQuoteServiceLocal}
         command = ["q", "gl", "fakeprovider", "fancyticker"]
+        res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
+        self.assertEquals("Ticker: AWESOMO", str(res))
+
+        factory.providers = {"bloomberg": FakeQuoteServiceLocal}
+        command = ["qq", "fancyticker"]
         res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
         self.assertEquals("Ticker: AWESOMO", str(res))
 

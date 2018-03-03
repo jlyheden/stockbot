@@ -238,6 +238,12 @@ def get_quote_lucky(*args, **kwargs):
         return "No such provider '{}'".format(provider)
 
 
+def get_quote_quick(*args, **kwargs):
+    lucky_args = ["bloomberg"]
+    lucky_args.extend(args)
+    return get_quote_lucky(*lucky_args, **kwargs)
+
+
 def search_quote(*args, **kwargs):
     provider = args[0]
     ticker = " ".join(args[1:])
@@ -487,3 +493,5 @@ root_command.register(quote_command)
 root_command.register(fundamental_command)
 root_command.register(scrape_command)
 root_command.register(HelpCommand(name="help"))
+root_command.register(BlockingExecuteCommand(name="quick", short_name="qq", execute_command=get_quote_quick,
+                                             help="quick get lucky"))
