@@ -1,0 +1,36 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.1
+
+    working_directory: .
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - tox-env-{{ checksum "requirements.txt" }}-{{ checksum "tox.ini" }}
+
+      - run:
+          name: install tox
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install tox
+
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            tox
+
+      - save_cache:
+          paths:
+            - .tox
+          key: tox-env-{{ checksum "requirements.txt" }}-{{ checksum "tox.ini" }}
