@@ -11,7 +11,8 @@ from irc.client import ip_numstr_to_quad
 from stockbot.configuration import Configuration
 from stockbot.db import create_tables
 from stockbot.persistence import DatabaseCollection, ScheduledCommand
-from stockbot.provider import root_command, QuoteServiceFactory
+from stockbot.command import root_command
+from stockbot.provider import QuoteServiceFactory
 from stockbot.util import colorify
 
 
