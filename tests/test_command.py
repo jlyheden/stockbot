@@ -60,6 +60,37 @@ class TestCommand(unittest.TestCase):
         res = self.__cmd_wrap(*command)
         self.assertEquals("Here's your fake quote for aapl", res)
 
+    def test_quote_get_fresh_command(self):
+
+        class FakeQuoteIsNotFresh(object):
+            def is_fresh(self):
+                return False
+
+        class FakeQuoteIsFresh(object):
+            def is_fresh(self):
+                return True
+
+            def __str__(self):
+                return "I'm fresh"
+
+        class FakeQuoteServiceLocal(object):
+
+            def get_quote(self, ticker):
+                if ticker == "not_fresh":
+                    return FakeQuoteIsNotFresh()
+                else:
+                    return FakeQuoteIsFresh()
+
+        factory = QuoteServiceFactory()
+        factory.providers = {"fakeprovider": FakeQuoteServiceLocal}
+        command = ["quote", "get_fresh", "fakeprovider", "not_fresh"]
+        res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
+        self.assertIsNone(res)
+
+        command = ["quote", "get_fresh", "fakeprovider", "fresh"]
+        res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
+        self.assertEquals("I'm fresh", str(res))
+
     def test_lucky_quote_and_quick_get_command(self):
 
         class FakeQuote(object):

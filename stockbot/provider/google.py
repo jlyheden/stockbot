@@ -155,6 +155,10 @@ class GoogleFinanceQuote(object):
         except Exception:
             return True
 
+    def is_fresh(self):
+        LOGGER.warning("not implemented in this provider because the data necessary is not exposed")
+        return False
+
 
 class GoogleFinanceSearchResult(object):
 

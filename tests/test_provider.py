@@ -3,6 +3,7 @@ import os
 import unittest
 
 from datetime import datetime
+from unittest.mock import patch
 
 import vcr
 
@@ -91,6 +92,26 @@ class TestBloombergQuote(unittest.TestCase):
 
         quote = BloombergQuote(message={"basicQuote": {"name": "foobar"}})
         self.assertFalse(quote.is_empty())
+
+    @patch('stockbot.provider.bloomberg.datetime')
+    def test_is_fresh(self, datetime_mock):
+
+        # less than 15 minutes should be fresh
+        timestamp = 1507645468
+        datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + (15*60))
+        datetime_mock.fromtimestamp.side_effect = lambda *args, **kw: datetime.fromtimestamp(*args, **kw)
+        datetime_mock.side_effect = lambda *args, **kw: datetime(*args, **kw)
+        tm = BloombergQuote(message={
+            "basicQuote": {
+                "name": "foobar",
+                "lastUpdateEpoch": str(timestamp)
+            }
+        })
+        self.assertTrue(tm.is_fresh())
+
+        # more than 16 minutes should be stale
+        datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + (17*60))
+        self.assertFalse(tm.is_fresh())
 
 
 class TestBloombergQueryService(unittest.TestCase):

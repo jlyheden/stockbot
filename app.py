@@ -38,7 +38,14 @@ class ScheduleHandler(object):
         return (dt.isoweekday() in self.days) and (dt.hour in self.hours)
 
 
-class IRCBot(SingleServerIRCBot, ScheduleHandler):
+class ScheduleHandlerAlways(object):
+
+    @staticmethod
+    def timer_should_execute(*args):
+        return True
+
+
+class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
     def __init__(self, channel, nickname, server, port, enable_scheduler=False):
         super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
