@@ -15,6 +15,18 @@ def get_quote(*args, **kwargs):
         return "No such provider '{}'".format(provider)
 
 
+def get_fresh_quote(*args, **kwargs):
+    provider = args[0]
+    ticker = " ".join(args[1:])
+    try:
+        service = kwargs.get('service_factory').get_service(provider)
+        ticker = service.get_quote(ticker)
+        return ticker if ticker.is_fresh() else None
+    except ValueError as e:
+        LOGGER.exception("failed to retrieve service for provider '{}'".format(provider))
+        return "No such provider '{}'".format(provider)
+
+
 def get_quote_lucky(*args, **kwargs):
     """ some evil branching here, just want to get it to work though """
     provider = args[0]
@@ -107,26 +119,27 @@ def disable_scheduler(*args, **kwargs):
     return "Scheduler: disabled"
 
 
+scheduler_command = Command(name="scheduler")
+scheduler_command.register(BlockingExecuteCommand(name="enable", execute_command=enable_scheduler))
+scheduler_command.register(BlockingExecuteCommand(name="disable", execute_command=disable_scheduler))
+
 scheduler_command_command = Command(name="command")
 scheduler_command_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_command))
 scheduler_command_command.register(BlockingExecuteCommand(name="add", execute_command=add_scheduler_command,
                                                           help="add <command>"))
 scheduler_command_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_scheduler_command,
                                                           help="remove <command>"))
+scheduler_command.register(scheduler_command_command)
 
 scheduler_interval_command = Command(name="interval")
 scheduler_interval_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_interval))
 scheduler_interval_command.register(BlockingExecuteCommand(name="set", execute_command=set_scheduler_interval,
                                                            help="set <interval-int>"))
-
-scheduler_command = Command(name="scheduler")
-scheduler_command.register(scheduler_command_command)
 scheduler_command.register(scheduler_interval_command)
-scheduler_command.register(BlockingExecuteCommand(name="enable", execute_command=enable_scheduler))
-scheduler_command.register(BlockingExecuteCommand(name="disable", execute_command=disable_scheduler))
 
 quote_command = Command(name="quote", short_name="q")
 quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <provider> <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="get_fresh", execute_command=get_fresh_quote, help="get <provider> <ticker>"))
 quote_command.register(BlockingExecuteCommand(name="gl", execute_command=get_quote_lucky,
                                               help="gl <provider> <ticker>"))
 quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote,
