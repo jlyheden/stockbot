@@ -113,6 +113,15 @@ class TestBloombergQuote(unittest.TestCase):
         datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + (17*60))
         self.assertFalse(tm.is_fresh())
 
+        # if lastUpdateEpoch is missing for some reason should not crash the application
+        tm = BloombergQuote(message={
+            "basicQuote": {
+                "name": "foobar"
+            }
+        })
+        datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + (15*60))
+        self.assertFalse(tm.is_fresh())
+
 
 class TestBloombergQueryService(unittest.TestCase):
 
