@@ -33,14 +33,14 @@ class Command(object):
         return c[0].execute(*args[1:], **kwargs)
 
     def __repr__(self):
+        help_output = [self.name]
+        if self.short_name is not None:
+            help_output.append("({})".format(self.short_name))
         if self.help is not None:
-            return self.help
-        else:
-            if self.short_name is not None:
-                return "{}({})".format(self.name, self.short_name)
-            return self.name
+            help_output.append(self.help)
+        return " ".join(help_output)
 
-    def show_help(self):
+    def show_help(self, *args, **kwargs):
         def paths(tree):
             """took and modified https://stackoverflow.com/a/5671568"""
             root = tree
@@ -56,15 +56,6 @@ class Command(object):
             rv.append(" ".join([str(x) for x in c[1:]]))
         return rv
 
-    @staticmethod
-    def get_root(command):
-        """can reach root command but always returns None for some reason"""
-        if command.parent_command is None:
-            print("Got command {}".format(command))
-            print(command.show_help())
-            return command
-        Command.get_root(command.parent_command)
-
 
 class BlockingExecuteCommand(Command):
 
@@ -75,20 +66,6 @@ class BlockingExecuteCommand(Command):
             result = self.execute_command(*args, **kwargs.get('command_args'))
         else:
             raise RuntimeError("execute_command not callable")
-        if callable(cb):
-            return cb(result, **cb_args)
-        else:
-            return result
-
-
-class HelpCommand(Command):
-
-    def execute(self, *args, **kwargs):
-        cb = kwargs.get('callback', None)
-        cb_args = kwargs.get('callback_args', {})
-        # This is a bit smelly but couldn't get backtracking to work, even though Command.get_root(command)
-        # had access to the root object it always returns None
-        result = root_command.show_help()
         if callable(cb):
             return cb(result, **cb_args)
         else:
@@ -148,7 +125,8 @@ class CommandThread(threading.Thread):
 
 
 root_command = Command(name="root")
-root_command.register(HelpCommand(name="help"))
+root_command.register(BlockingExecuteCommand(name="help", execute_command=root_command.show_help,
+                                             help="show help section"))
 
 import stockbot.command.fundamental
 import stockbot.command.quote

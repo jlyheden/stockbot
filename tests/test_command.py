@@ -160,8 +160,8 @@ class TestCommand(unittest.TestCase):
 
         command = ["help"]
         res = self.__cmd_wrap(*command)
-        self.assertIn("quote(q) get <provider> <ticker>", res)
-        self.assertIn("quote(q) search <provider> <ticker>", res)
+        self.assertIn("quote (q) get <provider> <ticker>", res)
+        self.assertIn("quote (q) search <provider> <ticker>", res)
 
     def test_execute_scheduler_ticker_commands(self):
 

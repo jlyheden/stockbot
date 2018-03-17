@@ -126,26 +126,26 @@ scheduler_command.register(BlockingExecuteCommand(name="disable", execute_comman
 scheduler_command_command = Command(name="command")
 scheduler_command_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_command))
 scheduler_command_command.register(BlockingExecuteCommand(name="add", execute_command=add_scheduler_command,
-                                                          help="add <command>"))
+                                                          help="<command>"))
 scheduler_command_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_scheduler_command,
-                                                          help="remove <command>"))
+                                                          help="<command>"))
 scheduler_command.register(scheduler_command_command)
 
 scheduler_interval_command = Command(name="interval")
 scheduler_interval_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_interval))
 scheduler_interval_command.register(BlockingExecuteCommand(name="set", execute_command=set_scheduler_interval,
-                                                           help="set <interval-int>"))
+                                                           help="<interval-int>"))
 scheduler_command.register(scheduler_interval_command)
 
 quote_command = Command(name="quote", short_name="q")
-quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="get <provider> <ticker>"))
-quote_command.register(BlockingExecuteCommand(name="get_fresh", execute_command=get_fresh_quote, help="get <provider> <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="<provider> <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="get_fresh", execute_command=get_fresh_quote, help="<provider> <ticker>"))
 quote_command.register(BlockingExecuteCommand(name="gl", execute_command=get_quote_lucky,
-                                              help="gl <provider> <ticker>"))
+                                              help="<provider> <ticker>"))
 quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote,
-                                              help="search <provider> <ticker>"))
+                                              help="<provider> <ticker>"))
 quote_command.register(scheduler_command)
 
 root_command.register(quote_command)
 root_command.register(BlockingExecuteCommand(name="quick", short_name="qq", execute_command=get_quote_quick,
-                                             help="quick get lucky"))
+                                             help="<search-ticker-string>"))

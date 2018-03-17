@@ -65,7 +65,8 @@ def stock_analytics_top(*args, **kwargs):
         result = session.query(StockDomain)\
             .filter(filter_by != 0.0)\
             .order_by(order_by).limit(count)
-        rv.extend(["Top {}: Ticker: {}, Name: {}, Value: {}".format(i + 1, x.ticker, x.name, getattr(x, sort_field_name))
+        rv.extend(["Top {}: Ticker: {}, Name: {}, Value: {}".format(i + 1, x.ticker, x.name,
+                                                                    getattr(x, sort_field_name))
                    for i, x in enumerate(result)])
     except Exception as e:
         LOGGER.exception("failed to query stockdomain for top '{}'".format(sort_field_name))
@@ -77,10 +78,9 @@ def stock_analytics_top(*args, **kwargs):
 
 
 fundamental_command = Command(name="fundamental", short_name="fa")
-fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental,
-                                                    help="get <ticker> <q|y>"))
+fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental, help="<ticker> <q|y>"))
 fundamental_command.register(BlockingExecuteCommand(name="fields", execute_command=stock_analytics_fields))
 fundamental_command.register(BlockingExecuteCommand(name="top", execute_command=stock_analytics_top,
-                                                    help="top <count> <field> (optional 'desc')"))
+                                                    help="<count> <field> (optional 'desc')"))
 
 root_command.register(fundamental_command)
