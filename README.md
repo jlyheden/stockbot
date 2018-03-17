@@ -3,22 +3,22 @@
 
 # stockbot
 
-A stupid simple IRC bot that returns stock quotes scheduled and on demand
+An IRC bot that mostly fetches stock quotes from various sources, supports simple scheduling mechanisms and
+can also be interacted with using a CLI.
 
 ## Usage
 
-The container will throw a stack trace if you are missing some configuration, here's what's needed at some point in time:
+### Daemon
 
+For personal use the bot gets deployed as a Heroku worker dyno but running in docker or other platform should work
+just fine. Check out the docker-compose.yml for inspiration.
+
+### CLI
+
+Invoke using the cli.py file:
 ```
-$ docker run --rm \
-    -e SERVER_NAME=<irc.server.fqdn> \
-    -e SERVER_PORT=<irc.server.port> \
-    -e CHANNEL_NAME=#<channel.to.join> \
-    -e NICK=<irc.nick> \
-    -e DEFAULT_TICKER=<bloomberg.stock.ticker>
-    jlyheden/stockbot:latest
+$ python cli.py help
 ```
 
-Log level can be controlled by setting the env var LOGLEVEL and maps to the built-in python logging levels name wise.
-
-Setting env var TZ is usually a good thing unless you are living in UTC.
+Some commands rely on a scheduler and others rely on database connectivity. But most get commands should work fine using
+the CLI.

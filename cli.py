@@ -1,7 +1,10 @@
 import sys
+import logging
 
-from stockbot.provider import GoogleFinanceQueryService
-from stockbot.provider import root_command
+logging.disable(logging.ERROR)
+
+from stockbot.provider import QuoteServiceFactory
+from stockbot.command import root_command
 
 
 def callback(result):
@@ -12,6 +15,5 @@ def callback(result):
     else:
         root_command.execute(*["help"], callback=callback)
 
-service = GoogleFinanceQueryService()
 
-root_command.execute(*sys.argv[1:], command_args={"service": service}, callback=callback)
+root_command.execute(*sys.argv[1:], command_args={"service_factory": QuoteServiceFactory()}, callback=callback)
