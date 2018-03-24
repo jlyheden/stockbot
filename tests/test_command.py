@@ -17,6 +17,8 @@ class FakeQuoteService(object):
         return "Here's your fake quote for {}".format(ticker)
 
     def search(self, query):
+        if query == 'none-type-response':
+            return None
         return GoogleFinanceSearchResult(result={
             "matches": [
                 {"t": "FOO", "e": "Foo Market", "n": "Foo Company"}
@@ -155,6 +157,12 @@ class TestCommand(unittest.TestCase):
         command = ["quote", "search", "invalid-provider", "foobar"]
         res = self.__cmd_wrap(*command)
         self.assertIn("No such provider 'invalid-provider", res)
+
+    def test_quote_search_command_none_type_response(self):
+
+        command = ["quote", "search", "fakeprovider", "none-type-response"]
+        res = self.__cmd_wrap(*command)
+        self.assertIn("Response from provider 'fakeprovider' broken", res)
 
     def test_execute_help_command(self):
 

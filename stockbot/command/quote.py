@@ -60,7 +60,10 @@ def search_quote(*args, **kwargs):
     ticker = " ".join(args[1:])
     try:
         service = kwargs.get('service_factory').get_service(provider)
-        return service.search(ticker).result_as_list()
+        search_result = service.search(ticker)
+        if search_result is None:
+            return "Response from provider '{}' broken".format(provider)
+        return search_result.result_as_list()
     except ValueError as e:
         LOGGER.exception("failed to retrieve service for provider '{}'".format(provider))
         return "No such provider '{}'".format(provider)
