@@ -47,7 +47,7 @@ class BloombergQuote(object):
     def is_fresh(self):
         if self.lastUpdateEpoch != "N/A":
             # most tickers are lagging 15 minutes so add another minute to avoid never getting "fresh" data
-            return (datetime.now() - datetime.fromtimestamp(int(self.lastUpdateEpoch))).seconds < 16*60
+            return (datetime.now() - datetime.fromtimestamp(int(self.lastUpdateEpoch))).total_seconds() < 16*60
         else:
             return False
 

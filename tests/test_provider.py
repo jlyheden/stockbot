@@ -96,8 +96,10 @@ class TestBloombergQuote(unittest.TestCase):
     @patch('stockbot.provider.bloomberg.datetime')
     def test_is_fresh(self, datetime_mock):
 
-        # less than 15 minutes should be fresh
+        # timestamp of when the quote was last updated
         timestamp = 1507645468
+
+        # compare with now() 15 minutes into the future
         datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + (15*60))
         datetime_mock.fromtimestamp.side_effect = lambda *args, **kw: datetime.fromtimestamp(*args, **kw)
         datetime_mock.side_effect = lambda *args, **kw: datetime(*args, **kw)
@@ -109,8 +111,12 @@ class TestBloombergQuote(unittest.TestCase):
         })
         self.assertTrue(tm.is_fresh())
 
-        # more than 16 minutes should be stale
+        # compare with now() 16 minutes into the future
         datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + (17*60))
+        self.assertFalse(tm.is_fresh())
+
+        # compare with now() 1 day into the future
+        datetime_mock.now.return_value = datetime.fromtimestamp(timestamp + 86400)
         self.assertFalse(tm.is_fresh())
 
         # if lastUpdateEpoch is missing for some reason should not crash the application
