@@ -77,13 +77,13 @@ class TestBloombergQuote(unittest.TestCase):
         self.assertEquals("EDT", tm.userTimeZone)
 
         d_string = datetime.fromtimestamp(1507645468).strftime("%Y-%m-%d %H:%M:%S")
-        self.assertEquals("Name: OMX Stockholm 30 Index, Price: 1642.49, Open Price: 1647.925, Low Price: 1642.214, High Price: 1651.131, Percent Change 1 Day: -0.329748, Update Time: {}".format(d_string), str(tm))
+        self.assertEquals("Name: OMX Stockholm 30 Index, Price: 1642.49, Open Price: 1647.925, Low Price: 1642.214, High Price: 1651.131, Percent Change 1 Day: -0.329748, Total Return YTD: 8.25818928, Update Time: {}".format(d_string), str(tm))
 
     def test_parse_nodata(self):
         """instantiate without valid quotedata"""
         tm = BloombergQuote()
         self.assertEquals("N/A", tm.name)
-        self.assertEquals("Name: N/A, Price: N/A, Open Price: N/A, Low Price: N/A, High Price: N/A, Percent Change 1 Day: N/A, Update Time: N/A", str(tm))
+        self.assertEquals("Name: N/A, Price: N/A, Open Price: N/A, Low Price: N/A, High Price: N/A, Percent Change 1 Day: N/A, Total Return YTD: N/A, Update Time: N/A", str(tm))
 
     def test_is_empty(self):
 

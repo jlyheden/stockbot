@@ -26,9 +26,9 @@ class BloombergQuote(object):
             setattr(self, k, v)
 
     def __str__(self):
-        return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Update Time: {ut}"\
+        return "Name: {n}, Price: {p}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Total Return YTD: {ytd}, Update Time: {ut}"\
             .format(n=self.name, p=self.price, op=self.openPrice, lp=self.lowPrice, hp=self.highPrice,
-                    p1d=self.percentChange1Day, ut=self.lastUpdateDatetime)
+                    p1d=self.percentChange1Day, ytd=self.totalReturnYtd, ut=self.lastUpdateDatetime)
 
     def __getattribute__(self, item):
         try:
