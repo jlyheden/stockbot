@@ -3,7 +3,8 @@ import re
 
 def colorify(msg):
 
-    numerical_regex = re.compile("[^\w](change|total return)[^\w]", flags=re.IGNORECASE)
+    num_change_regex = re.compile("[^\w]?total return[^\w]?", flags=re.IGNORECASE)
+    num_important_change_regex = re.compile("[^\w]?change[^\w]?", flags=re.IGNORECASE)
 
     # split over comma separated "sections"
     section_split = msg.split(",")
@@ -27,18 +28,25 @@ def colorify(msg):
                 v = float(s_split[1])
 
                 # check if number should be colored differently depending on positive or negative value
-                if numerical_regex.search(s_split[0]) is not None:
+                if num_change_regex.search(s_split[0]) is not None:
                     # negative gets colored red
                     if v < 0:
-                        value_replace = "\x0304{}\x03".format(s_split[1])
+                        value_replace = "\x0304 {:.3f}\x03".format(v)
 
                     # positive gets colored green
                     else:
-                        value_replace = "\x0303{}\x03".format(s_split[1])
+                        value_replace = "\x0303 {:.3f}\x03".format(v)
+                elif num_important_change_regex.search(s_split[0]) is not None:
+                    # negative gets colored red and bold
+                    if v < 0:
+                        value_replace = "\x02\x0304 {:.3f}\x03\x02".format(v)
+
+                    # positive gets colored green and bold
+                    else:
+                        value_replace = "\x02\x0303 {:.3f}\x03\x02".format(v)
                 else:
                     # unknown number gets colored grey
-                    value_replace = "\x0314{}\x03".format(s_split[1])
-                    #value_replace = "\x0300{}\x03".format(s_split[1])
+                    value_replace = "\x0314 {:.3f}\x03".format(v)
 
             except ValueError as e:
 
