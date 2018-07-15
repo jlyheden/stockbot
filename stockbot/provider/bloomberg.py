@@ -99,7 +99,7 @@ class BloombergQueryService(BaseQuoteService):
                 return BloombergQuote(message=j)
         except Exception as e:
             LOGGER.exception("Failed to retrieve stock quote")
-            return None
+            return BloombergQuote()
 
     def search(self, query):
         if query not in self.search_cache:

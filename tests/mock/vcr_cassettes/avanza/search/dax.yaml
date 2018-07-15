@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.18.4]
+    method: GET
+    uri: https://www.avanza.se/ab/sok/inline?query=dax
+  response:
+    body:
+      string: !!binary |
+        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
+        eSw4AAA=
+    headers:
+      Cache-Control: [no-cache, no-store]
+      Connection: [Keep-Alive]
+      Content-Encoding: [gzip]
+      Content-Language: [sv-SE]
+      Content-Length: ['1601']
+      Content-Type: [text/html;charset=utf-8]
+      Date: ['Sun, 15 Jul 2018 13:22:06 GMT']
+      Expires: ['Thu, 01 Jan 1970 00:00:00 GMT']
+      Keep-Alive: ['timeout=70, max=2000']
+      Pragma: [no-cache]
+      Referrer-Policy: [origin-when-cross-origin]
+      Server: [Apache]
+      Set-Cookie: [AZAABSESSION=tcxe5yr7imlb12rvv1kgrsr09;Path=/;Secure;HttpOnly;Secure]
+      Strict-Transport-Security: [max-age=31536000]
+      Vary: [Accept-Encoding]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-UA-Compatible: ['IE=edge,chrome=1']
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 200, message: OK}
+version: 1
