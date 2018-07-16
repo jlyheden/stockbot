@@ -127,7 +127,7 @@ class TestCommand(unittest.TestCase):
         res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
         self.assertEquals("Ticker: AWESOMO", str(res))
 
-        factory.providers = {"bloomberg": FakeQuoteServiceLocal}
+        factory.providers = {"avanza": FakeQuoteServiceLocal}
         command = ["qq", "fancyticker"]
         res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
         self.assertEquals("Ticker: AWESOMO", str(res))

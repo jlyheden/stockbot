@@ -2,7 +2,7 @@ import logging
 import requests
 import re
 
-from datetime import datetime
+from datetime import datetime, time
 from lxml.html.soupparser import fromstring
 
 from stockbot.provider.base import BaseQuoteService
@@ -47,10 +47,17 @@ class AvanzaQuote(object):
                     stripped_value = re.sub('[^0-9,]*', '', price_element.text_content())
                     setattr(self, attr_name, float(re.sub(',', '.', stripped_value)))
 
+            # get date
+            try:
+                date_element = quote_root.xpath("//span[contains(@class,'updated')]")[0]
+                self.lastUpdateTime = date_element.text
+            except:
+                LOGGER.exception("Failed to retrieve time")
+
     def __str__(self):
-        return "Name: {n}, Open Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Update Time: {ut}" \
+        return "Name: {n}, Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Update Time: {ut}" \
             .format(n=self.name, op=self.lastPrice, lp=self.lowestPrice, hp=self.highestPrice,
-                    p1d=self.percentChange, ut=self.lastUpdateDatetime)
+                    p1d=self.percentChange, ut=self.lastUpdateTime)
 
     def __getattribute__(self, item):
         try:

@@ -50,7 +50,7 @@ def get_quote_lucky(*args, **kwargs):
 
 
 def get_quote_quick(*args, **kwargs):
-    lucky_args = ["bloomberg"]
+    lucky_args = ["avanza"]
     lucky_args.extend(args)
     return get_quote_lucky(*lucky_args, **kwargs)
 
