@@ -13,6 +13,7 @@ from stockbot.provider.bloomberg import BloombergQuote, BloombergQueryService, B
 from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuote, GoogleFinanceSearchResult,\
     StockDomain
 from stockbot.provider.nasdaq import NasdaqIndexScraper
+from stockbot.provider.avanza import AvanzaQuote, AvanzaQueryService, AvanzaSearchResult
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -290,3 +291,26 @@ class TestQuoteServiceFactory(unittest.TestCase):
         # check that the same instance is returned on each invocation
         self.assertEquals(factory.get_service("google"), factory.get_service("google"))
         self.assertEquals(factory.get_service("bloomberg"), factory.get_service("bloomberg"))
+
+
+class TestAvanzaQueryService(unittest.TestCase):
+
+    def setUp(self):
+        self.service = AvanzaQueryService()
+
+    @vcr.use_cassette('mock/vcr_cassettes/avanza/search/dax.yaml')
+    def test_search(self):
+        ticker = "dax"
+        result = self.service.search(ticker)
+        self.assertEquals(type(result), AvanzaSearchResult)
+        self.assertTrue(len(result.result) > 0)
+        self.assertEquals(result.result[0]["name"], "DAX")
+
+    @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/dax.yaml')
+    def test_get_quote(self):
+        ticker = "dax"
+        quote = self.service.get_quote(ticker)
+        self.assertEquals(type(quote), AvanzaQuote)
+        self.assertEquals(quote.lastPrice, 12540.73)
+        self.assertEquals(quote.lowestPrice, 12499.30)
+        self.assertEquals(quote.highestPrice, 12583.79)
