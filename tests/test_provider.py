@@ -314,3 +314,9 @@ class TestAvanzaQueryService(unittest.TestCase):
         self.assertEquals(quote.lastPrice, 12540.73)
         self.assertEquals(quote.lowestPrice, 12499.30)
         self.assertEquals(quote.highestPrice, 12583.79)
+
+    @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/avanza_zero.yaml')
+    def test_get_fund(self):
+        ticker = "avanza zero"
+        quote = self.service.get_quote(ticker)
+        self.assertEquals(str(quote), "Name: AVANZA ZERO, NAV: 215.19, Percent Change 1 Day: 0.6, Percent Change 3 Months: 2.66, Percent Change 1 Year: -1.71, Rating: 2/5, Update Time: 2018-07-13")

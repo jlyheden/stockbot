@@ -10,13 +10,88 @@ from stockbot.provider.base import BaseQuoteService
 LOGGER = logging.getLogger(__name__)
 
 
+def avanza_quote_factory(html_data):
+    tree = fromstring(html_data)
+
+    quote_type_element = tree.xpath("//div[@id='surface']")
+    if len(quote_type_element) > 0:
+        quote_type = quote_type_element[0].attrib['data-page_type']
+        if quote_type in ('stock', 'index'):
+            return AvanzaQuote(tree=tree)
+        elif quote_type == 'fund':
+            return AvanzaFundQuote(tree=tree)
+        else:
+            LOGGER.error("Unknown quote type {}".format(quote_type))
+    else:
+        LOGGER.error("Cannot determine quote type")
+
+
+def percent_str_to_float(s):
+    try:
+        s1 = re.sub('[^0-9\-,]', '', s)
+        return float(re.sub(',', '.', s1))
+    except Exception as e:
+        LOGGER.exception("Failed to cast {} to float, returning the orig value".format(s))
+        return s
+
+
+class AvanzaFundQuote(object):
+
+    def __init__(self, *args, **kwargs):
+        tree = kwargs.get('tree', None)
+
+        if tree is not None:
+            quote_root = tree.xpath("//div[contains(@class,'quote')]//ul[contains(@class,'quoteBar')]")[0]
+            for element in quote_root.xpath("//meta[@itemprop]"):
+                name = element.attrib['itemprop']
+                value = element.attrib['content']
+                if getattr(self, name) == "N/A":
+                    if name == 'price':
+                        self.price = float(value)
+                    elif name == 'name' and value == 'Morningstar':
+                        continue
+                    else:
+                        setattr(self, name, value)
+
+            self.lastUpdateTime = quote_root.xpath("//span[@itemprop='datePublished']")[0].text.lstrip().rstrip()
+
+            # we are lazy and depend on order here
+            price_changes = quote_root.xpath("//span[contains(@class,'changePercent')]")
+            self.price_change_1d = percent_str_to_float(price_changes[0].text)
+            self.price_change_3m = percent_str_to_float(price_changes[1].text)
+            self.price_change_1y = percent_str_to_float(price_changes[2].text)
+
+    def __str__(self):
+        return "Name: {n}, NAV: {p}, Percent Change 1 Day: {c1d}, Percent Change 3 Months: {c3m}, Percent Change 1 Year: {c1y}, Rating: {rt}, Update Time: {ut}" \
+            .format(n=self.name, p=self.price, c1d=self.price_change_1d, c3m=self.price_change_3m,
+                    c1y=self.price_change_1y, rt="{}/{}".format(self.ratingValue,self.bestRating),
+                    ut=self.lastUpdateTime)
+
+    def __getattribute__(self, item):
+        try:
+            # we cannot use this objects getattribute because then we loop until the world collapses
+            return object.__getattribute__(self, item)
+        except Exception as e:
+            LOGGER.exception("Failed to look up attribute {}".format(item))
+            return "N/A"
+
+    def is_empty(self):
+        try:
+            return self.name == "N/A"
+        except Exception:
+            return True
+
+    def is_fresh(self):
+        # funds are never fresh
+        return False
+
+
 class AvanzaQuote(object):
 
     def __init__(self, *args, **kwargs):
-        data = kwargs.get('message', None)
+        tree = kwargs.get('tree', None)
 
-        if data is not None:
-            tree = fromstring(data)
+        if tree is not None:
             quote_root = tree.xpath("//div[contains(@class,'quote')]//ul[contains(@class,'quoteBar')]")[0]
             self.currency = quote_root.attrib['data-currency'].rstrip().lstrip()
             try:
@@ -130,7 +205,7 @@ class AvanzaQueryService(BaseQuoteService):
         search_result = self.search(ticker)
         try:
             response = requests.get(search_result.result[0]['link'])
-            return AvanzaQuote(message=self.__sanitize_avanza_response(response.text))
+            return avanza_quote_factory(html_data=response.text)
         except IndexError:
             return AvanzaQuote()
 
@@ -139,7 +214,7 @@ class AvanzaQueryService(BaseQuoteService):
             LOGGER.info("Response from query {q} not in cache, will query avanzas search".format(q=query))
             try:
                 response = requests.get(self.__search_url(query))
-                self.search_cache[query] = AvanzaSearchResult(message=self.__sanitize_avanza_response(response.text))
+                self.search_cache[query] = AvanzaSearchResult(message=response.text)
             except Exception as e:
                 return None
         return self.search_cache[query]
@@ -149,9 +224,3 @@ class AvanzaQueryService(BaseQuoteService):
         url = "https://www.avanza.se/ab/sok/inline?query={query}".format(query=query)
         LOGGER.debug("search url: {}".format(url))
         return url
-
-    @staticmethod
-    def __sanitize_avanza_response(response):
-        # remove carriage return
-        modified = re.sub('\r', '', response, flags=re.MULTILINE)
-        return modified
