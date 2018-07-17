@@ -97,17 +97,14 @@ class AvanzaQuote(object):
             try:
                 self.name = quote_root.attrib['data-intrument_name']
             except:
-                # bla
                 div = tree.xpath("//div[contains(@class,'controlPanel')]/div[contains(@class,'displayName')]")
                 self.name = div[0].text.lstrip().rstrip()
             try:
                 self.percentChange = float(quote_root.attrib['data-change_percent'])
             except:
-                # bla
                 span = tree.xpath("//span[contains(@class,'changePercent')]")
                 raw_percentage = span[0].text
-                stripped_percentage = re.sub('[^0-9\-,]*', '', raw_percentage)
-                self.percentChange = float(re.sub(',', '.', stripped_percentage))
+                self.percentChange = percent_str_to_float(raw_percentage)
 
             try:
                 self.ticker = quote_root.attrib['data-short_name']
@@ -119,8 +116,7 @@ class AvanzaQuote(object):
                 # https://lxml.de/lxmlhtml.html#html-element-methods
                 if price_element.text_content() is not None:
                     attr_name = [x for x in price_element.attrib['class'].split(" ") if x.endswith("Price")][0]
-                    stripped_value = re.sub('[^0-9,]*', '', price_element.text_content())
-                    setattr(self, attr_name, float(re.sub(',', '.', stripped_value)))
+                    setattr(self, attr_name, percent_str_to_float(price_element.text_content()))
 
             # get date
             try:
