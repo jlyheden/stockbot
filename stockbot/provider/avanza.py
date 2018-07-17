@@ -16,14 +16,16 @@ def avanza_quote_factory(html_data):
     quote_type_element = tree.xpath("//div[@id='surface']")
     if len(quote_type_element) > 0:
         quote_type = quote_type_element[0].attrib['data-page_type']
-        if quote_type in ('stock', 'index'):
+        if quote_type in ('stock', 'index', 'etf', 'certificate'):
             return AvanzaQuote(tree=tree)
         elif quote_type == 'fund':
             return AvanzaFundQuote(tree=tree)
         else:
-            LOGGER.error("Unknown quote type {}".format(quote_type))
+            LOGGER.warning("Unknown quote type: {}".format(quote_type))
+            return AvanzaFallbackQuote(quote_type=quote_type)
     else:
-        LOGGER.error("Cannot determine quote type")
+        LOGGER.warning("Cannot determine quote type")
+        return AvanzaFallbackQuote(quote_type="no such element")
 
 
 def percent_str_to_float(s):
@@ -33,6 +35,21 @@ def percent_str_to_float(s):
     except Exception as e:
         LOGGER.exception("Failed to cast {} to float, returning the orig value".format(s))
         return s
+
+
+class AvanzaFallbackQuote(object):
+
+    def __init__(self, *args, **kwargs):
+        self.quote_type = kwargs.get('quote_type', None)
+
+    def __str__(self):
+        return "Unknown type, got: {}".format(self.quote_type)
+
+    def is_empty(self):
+        return False
+
+    def is_fresh(self):
+        return False
 
 
 class AvanzaFundQuote(object):
@@ -156,16 +173,17 @@ class AvanzaSearchResult(object):
 
     def __init__(self, *args, **kwargs):
         self.result = []
-        html_response = kwargs.get('message')
+        html_response = kwargs.get('message', None)
 
-        tree = fromstring(html_response)
-        responses = tree.xpath("//ul[contains(@class,'globalSrchRes')]//a[contains(@class,'srchResLink')]")
-        for response in responses:
-            self.result.append(dict(
-                name=response.attrib['title'],
-                link="https://www.avanza.se{path}".format(path=response.attrib['href']),
-                ctype=response.attrib['data-ctype']
-            ))
+        if html_response is not None:
+            tree = fromstring(html_response)
+            responses = tree.xpath("//ul[contains(@class,'globalSrchRes')]//a[contains(@class,'srchResLink')]")
+            for response in responses:
+                self.result.append(dict(
+                    name=response.attrib['title'],
+                    link="https://www.avanza.se{path}".format(path=response.attrib['href']),
+                    ctype=response.attrib['data-ctype']
+                ))
 
     def __str__(self):
         return "Result: {r}".format(r=" | ".join(
@@ -199,11 +217,15 @@ class AvanzaQueryService(BaseQuoteService):
 
     def get_quote(self, ticker):
         search_result = self.search(ticker)
-        try:
-            response = requests.get(search_result.result[0]['link'])
-            return avanza_quote_factory(html_data=response.text)
-        except IndexError:
-            return AvanzaQuote()
+        for search_result_entry in search_result.result:
+            if 'link' in search_result_entry:
+                try:
+                    response = requests.get(search_result_entry.get('link'))
+                    return avanza_quote_factory(html_data=response.text)
+                except Exception as e:
+                    LOGGER.exception("Failed to retrieve quote for {}".format(ticker))
+                    return AvanzaFallbackQuote(quote_type="error")
+        return AvanzaFallbackQuote(quote_type="didn't find any quote for {}".format(ticker))
 
     def search(self, query):
         if query not in self.search_cache:
@@ -212,7 +234,8 @@ class AvanzaQueryService(BaseQuoteService):
                 response = requests.get(self.__search_url(query))
                 self.search_cache[query] = AvanzaSearchResult(message=response.text)
             except Exception as e:
-                return None
+                LOGGER.exception("Failed to create proper search result")
+                return AvanzaSearchResult()
         return self.search_cache[query]
 
     @staticmethod
