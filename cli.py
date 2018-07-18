@@ -1,7 +1,7 @@
 import sys
 import logging
 
-logging.disable(logging.ERROR)
+#logging.disable(logging.ERROR)
 
 from stockbot.provider import QuoteServiceFactory
 from stockbot.command import root_command

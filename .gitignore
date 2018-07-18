@@ -4,3 +4,4 @@
 /.tox
 /.coverage
 /version.txt
+/venv-*

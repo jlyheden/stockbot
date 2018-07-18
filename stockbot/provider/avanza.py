@@ -142,10 +142,20 @@ class AvanzaQuote(object):
             except:
                 LOGGER.exception("Failed to retrieve time")
 
+            try:
+                # get history
+                history_rows = tree.xpath("//div[contains(@class,'history')]/div[contains(@class,'content')]/table/tbody/tr")
+                for history_row in history_rows:
+                    columns = history_row.xpath("./td")
+                    if columns[0].text == u'i år':
+                        self.totalReturnYtd = percent_str_to_float(columns[2].text)
+            except:
+                LOGGER.exception("Failed to retrieve history")
+
     def __str__(self):
-        return "Name: {n}, Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Update Time: {ut}" \
+        return "Name: {n}, Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Total Return YTD: {ytd}, Update Time: {ut}" \
             .format(n=self.name, op=self.lastPrice, lp=self.lowestPrice, hp=self.highestPrice,
-                    p1d=self.percentChange, ut=self.lastUpdateTime)
+                    p1d=self.percentChange, ytd=self.totalReturnYtd, ut=self.lastUpdateTime)
 
     def __getattribute__(self, item):
         try:
