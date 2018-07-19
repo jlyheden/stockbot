@@ -142,8 +142,8 @@ class AvanzaQuote(object):
             except:
                 LOGGER.exception("Failed to retrieve time")
 
+            # get history
             try:
-                # get history
                 history_rows = tree.xpath("//div[contains(@class,'history')]/div[contains(@class,'content')]/table/tbody/tr")
                 for history_row in history_rows:
                     columns = history_row.xpath("./td")
@@ -152,10 +152,35 @@ class AvanzaQuote(object):
             except:
                 LOGGER.exception("Failed to retrieve history")
 
+            # get recommendations
+            try:
+                attr_map = {
+                    u"Köp": "buyRecommendation",
+                    u"Behåll": "holdRecommendation",
+                    u"Sälj": "sellRecommendation"
+                }
+                recommendation_elements = quote_root.xpath("//div[contains(@class,'recommendations')]/div[contains(@class,'recommendationsContent')]//span[contains(@class,'descriptionText')]")
+                for recommendation_element in recommendation_elements:
+                    recommendation_text = recommendation_element.text
+                    recommendation_type = recommendation_text.split(" ")[0].rstrip()  # must strip because Hold recommendation has tabs
+                    if recommendation_type in attr_map.keys() and recommendation_text.endswith(")"):
+                        recommendation_count = int(re.sub('[^0-9]*', '', recommendation_text, flags=re.MULTILINE))
+                        setattr(self, attr_map[recommendation_type], recommendation_count)
+            except:
+                LOGGER.exception("Failed to parse recommendations")
+                self.recommendationString = ""
+            else:
+                if "N/A" not in (self.buyRecommendation, self.holdRecommendation, self.sellRecommendation):
+                    self.recommendationString = "Recommendations (B/H/S): {b}/{h}/{s}, ".format(
+                        b=self.buyRecommendation, h=self.holdRecommendation, s=self.sellRecommendation)
+                else:
+                    self.recommendationString = ""
+
     def __str__(self):
-        return "Name: {n}, Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Total Return YTD: {ytd}, Update Time: {ut}" \
+        return "Name: {n}, Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Total Percentage Return YTD: {ytd}, {rek}Update Time: {ut}" \
             .format(n=self.name, op=self.lastPrice, lp=self.lowestPrice, hp=self.highestPrice,
-                    p1d=self.percentChange, ytd=self.totalReturnYtd, ut=self.lastUpdateTime)
+                    p1d=self.percentChange, ytd=self.totalReturnYtd, rek=self.recommendationString,
+                    ut=self.lastUpdateTime)
 
     def __getattribute__(self, item):
         try:

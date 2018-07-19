@@ -306,8 +306,15 @@ class TestAvanzaQueryService(unittest.TestCase):
         self.assertTrue(len(result.result) > 0)
         self.assertEquals(result.result[0]["name"], "DAX")
 
-    @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/dax.yaml')
+    @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/avanza.yaml')
     def test_get_quote(self):
+        ticker = "avanza"
+        quote = self.service.get_quote(ticker)
+        self.assertEquals(type(quote), AvanzaQuote)
+        self.assertEquals(str(quote), "Name: Avanza Bank Holding, Price: 389.0, Low Price: 385.0, High Price: 389.6, Percent Change 1 Day: 0.41, Total Percentage Return YTD: 13.05, Recommendations (B/H/S): 1/2/1, Update Time: 11:15:48")
+
+    @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/dax.yaml')
+    def test_get_index(self):
         ticker = "dax"
         quote = self.service.get_quote(ticker)
         self.assertEquals(type(quote), AvanzaQuote)
