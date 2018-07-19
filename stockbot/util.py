@@ -3,8 +3,9 @@ import re
 
 def colorify(msg):
 
-    num_change_regex = re.compile("[^\w]?total return[^\w]?", flags=re.IGNORECASE)
+    num_change_regex = re.compile("[^\w]?total (percentage return|return)[^\w]?", flags=re.IGNORECASE)
     num_important_change_regex = re.compile("[^\w]?change[^\w]?", flags=re.IGNORECASE)
+    num_recommendations_regex = re.compile("[^\w]?recommendations [^\w]?", flags=re.IGNORECASE)
 
     # split over comma separated "sections"
     section_split = msg.split(",")
@@ -53,6 +54,9 @@ def colorify(msg):
                 # first value should be white and highlighted
                 if index == 0:
                     value_replace = "\x02\x0300{}\x03\x02".format(s_split[1])
+                elif num_recommendations_regex.search(s_split[0]) is not None:
+                    r_split = s_split[1].split("/")
+                    value_replace = "\x0303{}\x03/\x0308{}\x03/\x0304{}\x03".format(*r_split)
                 else:
                     # a non-number gets colored grey
                     value_replace = "\x0314{}\x03".format(s_split[1])
