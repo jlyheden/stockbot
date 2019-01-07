@@ -14,6 +14,7 @@ from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuo
     StockDomain
 from stockbot.provider.nasdaq import NasdaqIndexScraper
 from stockbot.provider.avanza import AvanzaQuote, AvanzaQueryService, AvanzaSearchResult
+from stockbot.provider.ig import IGQueryService
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -140,6 +141,23 @@ class TestBloombergQueryService(unittest.TestCase):
         res = self.service.search("dax")
         self.assertEquals(BloombergSearchResult, type(res))
         self.assertIn("Ticker: DAX:IND, Country: DE, Name: Deutsche Boerse AG German Stock Index DAX, Type: Index", res.result_as_list())
+
+
+class TestIGQueryService(unittest.TestCase):
+
+    def setUp(self):
+        self.service = IGQueryService()
+
+    @vcr.use_cassette('mock/vcr_cassettes/ig/quote/sweden-30.yaml')
+    def test_get_quote(self):
+        res = self.service.get_quote("sweden-30")
+        self.assertEqual(res.name, "Sweden 30")
+        self.assertEqual(res.ticker, "OMXS30")
+        self.assertEqual(res.sell_price, 1446.49)
+        self.assertEqual(res.buy_price, 1447.99)
+        self.assertEqual(res.price_change_points, 14.08)
+        self.assertEqual(res.price_change_percent, 0.98)
+        self.assertEqual(str(res), "Name: OMXS30, Buy Price: 1447.99, Sell Price: 1446.49, Percent Change: 0.98, Points Change: 14.08")
 
 
 class TestGoogleFinanceQuote(unittest.TestCase):

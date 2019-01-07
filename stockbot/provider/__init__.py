@@ -3,6 +3,7 @@ from .nasdaq import NasdaqIndexScraper, NasdaqCompany
 from .google import StockDomain, GoogleFinanceQueryService
 from .bloomberg import BloombergQueryService
 from .avanza import AvanzaQueryService
+from .ig import IGQueryService
 
 LOGGER = logging.getLogger(__name__)
 
@@ -22,7 +23,8 @@ class QuoteServiceFactory(object):
     providers = {
         "google": GoogleFinanceQueryService,
         "bloomberg": BloombergQueryService,
-        "avanza": AvanzaQueryService
+        "avanza": AvanzaQueryService,
+        "ig": IGQueryService
     }
 
     def get_service(self, name):
