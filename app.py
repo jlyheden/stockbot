@@ -50,13 +50,26 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
     def __init__(self, channel, nickname, server, port, enable_scheduler=False):
         super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
         self.channel = channel
+        self.failed_health_checks = 0
+        self.max_failed_health_checks = 10
 
         self.scheduler = enable_scheduler
         self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
+        self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
         self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
         self.scheduler_interval = 3600
         self.last_check = None
+
+    def health_check(self):
+        if self.connection.is_connected():
+            self.failed_health_checks = 0
+        else:
+            self.failed_health_checks += 1
+            if self.failed_health_checks >= self.max_failed_health_checks:
+                LOGGER.error("Still not connected after {} seconds, killing the bot "
+                             .format(60 * self.failed_health_checks))
+                self.die("BAI")
 
     def stock_check_scheduler(self):
 
