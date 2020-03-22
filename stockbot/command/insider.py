@@ -30,27 +30,39 @@ class Client(object):
 
 
 def insider_top_buyer(*args, **kwargs):
-    if len(args) == 0:
-        check_date = datetime.datetime.now().date().isoformat()
-    else:
-        check_date = args[0]
-    client = Client.factory()
-    transactions = client.get_fi_insider_transactions(check_date)
-    helper = StatisticsHelper(transactions, ignore_venues=["Outside a trading venue", "NORDIC SME"])
-    result = helper.get_top_buyers_by_company(limit=1)
-    return "Company: {}, Total Amount: {} SEK".format(result[0][0], result[0][1])
+    try:
+        if len(args) == 0:
+            check_date = datetime.datetime.now().date().isoformat()
+        else:
+            check_date = args[0]
+        client = Client.factory()
+        transactions = client.get_fi_insider_transactions(check_date)
+        helper = StatisticsHelper(transactions, ignore_venues=["Outside a trading venue", "NORDIC SME"])
+        result = helper.get_top_buyers_by_company(limit=1)
+        if len(result) == 0:
+            return "There were no buyers"
+        else:
+            return "Company: {}, Total Amount: {} SEK".format(result[0][0], result[0][1])
+    except Exception as e:
+        return "Failed: {}".format(e)
 
 
 def insider_top_seller(*args, **kwargs):
-    if len(args) == 0:
-        check_date = datetime.datetime.now().date().isoformat()
-    else:
-        check_date = args[0]
-    client = Client.factory()
-    transactions = client.get_fi_insider_transactions(check_date)
-    helper = StatisticsHelper(transactions, ignore_venues=["Outside a trading venue", "NORDIC SME"])
-    result = helper.get_top_sellers_by_company(limit=1)
-    return "Company: {}, Total Amount: {} SEK".format(result[0][0], result[0][1])
+    try:
+        if len(args) == 0:
+            check_date = datetime.datetime.now().date().isoformat()
+        else:
+            check_date = args[0]
+        client = Client.factory()
+        transactions = client.get_fi_insider_transactions(check_date)
+        helper = StatisticsHelper(transactions, ignore_venues=["Outside a trading venue", "NORDIC SME"])
+        result = helper.get_top_sellers_by_company(limit=1)
+        if len(result) == 0:
+            return "There were no sellers"
+        else:
+            return "Company: {}, Total Amount: {} SEK".format(result[0][0], result[0][1])
+    except Exception as e:
+        return "Failed: {}".format(e)
 
 
 insider_command = Command(name="insider")
