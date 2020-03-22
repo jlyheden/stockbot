@@ -131,3 +131,4 @@ root_command.register(BlockingExecuteCommand(name="help", execute_command=root_c
 import stockbot.command.fundamental
 import stockbot.command.quote
 import stockbot.command.scrape
+import stockbot.command.insider

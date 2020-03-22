@@ -8,7 +8,7 @@ import irc.strings
 from irc.bot import SingleServerIRCBot
 from irc.client import ip_numstr_to_quad
 
-from stockbot.configuration import Configuration
+from stockbot.configuration import configuration
 from stockbot.db import create_tables
 from stockbot.persistence import DatabaseCollection, ScheduledCommand
 from stockbot.command import root_command
@@ -47,13 +47,13 @@ class ScheduleHandlerAlways(object):
 
 class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
-    def __init__(self, channel, nickname, server, port, enable_scheduler=False):
-        super(IRCBot, self).__init__([(server, int(port))], nickname, nickname)
-        self.channel = channel
+    def __init__(self):
+        super(IRCBot, self).__init__([(configuration.server_name, int(configuration.server_port))], configuration.nick,
+                                     configuration.nick)
+        self.channel = configuration.channel_name
         self.failed_health_checks = 0
         self.max_failed_health_checks = 10
-
-        self.scheduler = enable_scheduler
+        self.scheduler = configuration.scheduler
         self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
         self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
@@ -162,9 +162,7 @@ if __name__ == '__main__':
 
     create_tables()
 
-    bot = IRCBot(server=Configuration().server_name, port=Configuration().server_port,
-                 channel=Configuration().channel_name, nickname=Configuration().nick,
-                 enable_scheduler=Configuration().scheduler)
+    bot = IRCBot()
 
     def sigterm_handler(*args):
         bot.die("kthxbai")
