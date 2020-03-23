@@ -57,15 +57,15 @@ class TestColorify(unittest.TestCase):
         cs = colorify(s)
         self.assertEqual("\x0306Something Change Percent\x03:\x02\x0304 -1.001\x03\x02", cs)
 
-#    def test_multiple_groups_string(self):
-#        s = "Person: X, Stats: foo | Person: Y, Stats: bar"
-#        cs = colorify(s)
-#        self.assertEqual("{k1g1}:{v1g1},{k2g1}:{v2g1}|{k1g2}.{v1g2},{k2g2}.{v2g2}".format(
-#            k1g1=ColorHelper.purple("Person"),
-#            v1g1=ColorHelper.bold(ColorHelper.white(" X")),
-#            k2g1=ColorHelper.purple("Stats"),
-#            v2g1=ColorHelper.grey(" foo"),
-#            k1g2=ColorHelper.purple("Person"),
-#            v1g2=ColorHelper.bold(ColorHelper.white(" Y")),
-#            k2g2=ColorHelper.purple("Stats"),
-#            v2g2=ColorHelper.grey(" bar")), cs)
+    def test_multiple_groups_string(self):
+        s = "Person: X, Stats: foo | Person: Y, Stats: bar"
+        cs = colorify(s)
+        self.assertEqual("{k1g1}:{v1g1},{k2g1}:{v2g1}|{k1g2}.{v1g2},{k2g2}.{v2g2}".format(
+            k1g1=ColorHelper.purple("Person"),
+            v1g1=ColorHelper.bold(ColorHelper.white(" X")),
+            k2g1=ColorHelper.purple("Stats"),
+            v2g1=ColorHelper.grey(" foo"),
+            k1g2=ColorHelper.purple("Person"),
+            v1g2=ColorHelper.bold(ColorHelper.white(" Y")),
+            k2g2=ColorHelper.purple("Stats"),
+            v2g2=ColorHelper.grey(" bar")), cs)

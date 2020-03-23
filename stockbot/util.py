@@ -1,4 +1,5 @@
 import re
+from colors import *
 
 
 class ColorHelper(object):
@@ -73,42 +74,42 @@ def colorify(msg):
                     if num_change_regex.search(key) is not None:
                         # negative gets colored red
                         if v < 0:
-                            value_replace = ColorHelper.red(v_s)
+                            value_replace = color(v_s, fg='red')
 
                         # positive gets colored green
                         else:
-                            value_replace = ColorHelper.green(v_s)
+                            value_replace = color(v_s, fg='green')
                     elif num_important_change_regex.search(key) is not None:
                         # negative gets colored red and bold
                         if v < 0:
-                            value_replace = ColorHelper.bold(ColorHelper.red(v_s))
+                            value_replace = color(v_s, fg='red', style='bold')
 
                         # positive gets colored green and bold
                         else:
-                            value_replace = ColorHelper.bold(ColorHelper.green(v_s))
+                            value_replace = color(v_s, fg='green', style='bold')
                     else:
                         # unknown number gets colored grey
-                        value_replace = ColorHelper.grey(v_s)
+                        value_replace = color(v_s, fg='grey')
 
                 except ValueError as e:
 
                     # first value should be white and highlighted
                     if index == 0:
-                        value_replace = ColorHelper.bold(ColorHelper.white(value))
+                        value_replace = color(value, fg='white', style='bold')
                     elif num_recommendations_regex.search(key) is not None:
                         # avanza recommendations in form of buy/hold/sell
                         r_split = value.split("/")
                         if len(r_split) == 3:
-                            value_replace = "{}/{}/{}".format(ColorHelper.green(r_split[0]),
-                                                              ColorHelper.yellow(r_split[1]),
-                                                              ColorHelper.red(r_split[2]))
+                            value_replace = r"{}/{}/{}".format(color(r_split[0], fg='green'),
+                                                               color(r_split[1], fg='yellow'),
+                                                               color(r_split[2], fg='red'))
                         else:
-                            value_replace = ColorHelper.grey(value)
+                            value_replace = color(value, fg='grey')
                     else:
                         # a non-number gets colored grey
-                        value_replace = ColorHelper.grey(value)
+                        value_replace = color(value, fg='grey')
                 finally:
-                    s_replace = "{k}:{v}".format(k=ColorHelper.purple(key), v=value_replace)
+                    s_replace = r"{k}:{v}".format(k=color(key, fg='purple'), v=value_replace)
 
             # append the result into a list
             section_rv.append(s_replace)
