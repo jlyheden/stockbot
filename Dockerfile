@@ -1,4 +1,6 @@
-FROM python:3.6-slim
+FROM python:3.8-slim
+
+RUN apt-get update && apt-get --no-install-recommends install -y git libpq-dev build-essential
 
 ADD requirements.txt /tmp
 
@@ -10,4 +12,4 @@ COPY /stockbot /stockbot
 
 VOLUME ["/persistence"]
 
-CMD ["/usr/bin/env", "bash", "/cmd.sh"]
+CMD ["/usr/bin/env", "python", "app.py"]
