@@ -1,5 +1,4 @@
 import re
-from colors import *
 
 
 class ColorHelper(object):
