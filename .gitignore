@@ -5,3 +5,4 @@
 /.coverage
 /version.txt
 /venv-*
+/venv
