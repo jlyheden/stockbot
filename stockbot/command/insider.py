@@ -68,7 +68,7 @@ def insider_top(*args, **kwargs):
         client = Client.factory()
         response = client.get_top(check_date, transaction_type)
         result = insider_helper(transaction_type, response)
-        return "Top {}: {}".format(transaction_type.capitalize(), result)
+        return result
     except Exception as e:
         return "Failed: {}".format(e)
 

@@ -1,70 +1,118 @@
 import re
 
 
+class ColorHelper(object):
+
+    @classmethod
+    def white(cls, value):
+        return r"\x0300{}\x03".format(value)
+
+    @classmethod
+    def bold(cls, value):
+        return r"\x02{}\x02".format(value)
+
+    @classmethod
+    def red(cls, value):
+        return r"\x0304{}\x03".format(value)
+
+    @classmethod
+    def green(cls, value):
+        return r"\x0303{}\x03".format(value)
+
+    @classmethod
+    def grey(cls, value):
+        return r"\x0314{}\x03".format(value)
+
+    @classmethod
+    def yellow(cls, value):
+        return r"\x0308{}\x03".format(value)
+
+    @classmethod
+    def purple(cls, value):
+        return r"\x0306{}\x03".format(value)
+
+
 def colorify(msg):
 
     num_change_regex = re.compile("[^\w]?total (percentage return|return)[^\w]?", flags=re.IGNORECASE)
     num_important_change_regex = re.compile("[^\w]?change[^\w]?", flags=re.IGNORECASE)
     num_recommendations_regex = re.compile("[^\w]?recommendations [^\w]?", flags=re.IGNORECASE)
 
-    # split over comma separated "sections"
-    section_split = msg.split(",")
+    # split over pipe separated "groups"
+    group_split = msg.split("|")
+    group_rv = []
 
-    rv = []
+    for group in group_split:
 
-    for (index, section) in enumerate(section_split):
+        # split over comma separated "sections"
+        section_split = group.split(",")
 
-        # split over subject : value
-        s_split = section.split(":", 1)
+        section_rv = []
 
-        # there was no subject, just color everything grey
-        if len(s_split) == 1:
-            s_replace = "\x0314{}\x03".format(s_split[0])
+        for (index, section) in enumerate(section_split):
 
-        # we identified subject : value
-        else:
-            try:
+            # split over subject : value
+            s_split = section.split(":", 1)
 
-                # if value is a number
-                v = float(s_split[1])
+            # there was no subject, just color everything grey
+            if len(s_split) == 1:
+                s_replace = ColorHelper.grey(s_split[0])
 
-                # check if number should be colored differently depending on positive or negative value
-                if num_change_regex.search(s_split[0]) is not None:
-                    # negative gets colored red
-                    if v < 0:
-                        value_replace = "\x0304 {:.3f}\x03".format(v)
+            # we identified subject : value
+            else:
+                (key, value) = s_split
+                try:
 
-                    # positive gets colored green
+                    # if value is a number
+                    v = float(value)
+
+                    # truncate decimals
+                    v_s = " {:.3f}".format(v)
+
+                    # check if number should be colored differently depending on positive or negative value
+                    if num_change_regex.search(key) is not None:
+                        # negative gets colored red
+                        if v < 0:
+                            value_replace = ColorHelper.red(v_s)
+
+                        # positive gets colored green
+                        else:
+                            value_replace = ColorHelper.green(v_s)
+                    elif num_important_change_regex.search(key) is not None:
+                        # negative gets colored red and bold
+                        if v < 0:
+                            value_replace = ColorHelper.bold(ColorHelper.red(v_s))
+
+                        # positive gets colored green and bold
+                        else:
+                            value_replace = ColorHelper.bold(ColorHelper.green(v_s))
                     else:
-                        value_replace = "\x0303 {:.3f}\x03".format(v)
-                elif num_important_change_regex.search(s_split[0]) is not None:
-                    # negative gets colored red and bold
-                    if v < 0:
-                        value_replace = "\x02\x0304 {:.3f}\x03\x02".format(v)
+                        # unknown number gets colored grey
+                        value_replace = ColorHelper.grey(v_s)
 
-                    # positive gets colored green and bold
+                except ValueError as e:
+
+                    # first value should be white and highlighted
+                    if index == 0:
+                        value_replace = ColorHelper.bold(ColorHelper.white(value))
+                    elif num_recommendations_regex.search(key) is not None:
+                        # avanza recommendations in form of buy/hold/sell
+                        r_split = value.split("/")
+                        if len(r_split) == 3:
+                            value_replace = "{}/{}/{}".format(ColorHelper.green(r_split[0]),
+                                                              ColorHelper.yellow(r_split[1]),
+                                                              ColorHelper.red(r_split[2]))
+                        else:
+                            value_replace = ColorHelper.grey(value)
                     else:
-                        value_replace = "\x02\x0303 {:.3f}\x03\x02".format(v)
-                else:
-                    # unknown number gets colored grey
-                    value_replace = "\x0314 {:.3f}\x03".format(v)
+                        # a non-number gets colored grey
+                        value_replace = ColorHelper.grey(value)
+                finally:
+                    s_replace = "{k}:{v}".format(k=ColorHelper.purple(key), v=value_replace)
 
-            except ValueError as e:
+            # append the result into a list
+            section_rv.append(s_replace)
 
-                # first value should be white and highlighted
-                if index == 0:
-                    value_replace = "\x02\x0300{}\x03\x02".format(s_split[1])
-                elif num_recommendations_regex.search(s_split[0]) is not None:
-                    r_split = s_split[1].split("/")
-                    value_replace = "\x0303{}\x03/\x0308{}\x03/\x0304{}\x03".format(*r_split)
-                else:
-                    # a non-number gets colored grey
-                    value_replace = "\x0314{}\x03".format(s_split[1])
-            finally:
-                s_replace = "\x0306{k}\x03:{v}".format(k=s_split[0], v=value_replace)
-
-        # append the result into a list
-        rv.append(s_replace)
-
-    # sew the list together into a string again
-    return "\x0300,\x03".join(rv)
+        # sew the list together into a string again
+        group_rv.append(ColorHelper.white(",").join(section_rv))
+    return "|".join(group_rv)
