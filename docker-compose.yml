@@ -2,6 +2,12 @@ version: '3'
 
 services:
 
+  #client:
+  #  image: irssi
+  #  entrypoint: ["cat"]
+  #  stdin_open: true
+  #  tty: true
+
   ircbot:
     build:
       context: .
@@ -13,6 +19,9 @@ services:
       LOGLEVEL: "DEBUG"
       DATABASE_URL: "postgres://bot:password@database:5432/ircbotdb"
       SCHEDULER: "true"
+      LYHEDEN_BASE_URL: ${LYHEDEN_BASE_URL}
+      LYHEDEN_USERNAME: ${LYHEDEN_USERNAME}
+      LYHEDEN_PASSWORD: ${LYHEDEN_PASSWORD}
 
   ircserver:
     image: inspircd/inspircd-docker:latest

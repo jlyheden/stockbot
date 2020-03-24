@@ -130,17 +130,25 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
     def command_callback(self, result, **kwargs):
         if isinstance(result, list):
             for row in result:
-                self.colorify_notice(kwargs.get('sender'), row)
+                self.colorify_notice(kwargs.get('sender'), str(row))
         elif result is not None:
-            self.colorify_send(self.channel, result)
+            self.colorify_send(self.channel, str(result))
 
     def colorify_send(self, target, msg):
         # irc.client.MessageTooLong: Messages limited to 512 bytes including CR/LF
-        self.connection.privmsg(target, colorify(str(msg)[:511]))
+        colored_message = colorify(msg)
+        if len(colored_message) > 512:
+            self.connection.privmsg(target, msg[:512])
+        else:
+            self.connection.privmsg(target, colored_message)
 
     def colorify_notice(self, target, msg):
         # irc.client.MessageTooLong: Messages limited to 512 bytes including CR/LF
-        self.connection.notice(target, colorify(msg[:511]))
+        colored_message = colorify(msg)
+        if len(colored_message) > 512:
+            self.connection.notice(target, msg[:512])
+        else:
+            self.connection.notice(target, colored_message)
 
     def on_dccmsg(self, c, e):
         # non-chat DCC messages are raw bytes; decode as text
