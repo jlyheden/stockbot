@@ -115,5 +115,5 @@ def colorify(msg):
 
         # sew the list together into a string again
         group_rv.append(ColorHelper.white(",").join(section_rv))
-    escaped_rv = "|".join(group_rv)
+    escaped_rv = " |".join(group_rv)
     return escaped_rv
