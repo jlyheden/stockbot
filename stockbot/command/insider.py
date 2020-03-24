@@ -41,7 +41,12 @@ def insider_helper(t, response):
     else:
         return " | ".join(
             [
-                "Person: {}, Company: {}, Sum: {}".format(x["person"], x["instrument"], x["value"])
+                "Person: {}, Company: {}, Position: {}, GAV: {}, Dates: {} Sum: {}".format(x["person"],
+                                                                                           x["instrument"],
+                                                                                           x["position"],
+                                                                                           x["gav"],
+                                                                                           x["transaction_dates"],
+                                                                                           x["value"])
                 for x in response[0:3]
             ]
         )
