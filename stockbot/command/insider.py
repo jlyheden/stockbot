@@ -23,8 +23,12 @@ class Client(object):
         transactions = json.loads(response.text, cls=TransactionJSONDecoder)
         return transactions
 
-    def get_top(self, d, t):
-        response = get("{}/api/fi/insider/{}/top-{}".format(self.base_url, d, t), auth=self.auth)
+    def get_top(self, d, t, venue):
+        if venue:
+            _url = "{}/api/fi/insider/{}/top-{}/{}".format(self.base_url, d, t, venue)
+        else:
+            _url = "{}/api/fi/insider/{}/top-{}".format(self.base_url, d, t)
+        response = get(_url, auth=self.auth)
         response.raise_for_status()
         top_list = json.loads(response.text)
         return top_list
@@ -53,25 +57,33 @@ def insider_helper(t, response):
 
 
 def insider_top(*args, **kwargs):
-    # Usage: <this> <type> <optional date>
+    # Usage: <this> <type> <optional date> <optional venue>
 
     translation_table = {
         "buyer": "acquisition",
-        "seller": "disposal"
+        "buyers": "acquisition",
+        "seller": "disposal",
+        "sellers": "disposal"
     }
 
     if len(args) == 0:
         return None
-    elif len(args) == 1:
-        check_date = datetime.datetime.now().date().isoformat()
-    else:
+
+    try:
         check_date = args[1]
+    except:
+        check_date = datetime.datetime.now().date().isoformat()
+
+    try:
+        venue = args[2]
+    except:
+        venue = None
 
     transaction_type = translation_table.get(args[0], args[0])
 
     try:
         client = Client.factory()
-        response = client.get_top(check_date, transaction_type)
+        response = client.get_top(check_date, transaction_type, venue)
         result = insider_helper(transaction_type, response)
         return result
     except Exception as e:
@@ -80,5 +92,5 @@ def insider_top(*args, **kwargs):
 
 insider_command = Command(name="insider")
 insider_command.register(BlockingExecuteCommand(name="top", execute_command=insider_top,
-                                                help="<type: can be disposal, acquisition etc> <iso-date>"))
+                                                help="<type: can be disposal, acquisition etc> <iso-date> <venue: can be nasdaq, first-north>"))
 root_command.register(insider_command)
