@@ -40,7 +40,7 @@ class IGQuote(object):
 
         if tree is not None:
             self.name = tree.xpath("//div[@class='ma-box']//h1[@class='ma__title']")[0].text
-            self.ticker = tree.xpath("//div[@class='ma-box']//h1[@class='ma__title--secondary']")[0].text.lstrip("(").rstrip(")")
+            self.ticker = tree.xpath("//div[@class='ma-box']//span")[0].text.lstrip("(").rstrip(")")
             self.sell_price = float(tree.xpath("//a[contains(@class, 'price-ticket__button--sell')]//div[@class='price-ticket__price']")[0].text)
             self.buy_price = float(tree.xpath("//a[contains(@class, 'price-ticket__button--buy')]//div[@class='price-ticket__price']")[0].text)
             self.price_change_points = float(tree.xpath("//div[@class='price-ticket__fluctuations']//span[@data-field='CPT']")[0].text)

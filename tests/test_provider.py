@@ -153,11 +153,11 @@ class TestIGQueryService(unittest.TestCase):
         res = self.service.get_quote("sweden-30")
         self.assertEqual(res.name, "Sweden 30")
         self.assertEqual(res.ticker, "OMXS30")
-        self.assertEqual(res.sell_price, 1446.49)
-        self.assertEqual(res.buy_price, 1447.99)
-        self.assertEqual(res.price_change_points, 14.08)
-        self.assertEqual(res.price_change_percent, 0.98)
-        self.assertEqual(str(res), "Name: OMXS30, Buy Price: 1447.99, Sell Price: 1446.49, Percent Change: 0.98, Points Change: 14.08")
+        self.assertEqual(float, type(res.sell_price))
+        self.assertEqual(float, type(res.buy_price))
+        self.assertEqual(float, type(res.price_change_points))
+        self.assertEqual(float, type(res.price_change_percent))
+        self.assertRegexpMatches(str(res), "^Name: OMXS30, Buy Price: [0-9]+\.[0-9]+, Sell Price: [0-9]+\.[0-9]+, Percent Change: [0-9]+\.[0-9]+, Points Change: [0-9]+\.[0-9]+$")
 
 
 class TestGoogleFinanceQuote(unittest.TestCase):
