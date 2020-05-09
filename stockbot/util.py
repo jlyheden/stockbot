@@ -35,7 +35,7 @@ class ColorHelper(object):
 def colorify(msg):
 
     num_change_regex = re.compile("[^\w]?total (percentage return|return)[^\w]?", flags=re.IGNORECASE)
-    num_important_change_regex = re.compile("[^\w]?change[^\w]?", flags=re.IGNORECASE)
+    num_important_change_regex = re.compile("[^\w]?(change|rebate percentage)[^\w]?", flags=re.IGNORECASE)
     num_recommendations_regex = re.compile("[^\w]?recommendations [^\w]?", flags=re.IGNORECASE)
 
     # split over pipe separated "groups"
