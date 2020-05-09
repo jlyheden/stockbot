@@ -15,6 +15,7 @@ from stockbot.provider.google import GoogleFinanceQueryService, GoogleFinanceQuo
 from stockbot.provider.nasdaq import NasdaqIndexScraper
 from stockbot.provider.avanza import AvanzaQuote, AvanzaQueryService, AvanzaSearchResult
 from stockbot.provider.ig import IGQueryService
+from stockbot.provider.ibindex import IbIndexQueryService
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -354,3 +355,47 @@ class TestAvanzaQueryService(unittest.TestCase):
         self.assertEquals(quote.lastPrice, 161.0)
         self.assertEquals(quote.lowestPrice, 160.9)
         self.assertEquals(quote.highestPrice, 162.1)
+
+
+class TestIbIndexQueryService(unittest.TestCase):
+
+    def setUp(self):
+        self.service = IbIndexQueryService()
+
+    @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
+    def test_search_for_existing_quote(self):
+        text = "investor"
+        result = self.service.search(text)
+        self.assertEquals("Result: Ticker: INVE B", str(result))
+
+    @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
+    def test_search_for_non_existing_quote(self):
+        text = "abcdefghijlkmnop"
+        result = self.service.search(text)
+        self.assertEquals("Result: Nada", str(result))
+
+    @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
+    def test_search_with_multiple_matches(self):
+        text = "invest"
+        result = self.service.search(text)
+        self.assertEquals("Result: Ticker: HAV B | Ticker: INVE B", str(result))
+
+    @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
+    def test_search_with_multiple_matches_ranked_result(self):
+        text = "invest"
+        result = self.service.search(text)
+        result.get_ranked_ticker()
+        self.assertEquals("INVE B", result.get_ranked_ticker())
+
+    @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
+    def test_query_existing_quote(self):
+        text = "inve b"
+        result = self.service.get_quote(text)
+        self.assertEquals("Name: Investor B, NAV rebate percentage (reported): 15.455, NAV rebate percentage ("
+                          "calculated): 21.330, NAV datechange: 2020-04-22 00:00:00", str(result))
+
+    @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
+    def test_query_nonexisting_quote(self):
+        text = "abcdefghijklmnop"
+        result = self.service.get_quote(text)
+        self.assertEquals("No such quote: abcdefghijklmnop", str(result))

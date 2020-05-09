@@ -132,3 +132,4 @@ import stockbot.command.fundamental
 import stockbot.command.quote
 import stockbot.command.scrape
 import stockbot.command.insider
+import stockbot.command.ibindex

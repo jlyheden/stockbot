@@ -1,4 +1,5 @@
 import logging
+from .ibindex import IbIndexQueryService
 from .nasdaq import NasdaqIndexScraper, NasdaqCompany
 from .google import StockDomain, GoogleFinanceQueryService
 from .bloomberg import BloombergQueryService
@@ -24,7 +25,8 @@ class QuoteServiceFactory(object):
         "google": GoogleFinanceQueryService,
         "bloomberg": BloombergQueryService,
         "avanza": AvanzaQueryService,
-        "ig": IGQueryService
+        "ig": IGQueryService,
+        "ibindex": IbIndexQueryService
     }
 
     def get_service(self, name):
