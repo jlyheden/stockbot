@@ -2,6 +2,8 @@ import logging
 import os
 import sys
 import signal
+import types
+import time
 from datetime import datetime
 
 import irc.strings
@@ -94,7 +96,7 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         for command in self.commands:
             try:
                 root_command.execute(*command.split(" "), command_args={"service_factory": self.quote_service_factory,
-                                     "instance": self}, callback=self.command_callback)
+                                     "instance": self}, callback=self.command_callback, callback_args={})
             except Exception as e:
                 LOGGER.exception("failed to execute scheduled command '{}'".format(command))
 
@@ -124,13 +126,18 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         if to_me:
             commands = [irc.strings.lower(x) for x in split[1:]]
             root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
-                                                          "instance": self},
+                                                          "instance": self, "sender": sender},
                                  callback=self.command_callback, callback_args={"sender": sender})
 
     def command_callback(self, result, **kwargs):
-        if isinstance(result, list):
+        sender = kwargs.get('sender', None)
+        if isinstance(result, list) or isinstance(result, types.GeneratorType):
             for row in result:
-                self.colorify_notice(kwargs.get('sender'), str(row))
+                if sender:
+                    self.colorify_notice(kwargs.get('sender'), str(row))
+                else:
+                    self.colorify_send(self.channel, str(row))
+                time.sleep(1)  # avoid getting kicked out from server
         elif result is not None:
             self.colorify_send(self.channel, str(result))
 

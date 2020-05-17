@@ -54,7 +54,7 @@ class Command(object):
         rv = []
         for c in paths(self)[1:]:
             rv.append(" ".join([str(x) for x in c[1:]]))
-        return rv
+        return sorted(rv)
 
 
 class BlockingExecuteCommand(Command):
@@ -133,3 +133,5 @@ import stockbot.command.quote
 import stockbot.command.scrape
 import stockbot.command.insider
 import stockbot.command.ibindex
+import stockbot.command.news
+import stockbot.command.scheduler
