@@ -114,7 +114,12 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
                                         format(f.read().strip()))
 
     def on_privmsg(self, c, e):
-        pass
+        sender = e.source.nick
+        message = e.arguments[0]
+        commands = [irc.strings.lower(x) for x in message.split(" ")]
+        root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
+                                                      "instance": self, "sender": sender},
+                             callback=self.command_callback_priv, callback_args={"sender": sender})
 
     def on_pubmsg(self, c, e):
         sender = e.source.nick
@@ -128,6 +133,14 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
             root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
                                                           "instance": self, "sender": sender},
                                  callback=self.command_callback, callback_args={"sender": sender})
+
+    def command_callback_priv(self, result, **kwargs):
+        target = kwargs.get('sender', None)
+        if isinstance(result, list) or isinstance(result, types.GeneratorType):
+            for row in result:
+                self.colorify_send(target, str(row))
+        else:
+            self.colorify_send(target, str(result))
 
     def command_callback(self, result, **kwargs):
         sender = kwargs.get('sender', None)
