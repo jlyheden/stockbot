@@ -139,17 +139,14 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         if isinstance(result, list) or isinstance(result, types.GeneratorType):
             for row in result:
                 self.colorify_send(target, str(row))
-        else:
+                time.sleep(1)  # avoid getting kicked out from server
+        elif result is not None:
             self.colorify_send(target, str(result))
 
     def command_callback(self, result, **kwargs):
-        sender = kwargs.get('sender', None)
         if isinstance(result, list) or isinstance(result, types.GeneratorType):
             for row in result:
-                if sender:
-                    self.colorify_notice(kwargs.get('sender'), str(row))
-                else:
-                    self.colorify_send(self.channel, str(row))
+                self.colorify_send(self.channel, str(row))
                 time.sleep(1)  # avoid getting kicked out from server
         elif result is not None:
             self.colorify_send(self.channel, str(result))
