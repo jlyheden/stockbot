@@ -5,6 +5,7 @@ from .google import StockDomain, GoogleFinanceQueryService
 from .bloomberg import BloombergQueryService
 from .avanza import AvanzaQueryService
 from .ig import IGQueryService
+from .yahoo import YahooQueryService
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,7 +27,8 @@ class QuoteServiceFactory(object):
         "bloomberg": BloombergQueryService,
         "avanza": AvanzaQueryService,
         "ig": IGQueryService,
-        "ibindex": IbIndexQueryService
+        "ibindex": IbIndexQueryService,
+        "yahoo": YahooQueryService
     }
 
     def get_service(self, name):

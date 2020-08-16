@@ -1,0 +1,83 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+    method: GET
+    uri: https://query2.finance.yahoo.com/v1/finance/search?q=omx%20stockholm&lang=en-US&region=US&quotesCount=1&newsCount=0&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true
+  response:
+    body: {string: '{"explains":[],"count":1,"quotes":[{"exchange":"STO","shortname":"OMX
+        Stockholm 30 Index","quoteType":"INDEX","symbol":"^OMX","index":"quotes","score":20554.0,"typeDisp":"Index","isYahooFinance":true}],"news":[],"nav":[],"lists":[],"researchReports":[],"totalTime":14,"timeTakenForQuotes":411,"timeTakenForNews":0,"timeTakenForAlgowatchlist":400,"timeTakenForPredefinedScreener":400,"timeTakenForCrunchbase":400,"timeTakenForNav":400,"timeTakenForResearchReports":0}'}
+    headers:
+      Age: ['0']
+      Connection: [keep-alive]
+      Expect-CT: ['max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only"']
+      Referrer-Policy: [no-referrer-when-downgrade]
+      Strict-Transport-Security: [max-age=15552000]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+      cache-control: ['public, max-age=120, stale-while-revalidate=180']
+      content-length: ['466']
+      content-type: [application/json]
+      date: ['Sun, 16 Aug 2020 14:39:43 GMT']
+      server: [ATS]
+      vary: ['Origin,Origin,Accept-Encoding']
+      x-envoy-decorator-operation: ['finance-search--mtls-production-ir2.finance-k8s.svc.yahoo.local:4080/*']
+      x-envoy-upstream-service-time: ['15']
+      x-request-id: [005170c7-35e1-4815-9164-45ceeb0f5854]
+      x-yahoo-request-id: [8h1i8f5fjih9f]
+      y-rid: [8h1i8f5fjih9f]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+    method: GET
+    uri: https://query1.finance.yahoo.com/v7/finance/options/%5EOMX
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAHVV23LaMBD9FUbP4Fq+yeatCcyEaShpTdvMdNqMwMJoEBKV5SROhn/vyjZOuMRP
+        svZ49+zt+BWpneFKXq8pl2j4ijQrSmHQ8PcrKmXGtKi4zNNqu1ACDdHf2fQe9RF73nFN7XcjalgB
+        6D99VBjNN4eXNS2mXPJZ7RzuVlQUrI/+lcowG0ZQmZc0hzNicvAjBaea5YCFi/qtRs6rnUVMvo7G
+        94e7VJV6yb7SrbWMmKAVy3rfar99BBTynGm6EGA1uoSQy1JrJpcVoNPxlyZOKaieUr1hBvKWlsXA
+        95wwCd3Evwi4YxBTQlkG2Im9wMMkPsHNuSWEw4QEOPFd98R8p/nS2kkYOJ7reyfmEa1ueL62gBgi
+        BFFwDvjeMEWYBJETk8TrDXod/DQvwN+qJ+uvBZ/YfypRWsLnPNkjV2VxLVRR840jhyQxVGXBM4A7
+        8AEtNu0J7lL+0riB2+68KoUYPy/r0rWdSo1abtZKbE+ZznZMtnkTNyDg6BEamLMR5aJqaPpTJQ0U
+        hxAC5U3CSxjsQspoGLmBF8e2/Cu+MtX8Sf1ibAOlODQ6SHzH9W0DLgK6RruOn8A0+Dg6RnZd8CLs
+        YGJ7kLihE3noGGfb2Q0XDrET4IiEH2He5gvqSpIgjM/4QY2akOc+wNRwaE1Qic9NgeoBAJdh5J/Z
+        Duxw4OAgSshHiHclcd0Y+y6OMWzak7oBgdAsO4oWBbBHcRBfBnQhMXYiHAcf+DmPG5Ek9BLQmHr5
+        J9Iw/UiF3TcrRs2ggRTRVg+uqnoMjaYZa7Sg1Z8V14WZ22srXFMuBC/YUsmssOX1CI5gduzTRzu7
+        sTfcEvDegthJns+g18VaadPONohir5vvnu/2JqCczwDasqKAfK4U1dkE1gfiy+3iodazg5I2fq18
+        vCh52JZxqdWOfXq/NKfI9B2B63E6B0i+NbPVKmXmODHitSlt64UDfMEe2jP4LfI7tYN9NCzr6tRY
+        U0NN7f52lo5HNumj/8C+3/48as3fg+ozrZVGQwnrv9//B/HTC+1bBgAA
+    headers:
+      Age: ['1']
+      Connection: [keep-alive]
+      Expect-CT: ['max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only"']
+      Referrer-Policy: [no-referrer-when-downgrade]
+      Strict-Transport-Security: [max-age=15552000]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+      cache-control: ['public, max-age=1, stale-while-revalidate=9']
+      content-encoding: [gzip]
+      content-length: ['783']
+      content-type: [application/json]
+      date: ['Sun, 16 Aug 2020 14:39:43 GMT']
+      server: [ATS]
+      vary: ['Origin,Accept-Encoding']
+      x-envoy-decorator-operation: ['finance-quote-api--mtls-production-ir2.finance-k8s.svc.yahoo.local:4080/*']
+      x-envoy-upstream-service-time: ['2']
+      x-request-id: [11040ee1-ed41-4eb8-bd0b-e4635a6c7454]
+      x-yahoo-request-id: [bipm96dfjih9g]
+      y-rid: [bipm96dfjih9g]
+    status: {code: 200, message: OK}
+version: 1
