@@ -1,4 +1,4 @@
-from . import root_command, Command, BlockingExecuteCommand
+from . import root_command, Command, BlockingExecuteCommand, ProxyCommand
 import logging
 
 LOGGER = logging.getLogger(__name__)
@@ -80,3 +80,4 @@ quote_command.register(BlockingExecuteCommand(name="search", execute_command=sea
 root_command.register(quote_command)
 root_command.register(BlockingExecuteCommand(name="quick", short_name="qq", execute_command=get_quote_quick,
                                              help="<search-ticker-string>"))
+root_command.register(ProxyCommand(name="qy", proxy_command=("quote", "get", "yahoo"), help="<ticker>"))

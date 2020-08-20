@@ -57,6 +57,17 @@ class Command(object):
         return sorted(rv)
 
 
+class ProxyCommand(Command):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.proxy_command = kwargs.get('proxy_command')
+
+    def execute(self, *args, **kwargs):
+        new_args = self.proxy_command + args[1:]
+        return self.parent_command.execute(*new_args, **kwargs)
+
+
 class BlockingExecuteCommand(Command):
 
     def execute(self, *args, **kwargs):
