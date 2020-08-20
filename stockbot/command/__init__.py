@@ -64,7 +64,7 @@ class ProxyCommand(Command):
         self.proxy_command = kwargs.get('proxy_command')
 
     def execute(self, *args, **kwargs):
-        new_args = self.proxy_command + args[1:]
+        new_args = self.proxy_command + args
         return self.parent_command.execute(*new_args, **kwargs)
 
 
