@@ -1,6 +1,7 @@
 import logging
 import requests
 import urllib.parse
+from datetime import datetime
 
 from stockbot.provider.base import BaseQuoteService
 
@@ -26,23 +27,31 @@ class YahooQuote(object):
 
     def __init__(self, o):
         self.result = o["optionChain"]["result"][0]
+        if "regularMarketTime" in self.result["quote"]:
+            self.timestamp = datetime.fromtimestamp(int(self.result["quote"]["regularMarketTime"]))
+            self.timestamp_str = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            self.timestamp = None
+            self.timestamp_str = "unknown"
 
     def __str__(self):
-        return "Name: {name}, Price: {price}, Low Price: {low_price}, High Price: {high_price}, Percent Change 1 Day: {p1d}, Market: {market}".format(
+        return "Name: {name}, Price: {price}, Low Price: {low_price}, High Price: {high_price}, Percent Change 1 Day: {p1d}, Market: {market}, Update Time: {update_time}".format(
             name=self.result["quote"]["shortName"],
             price=self.result["quote"]["regularMarketPrice"],
             low_price=self.result["quote"]["regularMarketDayLow"],
             high_price=self.result["quote"]["regularMarketDayHigh"],
             p1d=self.result["quote"]["regularMarketChangePercent"],
-            market=self.result["quote"]["market"]
+            market=self.result["quote"]["market"],
+            update_time=self.timestamp_str
         )
 
     def is_empty(self):
         return False
 
     def is_fresh(self):
-        # funds are never fresh
-        return False
+        if self.timestamp is None:
+            return False
+        return (datetime.now() - self.timestamp).total_seconds() < 16 * 60
 
 
 class YahooSearchResult(object):

@@ -411,7 +411,7 @@ class TestYahooQueryService(unittest.TestCase):
     def test_get_existing_index(self):
         text = "omx stockholm"
         result = self.service.get_quote(text)
-        self.assertEquals("Name: OMX Stockholm 30 Index, Price: 1754.2032, Low Price: 1746.8792, High Price: 1781.8464, Percent Change 1 Day: -1.8242178, Market: se_market", str(result))
+        self.assertRegexpMatches(str(result), "^Name: OMX Stockholm 30 Index, Price: [0-9\.]+, Low Price: [0-9\.]+, High Price: [0-9\.]+, Percent Change 1 Day: [0-9\.\-]+, Market: se_market, Update Time: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
 
     @vcr.use_cassette('mock/vcr_cassettes/yahoo/quote/none_found.yaml')
     def test_get_no_such_instrument(self):
@@ -423,4 +423,4 @@ class TestYahooQueryService(unittest.TestCase):
     def test_get_existing_company(self):
         text = "microsoft"
         result = self.service.get_quote(text)
-        self.assertEquals("Name: Microsoft Corporation, Price: 208.9, Low Price: 207.51, High Price: 209.59, Percent Change 1 Day: 0.095829874, Market: us_market", str(result))
+        self.assertRegexpMatches(str(result), "^Name: Microsoft Corporation, Price: [0-9\.]+, Low Price: [0-9\.]+, High Price: [0-9\.]+, Percent Change 1 Day: [0-9\.\-]+, Market: us_market, Update Time: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
