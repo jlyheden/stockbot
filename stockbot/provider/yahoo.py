@@ -33,17 +33,26 @@ class YahooQuote(object):
         else:
             self.timestamp = None
             self.timestamp_str = "unknown"
+        self.is_pre_market = "marketState" in self.result["quote"] and self.result["quote"]["marketState"] == "PRE"
 
     def __str__(self):
-        return "Name: {name}, Price: {price}, Low Price: {low_price}, High Price: {high_price}, Percent Change 1 Day: {p1d}, Market: {market}, Update Time: {update_time}".format(
-            name=self.result["quote"]["shortName"],
-            price=self.result["quote"]["regularMarketPrice"],
-            low_price=self.result["quote"]["regularMarketDayLow"],
-            high_price=self.result["quote"]["regularMarketDayHigh"],
-            p1d=self.result["quote"]["regularMarketChangePercent"],
-            market=self.result["quote"]["market"],
-            update_time=self.timestamp_str
-        )
+        fields = [
+            ["Name", self.result["quote"]["shortName"]],
+            ["Price", self.result["quote"]["regularMarketPrice"]],
+            ["Low Price", self.result["quote"]["regularMarketDayLow"]],
+            ["High Price", self.result["quote"]["regularMarketDayHigh"]],
+            ["Percent Change 1 Day", self.result["quote"]["regularMarketChangePercent"]]
+        ]
+        if self.is_pre_market:
+            fields.extend([
+                ["Price Pre Market", self.result["quote"]["preMarketPrice"]],
+                ["Percent Change Pre Market", self.result["quote"]["preMarketChangePercent"]]
+            ])
+        fields.extend([
+            ["Market", self.result["quote"]["market"]],
+            ["Update Time", self.timestamp_str]
+        ])
+        return ", ".join(["{k}: {v}".format(k=x[0], v=x[1]) for x in fields])
 
     def is_empty(self):
         return False
