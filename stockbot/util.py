@@ -67,7 +67,7 @@ def colorify(msg):
                     v = float(value)
 
                     # truncate decimals
-                    v_s = " {:.3f}".format(v)
+                    v_s = "{:.3f}".format(v)
 
                     # check if number should be colored differently depending on positive or negative value
                     if num_change_regex.search(key) is not None:
@@ -108,7 +108,7 @@ def colorify(msg):
                         # a non-number gets colored grey
                         value_replace = ColorHelper.grey(value)
                 finally:
-                    s_replace = r"{k}:{v}".format(k=ColorHelper.purple(key), v=value_replace)
+                    s_replace = r"{k}: {v}".format(k=ColorHelper.purple(key), v=value_replace)
 
             # append the result into a list
             section_rv.append(s_replace)
