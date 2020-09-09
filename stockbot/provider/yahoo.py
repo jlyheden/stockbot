@@ -26,33 +26,42 @@ class YahooFallbackQuote(object):
 class YahooQuote(object):
 
     def __init__(self, o):
-        self.result = o["optionChain"]["result"][0]
-        if "regularMarketTime" in self.result["quote"]:
-            self.timestamp = datetime.fromtimestamp(int(self.result["quote"]["regularMarketTime"]))
-            self.timestamp_str = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        else:
+        for k, v in o["optionChain"]["result"][0]["quote"].items():
+            setattr(self, k, v)
+        if self.regularMarketTime == "N/A":
             self.timestamp = None
             self.timestamp_str = "unknown"
-        self.is_pre_market = "marketState" in self.result["quote"] and self.result["quote"]["marketState"] == "PRE"
+        else:
+            self.timestamp = datetime.fromtimestamp(int(self.regularMarketTime))
+            self.timestamp_str = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        self.is_pre_market = self.marketState == "PRE"
 
     def __str__(self):
         fields = [
-            ["Name", self.result["quote"]["shortName"]],
-            ["Price", self.result["quote"]["regularMarketPrice"]],
-            ["Low Price", self.result["quote"]["regularMarketDayLow"]],
-            ["High Price", self.result["quote"]["regularMarketDayHigh"]],
-            ["Percent Change 1 Day", self.result["quote"]["regularMarketChangePercent"]]
+            ["Name", self.shortName],
+            ["Price", self.regularMarketPrice],
+            ["Low Price", self.regularMarketDayLow],
+            ["High Price", self.regularMarketDayHigh],
+            ["Percent Change 1 Day", self.regularMarketChangePercent]
         ]
         if self.is_pre_market:
             fields.extend([
-                ["Price Pre Market", self.result["quote"]["preMarketPrice"]],
-                ["Percent Change Pre Market", self.result["quote"]["preMarketChangePercent"]]
+                ["Price Pre Market", self.preMarketPrice],
+                ["Percent Change Pre Market", self.preMarketChangePercent]
             ])
         fields.extend([
-            ["Market", self.result["quote"]["market"]],
+            ["Market", self.market],
             ["Update Time", self.timestamp_str]
         ])
         return ", ".join(["{k}: {v}".format(k=x[0], v=x[1]) for x in fields])
+
+    def __getattribute__(self, item):
+        try:
+            # we cannot use this objects getattribute because then we loop until the world collapses
+            return object.__getattribute__(self, item)
+        except Exception as e:
+            LOGGER.exception("Failed to look up attribute {}".format(item))
+            return "N/A"
 
     def is_empty(self):
         return False
