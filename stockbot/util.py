@@ -52,7 +52,7 @@ def colorify(msg):
         for (index, section) in enumerate(section_split):
 
             # split over subject : value
-            s_split = section.split(":", 1)
+            s_split = section.split(": ", 1)
 
             # there was no subject, just color everything grey
             if len(s_split) == 1:

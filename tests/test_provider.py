@@ -346,7 +346,7 @@ class TestAvanzaQueryService(unittest.TestCase):
     def test_get_fund(self):
         ticker = "avanza zero"
         quote = self.service.get_quote(ticker)
-        self.assertEqual("Name: Avanza Zero, %1D: -0.92469, %1M: 2.44344, %1Y: 12.802740000000002, %YTD: 1.47718, Fee: 0.0%, Rating: 3/5, Top 3 Holdings: Atlas Copco A:SE:8.01% | Ericsson B:SE:7.35% | Volvo B:SE:6.52%", str(quote))
+        self.assertEqual("Name: Avanza Zero, %1D: -0.92469, %1M: 2.44344, %1Y: 12.802740000000002, %YTD: 1.47718, Fee: 0.0%, Rating: 3/5, Top 3 Holdings: Atlas Copco A:SE:8.01%|Ericsson B:SE:7.35%|Volvo B:SE:6.52%", str(quote))
 
     @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/xact_ravaror.yaml')
     def test_get_etf_quote(self):

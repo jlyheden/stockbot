@@ -52,7 +52,7 @@ class AvanzaFundQuote(BaseQuote):
             self.fields.append(["Rating", "{}/5".format(self.rating)])
         try:
             self.fields.append(
-              ["Top 3 Holdings", " | ".join([
+              ["Top 3 Holdings", "|".join([
                 "{c}:{l}:{w}%".format(
                     c=self.holdingChartData[i].get("name"),
                     l=self.holdingChartData[i].get("countryCode"),
