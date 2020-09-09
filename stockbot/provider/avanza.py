@@ -5,27 +5,9 @@ import re
 from datetime import datetime, time
 from lxml.html.soupparser import fromstring
 
-from stockbot.provider.base import BaseQuoteService
+from stockbot.provider.base import BaseQuoteService, BaseQuote
 
 LOGGER = logging.getLogger(__name__)
-
-
-def avanza_quote_factory(html_data):
-    tree = fromstring(html_data)
-
-    quote_type_element = tree.xpath("//div[@id='surface']")
-    if len(quote_type_element) > 0:
-        quote_type = quote_type_element[0].attrib['data-page_type']
-        if quote_type in ('stock', 'index', 'etf', 'certificate'):
-            return AvanzaQuote(tree=tree)
-        elif quote_type == 'fund':
-            return AvanzaFundQuote(tree=tree)
-        else:
-            LOGGER.warning("Unknown quote type: {}".format(quote_type))
-            return AvanzaFallbackQuote(quote_type=quote_type)
-    else:
-        LOGGER.warning("Cannot determine quote type")
-        return AvanzaFallbackQuote(quote_type="no such element")
 
 
 def percent_str_to_float(s):
@@ -52,51 +34,34 @@ class AvanzaFallbackQuote(object):
         return False
 
 
-class AvanzaFundQuote(object):
+class AvanzaFundQuote(BaseQuote):
 
     def __init__(self, *args, **kwargs):
-        tree = kwargs.get('tree', None)
-
-        if tree is not None:
-            quote_root = tree.xpath("//div[contains(@class,'quote')]//ul[contains(@class,'quoteBar')]")[0]
-            for element in quote_root.xpath("//meta[@itemprop]"):
-                name = element.attrib['itemprop']
-                value = element.attrib['content']
-                if getattr(self, name) == "N/A":
-                    if name == 'price':
-                        self.price = float(value)
-                    elif name == 'name' and value == 'Morningstar':
-                        continue
-                    else:
-                        setattr(self, name, value)
-
-            self.lastUpdateTime = quote_root.xpath("//span[@itemprop='datePublished']")[0].text.lstrip().rstrip()
-
-            # we are lazy and depend on order here
-            price_changes = quote_root.xpath("//span[contains(@class,'changePercent')]")
-            self.price_change_1d = percent_str_to_float(price_changes[0].text)
-            self.price_change_3m = percent_str_to_float(price_changes[1].text)
-            self.price_change_1y = percent_str_to_float(price_changes[2].text)
+        self.data = kwargs.get("data", dict())
+        for k, v in self.data.items():
+            setattr(self, k, v)
 
     def __str__(self):
-        return "Name: {n}, NAV: {p}, Percent Change 1 Day: {c1d}, Percent Change 3 Months: {c3m}, Percent Change 1 Year: {c1y}, Rating: {rt}, Update Time: {ut}" \
-            .format(n=self.name, p=self.price, c1d=self.price_change_1d, c3m=self.price_change_3m,
-                    c1y=self.price_change_1y, rt="{}/{}".format(self.ratingValue,self.bestRating),
-                    ut=self.lastUpdateTime)
-
-    def __getattribute__(self, item):
+        fields = [
+            ["Name", self.name],
+            ["NAV", self.nav],
+            ["%1D", self.developmentOneDay],
+            ["%1M", self.developmentOneMonth],
+            ["%1Y", self.developmentOneYear],
+            ["%YTD", self.developmentThisYear]
+        ]
         try:
-            # we cannot use this objects getattribute because then we loop until the world collapses
-            return object.__getattribute__(self, item)
+            fields.append(
+              ["Top 3 Holdings", " | ".join([
+                "{c}={w}%".format(
+                    c=self.holdingChartData[i].get("name"),
+                    w=self.holdingChartData[i].get("y")
+                ) for i in range(3)])
+               ]
+            )
         except Exception as e:
-            LOGGER.exception("Failed to look up attribute {}".format(item))
-            return "N/A"
-
-    def is_empty(self):
-        try:
-            return self.name == "N/A"
-        except Exception:
-            return True
+            LOGGER.exception("Failed to parse holdings data")
+        return self.fields_to_str(fields)
 
     def is_fresh(self):
         # funds are never fresh
@@ -255,12 +220,40 @@ class AvanzaQueryService(BaseQuoteService):
         for search_result_entry in search_result.result:
             if 'link' in search_result_entry:
                 try:
-                    response = requests.get(search_result_entry.get('link'))
-                    return avanza_quote_factory(html_data=response.text)
+                    return self.__quote_factory(search_result_entry.get('link'))
                 except Exception as e:
                     LOGGER.exception("Failed to retrieve quote for {}".format(ticker))
                     return AvanzaFallbackQuote(quote_type="error")
         return AvanzaFallbackQuote(quote_type="didn't find any quote for {}".format(ticker))
+
+    def __quote_factory(self, link):
+        if "/fonder/om-fonden.html/" in link:
+            return self.__get_fund_quote(link)
+
+        response = requests.get(link)
+        response.raise_for_status()
+        tree = fromstring(response.text)
+
+        quote_type_element = tree.xpath("//div[@id='surface']")
+        if len(quote_type_element) > 0:
+            quote_type = quote_type_element[0].attrib['data-page_type']
+            if quote_type in ('stock', 'index', 'etf', 'certificate'):
+                return AvanzaQuote(tree=tree)
+            elif quote_type == 'fund':
+                return AvanzaFundQuote(tree=tree)
+            else:
+                LOGGER.warning("Unknown quote type: {}".format(quote_type))
+                return AvanzaFallbackQuote(quote_type=quote_type)
+        else:
+            LOGGER.warning("Cannot determine quote type")
+            return AvanzaFallbackQuote(quote_type="no such element")
+
+    def __get_fund_quote(self, link):
+        id_ = link.split("/")[5]
+        response = requests.get("https://www.avanza.se/_cqbe/fund/guide/{id_}".format(id_=id_))
+        response.raise_for_status()
+        data = response.json()
+        return AvanzaFundQuote(data=data)
 
     def search(self, query):
         if query not in self.search_cache:
