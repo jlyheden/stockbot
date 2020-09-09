@@ -40,35 +40,31 @@ class AvanzaFundQuote(BaseQuote):
         self.data = kwargs.get("data", dict())
         for k, v in self.data.items():
             setattr(self, k, v)
-
-    def __str__(self):
-        fields = [
+        self.fields = [
             ["Name", self.name],
-            ["NAV", self.nav],
             ["%1D", self.developmentOneDay],
             ["%1M", self.developmentOneMonth],
             ["%1Y", self.developmentOneYear],
-            ["%YTD", self.developmentThisYear]
+            ["%YTD", self.developmentThisYear],
+            ["Fee", "{}%".format(self.productFee)]
         ]
+        if self.rating:
+            self.fields.append(["Rating", "{}/5".format(self.rating)])
         try:
-            fields.append(
+            self.fields.append(
               ["Top 3 Holdings", " | ".join([
-                "{c}={w}%".format(
+                "{c}:{l}:{w}%".format(
                     c=self.holdingChartData[i].get("name"),
+                    l=self.holdingChartData[i].get("countryCode"),
                     w=self.holdingChartData[i].get("y")
                 ) for i in range(3)])
                ]
             )
         except Exception as e:
             LOGGER.exception("Failed to parse holdings data")
-        return self.fields_to_str(fields)
-
-    def is_fresh(self):
-        # funds are never fresh
-        return False
 
 
-class AvanzaQuote(object):
+class AvanzaQuote(BaseQuote):
 
     def __init__(self, *args, **kwargs):
         tree = kwargs.get('tree', None)
@@ -136,30 +132,24 @@ class AvanzaQuote(object):
                 self.recommendationString = ""
             else:
                 if "N/A" not in (self.buyRecommendation, self.holdRecommendation, self.sellRecommendation):
-                    self.recommendationString = "Recommendations (B/H/S): {b}/{h}/{s}, ".format(
+                    self.recommendationString = "{b}/{h}/{s}".format(
                         b=self.buyRecommendation, h=self.holdRecommendation, s=self.sellRecommendation)
                 else:
                     self.recommendationString = ""
 
-    def __str__(self):
-        return "Name: {n}, Price: {op}, Low Price: {lp}, High Price: {hp}, Percent Change 1 Day: {p1d}, Total Percentage Return YTD: {ytd}, {rek}Update Time: {ut}" \
-            .format(n=self.name, op=self.lastPrice, lp=self.lowestPrice, hp=self.highestPrice,
-                    p1d=self.percentChange, ytd=self.totalReturnYtd, rek=self.recommendationString,
-                    ut=self.lastUpdateTime)
+        self.fields = [
+            ["Name", self.name],
+            ["Price", self.lastPrice],
+            ["Low Price", self.lowestPrice],
+            ["High Price", self.highestPrice],
+            ["%1D", self.percentChange],
+            ["%YTD", self.totalReturnYtd]
+        ]
 
-    def __getattribute__(self, item):
-        try:
-            # we cannot use this objects getattribute because then we loop until the world collapses
-            return object.__getattribute__(self, item)
-        except Exception as e:
-            LOGGER.exception("Failed to look up attribute {}".format(item))
-            return "N/A"
+        if len(self.recommendationString) > 0:
+            self.fields.append(["Recommendations (B/H/S)", self.recommendationString])
 
-    def is_empty(self):
-        try:
-            return self.name == "N/A"
-        except Exception:
-            return True
+        self.fields.append(["Update Time", self.lastUpdateTime])
 
     def is_fresh(self):
         if self.lastUpdateEpoch != "N/A":
@@ -229,18 +219,14 @@ class AvanzaQueryService(BaseQuoteService):
     def __quote_factory(self, link):
         if "/fonder/om-fonden.html/" in link:
             return self.__get_fund_quote(link)
-
         response = requests.get(link)
         response.raise_for_status()
         tree = fromstring(response.text)
-
         quote_type_element = tree.xpath("//div[@id='surface']")
         if len(quote_type_element) > 0:
             quote_type = quote_type_element[0].attrib['data-page_type']
             if quote_type in ('stock', 'index', 'etf', 'certificate'):
                 return AvanzaQuote(tree=tree)
-            elif quote_type == 'fund':
-                return AvanzaFundQuote(tree=tree)
             else:
                 LOGGER.warning("Unknown quote type: {}".format(quote_type))
                 return AvanzaFallbackQuote(quote_type=quote_type)

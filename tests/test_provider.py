@@ -322,40 +322,40 @@ class TestAvanzaQueryService(unittest.TestCase):
     def test_search(self):
         ticker = "dax"
         result = self.service.search(ticker)
-        self.assertEquals(type(result), AvanzaSearchResult)
+        self.assertEqual(type(result), AvanzaSearchResult)
         self.assertTrue(len(result.result) > 0)
-        self.assertEquals(result.result[0]["name"], "DAX")
+        self.assertEqual(result.result[0]["name"], "DAX")
 
     @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/avanza.yaml')
     def test_get_quote(self):
         ticker = "avanza"
         quote = self.service.get_quote(ticker)
-        self.assertEquals(type(quote), AvanzaQuote)
-        self.assertEquals(str(quote), "Name: Avanza Bank Holding, Price: 389.0, Low Price: 385.0, High Price: 389.6, Percent Change 1 Day: 0.41, Total Percentage Return YTD: 13.05, Recommendations (B/H/S): 1/2/1, Update Time: 11:15:48")
+        self.assertEqual(type(quote), AvanzaQuote)
+        self.assertEqual("Name: Avanza Bank Holding, Price: 389.0, Low Price: 385.0, High Price: 389.6, %1D: 0.41, %YTD: 13.05, Recommendations (B/H/S): 1/2/1, Update Time: 11:15:48", str(quote))
 
     @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/dax.yaml')
     def test_get_index(self):
         ticker = "dax"
         quote = self.service.get_quote(ticker)
-        self.assertEquals(type(quote), AvanzaQuote)
-        self.assertEquals(quote.lastPrice, 12540.73)
-        self.assertEquals(quote.lowestPrice, 12499.30)
-        self.assertEquals(quote.highestPrice, 12583.79)
+        self.assertEqual(type(quote), AvanzaQuote)
+        self.assertEqual(quote.lastPrice, 12540.73)
+        self.assertEqual(quote.lowestPrice, 12499.30)
+        self.assertEqual(quote.highestPrice, 12583.79)
 
     @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/avanza_zero.yaml')
     def test_get_fund(self):
         ticker = "avanza zero"
         quote = self.service.get_quote(ticker)
-        self.assertEqual("Name: Avanza Zero, NAV: 260.36, %1D: -0.92469, %1M: 2.44344, %1Y: 12.802740000000002, %YTD: 1.47718, Top 3 Holdings: Atlas Copco A=8.01% | Ericsson B=7.35% | Volvo B=6.52%", str(quote))
+        self.assertEqual("Name: Avanza Zero, %1D: -0.92469, %1M: 2.44344, %1Y: 12.802740000000002, %YTD: 1.47718, Fee: 0.0%, Rating: 3/5, Top 3 Holdings: Atlas Copco A:SE:8.01% | Ericsson B:SE:7.35% | Volvo B:SE:6.52%", str(quote))
 
     @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/xact_ravaror.yaml')
     def test_get_etf_quote(self):
         ticker = "xact ravaror"
         quote = self.service.get_quote(ticker)
-        self.assertEquals(type(quote), AvanzaQuote)
-        self.assertEquals(quote.lastPrice, 161.0)
-        self.assertEquals(quote.lowestPrice, 160.9)
-        self.assertEquals(quote.highestPrice, 162.1)
+        self.assertEqual(type(quote), AvanzaQuote)
+        self.assertEqual(quote.lastPrice, 161.0)
+        self.assertEqual(quote.lowestPrice, 160.9)
+        self.assertEqual(quote.highestPrice, 162.1)
 
 
 class TestIbIndexQueryService(unittest.TestCase):

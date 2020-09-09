@@ -3,7 +3,7 @@ import requests
 import urllib.parse
 from datetime import datetime
 
-from stockbot.provider.base import BaseQuoteService
+from stockbot.provider.base import BaseQuoteService, BaseQuote
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class YahooFallbackQuote(object):
         return False
 
 
-class YahooQuote(object):
+class YahooQuote(BaseQuote):
 
     def __init__(self, o):
         for k, v in o["optionChain"]["result"][0]["quote"].items():
@@ -36,8 +36,7 @@ class YahooQuote(object):
             self.timestamp_str = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
         self.is_pre_market = self.marketState == "PRE"
 
-    def __str__(self):
-        fields = [
+        self.fields = [
             ["Name", self.shortName],
             ["Price", self.regularMarketPrice],
             ["Low Price", self.regularMarketDayLow],
@@ -45,26 +44,14 @@ class YahooQuote(object):
             ["Percent Change 1 Day", self.regularMarketChangePercent]
         ]
         if self.is_pre_market:
-            fields.extend([
+            self.fields.extend([
                 ["Price Pre Market", self.preMarketPrice],
                 ["Percent Change Pre Market", self.preMarketChangePercent]
             ])
-        fields.extend([
+        self.fields.extend([
             ["Market", self.market],
             ["Update Time", self.timestamp_str]
         ])
-        return ", ".join(["{k}: {v}".format(k=x[0], v=x[1]) for x in fields])
-
-    def __getattribute__(self, item):
-        try:
-            # we cannot use this objects getattribute because then we loop until the world collapses
-            return object.__getattribute__(self, item)
-        except Exception as e:
-            LOGGER.exception("Failed to look up attribute {}".format(item))
-            return "N/A"
-
-    def is_empty(self):
-        return False
 
     def is_fresh(self):
         if self.timestamp is None:

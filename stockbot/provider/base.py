@@ -14,6 +14,9 @@ class BaseQuoteService(object):
 
 class BaseQuote(object):
 
+    def __str__(self):
+        return self.fields_to_str(self.fields)
+
     def __getattribute__(self, item):
         try:
             # we cannot use this objects getattribute because then we loop until the world collapses
@@ -27,6 +30,9 @@ class BaseQuote(object):
             return self.name == "N/A"
         except Exception:
             return True
+
+    def is_fresh(self):
+        return False
 
     @staticmethod
     def fields_to_str(fields):
