@@ -424,3 +424,9 @@ class TestYahooQueryService(unittest.TestCase):
         text = "microsoft"
         result = self.service.get_quote(text)
         self.assertRegexpMatches(str(result), "^Name: Microsoft Corporation, Price: [0-9\.]+, Low Price: [0-9\.]+, High Price: [0-9\.]+, Percent Change 1 Day: [0-9\.\-]+, Market: us_market, Update Time: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
+
+    @vcr.use_cassette('mock/vcr_cassettes/yahoo/quote/bytedance.yaml')
+    def test_get_existing_company(self):
+        text = "bytedance"
+        result = self.service.get_quote(text)
+        self.assertEqual("Didn't find anything", str(result))

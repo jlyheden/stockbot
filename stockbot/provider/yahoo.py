@@ -68,7 +68,11 @@ class YahooSearchResult(object):
         return [x["symbol"] for x in self.o["quotes"] if "symbol" in x]
 
     def is_empty(self):
-        return not ("quotes" in self.o and len(self.o["quotes"]) > 0)
+        return not (
+                "quotes" in self.o and
+                len(self.o["quotes"]) > 0 and
+                any([True for x in self.o["quotes"] if "symbol" in x])
+        )
 
 
 class YahooQueryService(BaseQuoteService):
