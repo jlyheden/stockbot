@@ -130,9 +130,13 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
         if to_me:
             commands = [irc.strings.lower(x) for x in split[1:]]
-            root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
-                                                          "instance": self, "sender": sender},
-                                 callback=self.command_callback, callback_args={"sender": sender})
+            try:
+                root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
+                                                              "instance": self, "sender": sender},
+                                     callback=self.command_callback, callback_args={"sender": sender})
+            except Exception as e:
+                LOGGER.exception("something failed", e)
+                self.command_callback("something failed", sender=sender)
 
     def command_callback_priv(self, result, **kwargs):
         target = kwargs.get('sender', None)

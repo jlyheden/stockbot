@@ -78,9 +78,10 @@ def stock_analytics_top(*args, **kwargs):
 
 
 fundamental_command = Command(name="fundamental", short_name="fa")
-fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental, help="<ticker> <q|y>"))
+fundamental_command.register(BlockingExecuteCommand(name="get", execute_command=get_fundamental, help="<ticker> <q|y>",
+                                                    expected_num_args=2))
 fundamental_command.register(BlockingExecuteCommand(name="fields", execute_command=stock_analytics_fields))
 fundamental_command.register(BlockingExecuteCommand(name="top", execute_command=stock_analytics_top,
-                                                    help="<count> <field> (optional 'desc')"))
+                                                    help="<count> <field> (optional 'desc')", expected_num_args=2))
 
 root_command.register(fundamental_command)

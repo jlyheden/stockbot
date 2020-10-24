@@ -7,25 +7,35 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 
+def ticker_hint(provider, ticker):
+    session = None
+    try:
+        session = Session()
+        hint_ticker = session.query(ProviderHints).filter(
+            and_(ProviderHints.provider == provider, ProviderHints.src == ticker)) \
+            .one_or_none()
+        if hint_ticker:
+            return hint_ticker.dst
+        else:
+            return ticker
+    except Exception as e:
+        LOGGER.exception("failed to query hints", e)
+        return ticker
+    finally:
+        if session:
+            session.close()
+
+
 def get_quote(*args, **kwargs):
     provider = args[0]
     ticker = " ".join(args[1:])
-    session = None
     try:
         service = kwargs.get('service_factory').get_service(provider)
-        session = Session()
-        hint_ticker = session.query(ProviderHints).filter(and_(ProviderHints.provider == provider, ProviderHints.src == ticker))\
-            .one_or_none()
-        if hint_ticker:
-            LOGGER.debug("Found hint ticker '{}' for ticker '{}', using that instead".format(hint_ticker, ticker))
-            ticker = hint_ticker.dst
+        ticker = ticker_hint(provider, ticker)
         return service.get_quote(ticker)
     except ValueError as e:
         LOGGER.exception("failed to retrieve service for provider '{}'".format(provider))
         return "No such provider '{}'".format(provider)
-    finally:
-        if session:
-            session.close()
 
 
 def get_fresh_quote(*args, **kwargs):
@@ -136,23 +146,26 @@ def remove_quote_hint(*args, **kwargs):
 
 hint_command = Command(name="hint")
 hint_command.register(BlockingExecuteCommand(name="add", execute_command=add_quote_hint,
-                                             help="<provider> <dst-ticker> <free-text>"))
+                                             help="<provider> <dst-ticker> <free-text>", expected_num_args=3))
 hint_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_quote_hint,
-                                             help="<provider> <dst-ticker>"))
+                                             help="<provider> <dst-ticker>", expected_num_args=2))
 hint_command.register(BlockingExecuteCommand(name="list", execute_command=list_quote_hint,
-                                             help="<provider>"))
+                                             help="<provider>", expected_num_args=1))
 
 
 quote_command = Command(name="quote", short_name="q")
-quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="<provider> <ticker>"))
-quote_command.register(BlockingExecuteCommand(name="get_fresh", execute_command=get_fresh_quote, help="<provider> <ticker>"))
+quote_command.register(BlockingExecuteCommand(name="get", execute_command=get_quote, help="<provider> <ticker>",
+                                              expected_num_args=2))
+quote_command.register(BlockingExecuteCommand(name="get_fresh", execute_command=get_fresh_quote,
+                                              help="<provider> <ticker>", expected_num_args=2))
 quote_command.register(BlockingExecuteCommand(name="gl", execute_command=get_quote_lucky,
-                                              help="<provider> <ticker>"))
+                                              help="<provider> <ticker>", expected_num_args=2))
 quote_command.register(BlockingExecuteCommand(name="search", execute_command=search_quote,
-                                              help="<provider> <ticker>"))
+                                              help="<provider> <ticker>", expected_num_args=2))
 quote_command.register(hint_command)
 
 root_command.register(quote_command)
 root_command.register(BlockingExecuteCommand(name="quick", short_name="qq", execute_command=get_quote_quick,
-                                             help="<search-ticker-string>"))
-root_command.register(ProxyCommand(name="qy", proxy_command=("quote", "get", "yahoo"), help="<ticker>"))
+                                             help="<search-ticker-string>", expected_num_args=1))
+root_command.register(ProxyCommand(name="qy", proxy_command=("quote", "get", "yahoo"), help="<ticker>",
+                                   expected_num_args=1))
