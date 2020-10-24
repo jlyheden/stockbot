@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+    method: GET
+    uri: https://query2.finance.yahoo.com/v1/finance/search?q=INVE-B.ST&lang=en-US&region=US&quotesCount=1&newsCount=0&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAG1RXWvCMBT9KyVPG9S2UwdDGEM3BV+6qXUgY4w0vbPBNqk3qR+I/325roO5+ZTk
+        3HNOzkkODHZVwaUyrPf27jOha2VZr+2zda0tEHpwFJFztQTWY7PkmfnM5Bqt4iUhY7UBYzV6/YFn
+        AANvwBpxsq+IMJzMx8mCVPsy1QVJ4tdhaxDMEgdKlcHOYc11jiU0Olk7anc7URREPrPO50mairzW
+        tbR7xyq0Wl4IcFXVaXFNtmbBc61HUnElHMtiDUfXT8G2aar45lTOrfFvoxKU9cYZcArjhnOkyLm1
+        lemF4ee3YbAn90DoMkQwwFHkoUWeQUuS8kEJmd07ccqxQig/wGRy3bG3q5VgFKOQxjY5fvRTqNyj
+        NqDVlheJpFg3HXd0u4SvQI00Tpp/6UZ354P4VC06B/vFUm+5FTndSKI/8xeEDFwpyGYCARTgBdIj
+        1krkKTdwYRjTO/5Dp39bRccvvn6b6WsCAAA=
+    headers:
+      Age: ['0']
+      Connection: [keep-alive]
+      Expect-CT: ['max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only"']
+      Referrer-Policy: [no-referrer-when-downgrade]
+      Strict-Transport-Security: [max-age=15552000]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+      cache-control: ['public, max-age=120, stale-while-revalidate=180']
+      content-encoding: [gzip]
+      content-length: ['368']
+      content-type: [application/json]
+      date: ['Sat, 24 Oct 2020 18:21:08 GMT']
+      server: [ATS]
+      vary: ['Origin,Origin,Accept-Encoding']
+      x-envoy-decorator-operation: ['finance-search--mtls-production-ir2.finance-k8s.svc.yahoo.local:4080/*']
+      x-envoy-upstream-service-time: ['15']
+      x-request-id: [b7376a9d-468e-41f6-ae61-1060df13e58e]
+      x-yahoo-request-id: [bnurimpfp8s4k]
+      y-rid: [bnurimpfp8s4k]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+    method: GET
+    uri: https://query1.finance.yahoo.com/v7/finance/options/INVE-B.ST
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAH1V227bOBD9FYNPu4CjUnfRb/FlkWCbOq3cFEWxKGhrLBOmSS9JOXWD/PsOZTkX
+        O1k/yZwzM4dzOXwgeuuEVqMVF4oMHogB20hHBj8eSKMqMHIvVF3uN3MtyYBcf7qbXAyDckb6BH5t
+        heHeecwdWHT5p0+sM2J9/LPi9kYoMW0z4NmSSwt98m+jHfhckqu64TV+E1AXX0sMaqBGLB60/1rk
+        bL/1iMnnr9ez78fDUjdmAZ/4xpvGIPkeqt7nNnCfIIe6BsPnEq3ONJhz0RgDarFHdDn5u8XwCg6I
+        jtaykXLya7FCUsfApdOL9UrLDTosheJqIbgcnYZCzo3k5oabNbjpFpB+miVB0Sd8hyxqGHMh93da
+        NhuIb7RyKzIowpxF9C1ESMccY+dFHmepT7t0+9m9/gaw/qjvRy09MghZGiSMsfwdxC1geRT2kQZp
+        VERxehLqyyEMiXMahL2LXsrCICGvMVeiXh3zXURpUFBKE/Ye5injBQ1oEmdRGufn7MigzXgeBGvm
+        KbSNERJn7lKphsux2IkKVPWF+5FhAX0G3E7QB4sQhxF7z+27AFn5ItAwZSxM8gjndmtnHXh2D3IH
+        bUtwPEMaBczXHBF/aXPPDbqGSeCvYVccN2PaOOu4qtCVDJI0LjLKGIaca72+47IBf4siyMOouyC2
+        8vLQYT8TLMiwE8mZ7anISUB9q1j2DuRVjWlOM4wWItjd6yvcVgPVq4RRGGRxmLxtPyZNYrx0kWb5
+        /8FejBMtkoi1c7BpB37Etz5IlLC8KNKw8Nc7FM83KC6CiMVFjFXdGrGAmR5irXwcliQZSzKE23aX
+        r5UDs+OoMqFvQbeIKC28W+8hbgV9tvj1m02Jb402rlvYa7UD67TpXQ57FkzQGyJAalW/Yf9j28zl
+        n2jfgLV406FGztfYcr/qm/lPXECWhuQ540xs4LdWR3GYNEZv4cNLjThFli+ojSatatYbN10uS3A3
+        QkphYaFVhbOXR9T/jkVFvIWf3TfGtfWt3qLIOKie9OpgLV27GWT0cVpOxqQr85XwzWqn0Fg381rn
+        Rfp1Tqx+UWRJl/iVih2HIwpyFJkiL960v5gK7H6K+3OK84XAhmY0TrKM5dmJ+dZz9ZuRBqcmnMBO
+        FnBtonPjUcDSLAoyL2AedirGiGs1pwWd2A5qizaKGxeeEYOd0I0dSW3h4I9Xm4vqQBb5cLt+Io7n
+        pfgN7Xji+dO3PX82H/vdg9s+kY/4SIIx2pCBwtfn8fE//MZvRY8HAAA=
+    headers:
+      Age: ['0']
+      Connection: [keep-alive]
+      Expect-CT: ['max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only"']
+      Referrer-Policy: [no-referrer-when-downgrade]
+      Strict-Transport-Security: [max-age=15552000]
+      X-Content-Type-Options: [nosniff]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+      cache-control: ['public, max-age=1, stale-while-revalidate=9']
+      content-encoding: [gzip]
+      content-length: ['953']
+      content-type: [application/json]
+      date: ['Sat, 24 Oct 2020 18:21:08 GMT']
+      server: [ATS]
+      vary: ['Origin,Accept-Encoding']
+      x-envoy-decorator-operation: ['finance-quote-api--mtls-production-ir2.finance-k8s.svc.yahoo.local:4080/*']
+      x-envoy-upstream-service-time: ['4']
+      x-request-id: [79afdfd8-a61a-405a-8a21-2cb253ca537e]
+      x-yahoo-request-id: [18i44spfp8s4k]
+      y-rid: [18i44spfp8s4k]
+    status: {code: 200, message: OK}
+version: 1

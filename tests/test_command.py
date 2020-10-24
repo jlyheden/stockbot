@@ -310,3 +310,48 @@ class TestCommand(unittest.TestCase):
         command = ["fundamental", "top", "5", "this_field_doesnt_exist"]
         res = self.__cmd_wrap(*command)
         self.assertEquals(["Error: 'this_field_doesnt_exist' is not a valid field"], res)
+
+    def test_quote_hints(self):
+        command = ["quote", "hint", "list", "yahoo"]
+        res = self.__cmd_wrap(*command)
+        self.assertEqual("no hints found", res)
+
+        command = ["quote", "hint", "add", "yahoo", "foo", "bar"]
+        res = self.__cmd_wrap(*command)
+        self.assertEqual("Added hint", res)
+
+        command = ["quote", "hint", "list", "yahoo"]
+        res = self.__cmd_wrap(*command)
+        self.assertEqual(["Provider: yahoo, Ticker: foo, Free-text: bar"], res)
+
+        command = ["quote", "hint", "remove", "yahoo", "foo"]
+        res = self.__cmd_wrap(*command)
+        self.assertEqual("Removed hint", res)
+
+        command = ["quote", "hint", "remove", "yahoo", "foo"]
+        res = self.__cmd_wrap(*command)
+        self.assertEqual("No matching hint to remove", res)
+
+        command = ["quote", "hint", "list", "yahoo"]
+        res = self.__cmd_wrap(*command)
+        self.assertEqual("no hints found", res)
+
+
+class IntegrationTestCommand(unittest.TestCase):
+
+    def setUp(self) -> None:
+        create_tables()
+
+    @vcr.use_cassette('mock/vcr_cassettes/hints/yahoo.yaml')
+    def test_quote_get_with_hints(self):
+
+        def cmd_wrap(*command):
+            return root_command.execute(*command, command_args={'service_factory': QuoteServiceFactory()})
+
+        command = ["quote", "hint", "add", "yahoo", "INVE-B.ST", "investor", "b"]
+        cmd_wrap(*command)
+
+        command = ["quote", "get", "yahoo", "investor", "b"]
+        res = cmd_wrap(*command)
+
+        self.assertRegexpMatches(str(res), "^Name: Investor AB ser. B,.*")
