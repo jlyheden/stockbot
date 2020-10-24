@@ -10,6 +10,7 @@ class Command(object):
         self.name = kwargs.get('name')
         self.short_name = kwargs.get('short_name', None)
         self.execute_command = kwargs.get('execute_command')
+        self.expected_num_args = kwargs.get('expected_num_args', 0)
         self.help = kwargs.get('help', None)
         self.parent_command = None
         self.subcommands = []
@@ -56,6 +57,8 @@ class Command(object):
             rv.append(" ".join([str(x) for x in c[1:]]))
         return sorted(rv)
 
+    def printable_self_help(self):
+        return "Usage: {}".format(self.help)
 
 class ProxyCommand(Command):
 
@@ -73,6 +76,11 @@ class BlockingExecuteCommand(Command):
     def execute(self, *args, **kwargs):
         cb = kwargs.get('callback', None)
         cb_args = kwargs.get('callback_args', {})
+        if self.expected_num_args > len(args):
+            if callable(cb):
+                return cb(self.printable_self_help(), **cb_args)
+            else:
+                return self.printable_self_help()
         if callable(self.execute_command):
             result = self.execute_command(*args, **kwargs.get('command_args'))
         else:

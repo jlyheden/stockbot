@@ -33,7 +33,8 @@ def get(*args, **kwargs):
 
 
 ibindex_command = Command(name="ibindex")
-ibindex_command.register(BlockingExecuteCommand(name="search", execute_command=search, help="<text>"))
-ibindex_command.register(BlockingExecuteCommand(name="get", execute_command=get, help="<text>"))
+ibindex_command.register(BlockingExecuteCommand(name="search", execute_command=search, help="<text>",
+                                                expected_num_args=1))
+ibindex_command.register(BlockingExecuteCommand(name="get", execute_command=get, help="<text>", expected_num_args=1))
 
 root_command.register(ibindex_command)

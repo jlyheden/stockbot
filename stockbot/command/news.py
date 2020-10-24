@@ -97,5 +97,6 @@ def get(*args, **kwargs):
         return "Broken: {}".format(e)
 
 
-news_command = BlockingExecuteCommand(name="news", execute_command=get, help="<csv list of matches>")
+news_command = BlockingExecuteCommand(name="news", execute_command=get, help="<csv list of matches>",
+                                      expected_num_args=1)
 root_command.register(news_command)

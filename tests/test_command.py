@@ -134,10 +134,6 @@ class TestCommand(unittest.TestCase):
 
     def test_quote_get_command_invalid_input(self):
 
-        command = ["quote", "get", "aapl"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals("No such provider 'aapl'", res)
-
         command = ["quote", "get", "invalid-provider", "aapl"]
         res = self.__cmd_wrap(*command)
         self.assertEquals("No such provider 'invalid-provider'", res)
@@ -149,10 +145,6 @@ class TestCommand(unittest.TestCase):
         self.assertIn("Ticker: FOO, Market: Foo Market, Name: Foo Company", res)
 
     def test_quote_search_command_invalid_input(self):
-
-        command = ["quote", "search", "foobar"]
-        res = self.__cmd_wrap(*command)
-        self.assertIn("No such provider 'foobar", res)
 
         command = ["quote", "search", "invalid-provider", "foobar"]
         res = self.__cmd_wrap(*command)

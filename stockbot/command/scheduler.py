@@ -64,15 +64,15 @@ scheduler_command.register(BlockingExecuteCommand(name="disable", execute_comman
 scheduler_command_command = Command(name="command")
 scheduler_command_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_command))
 scheduler_command_command.register(BlockingExecuteCommand(name="add", execute_command=add_scheduler_command,
-                                                          help="<command>"))
+                                                          help="<command>", expected_num_args=1))
 scheduler_command_command.register(BlockingExecuteCommand(name="remove", execute_command=remove_scheduler_command,
-                                                          help="<command>"))
+                                                          help="<command>", expected_num_args=1))
 scheduler_command.register(scheduler_command_command)
 
 scheduler_interval_command = Command(name="interval")
 scheduler_interval_command.register(BlockingExecuteCommand(name="get", execute_command=get_scheduler_interval))
 scheduler_interval_command.register(BlockingExecuteCommand(name="set", execute_command=set_scheduler_interval,
-                                                           help="<interval-int>"))
+                                                           help="<interval-int>", expected_num_args=1))
 scheduler_command.register(scheduler_interval_command)
 
 root_command.register(scheduler_command)

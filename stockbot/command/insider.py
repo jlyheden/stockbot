@@ -92,5 +92,6 @@ def insider_top(*args, **kwargs):
 
 insider_command = Command(name="insider")
 insider_command.register(BlockingExecuteCommand(name="top", execute_command=insider_top,
-                                                help="<type: can be disposal, acquisition etc> <iso-date> <venue: can be nasdaq, first-north>"))
+                                                help="<type: can be disposal, acquisition etc> <iso-date> <venue: can be nasdaq, first-north>",
+                                                expected_num_args=1))
 root_command.register(insider_command)
