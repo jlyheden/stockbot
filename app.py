@@ -4,6 +4,7 @@ import sys
 import signal
 import types
 import time
+import ssl
 from datetime import datetime
 
 import irc.strings
@@ -49,9 +50,9 @@ class ScheduleHandlerAlways(object):
 
 class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
-    def __init__(self):
-        super(IRCBot, self).__init__([(configuration.server_name, int(configuration.server_port))], configuration.nick,
-                                     configuration.nick)
+    def __init__(self, **kwargs):
+        super(IRCBot, self).__init__([(configuration.server_name, int(configuration.server_port), configuration.server_password)], configuration.nick,
+                                     configuration.nick, **kwargs)
         self.channel = configuration.channel_name
         self.failed_health_checks = 0
         self.max_failed_health_checks = 10
@@ -193,7 +194,11 @@ if __name__ == '__main__':
 
     create_tables()
 
-    bot = IRCBot()
+    kwargs = {}
+    if configuration.server_use_ssl:
+        ssl_factory = irc.connection.Factory(wrapper=ssl.wrap_socket)
+        kwargs["connect_factory"] = ssl_factory
+    bot = IRCBot(**kwargs)
 
     def sigterm_handler(*args):
         bot.die("kthxbai")

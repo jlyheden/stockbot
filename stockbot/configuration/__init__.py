@@ -2,7 +2,9 @@ import os
 
 DEFAULT_VALUES = {
     "scheduler": "false",
-    "database_url": "sqlite:///:memory:"
+    "database_url": "sqlite:///:memory:",
+    "server_password": "",
+    "server_use_ssl": "false"
 }
 
 

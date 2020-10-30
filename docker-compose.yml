@@ -13,7 +13,9 @@ services:
       context: .
     environment:
       SERVER_NAME: "ircserver"
-      SERVER_PORT: "6667"
+      SERVER_PORT: "6697"
+      SERVER_USE_SSL: "true"
+      SERVER_PASSWORD: "secret"
       CHANNEL_NAME: "#testchannel"
       NICK: "stockmurph"
       LOGLEVEL: "DEBUG"
@@ -27,6 +29,9 @@ services:
     image: inspircd/inspircd-docker:latest
     ports:
     - "6667:6667"
+    - "6697:6697"
+    environment:
+      INSP_CONNECT_PASSWORD: "secret"
 
   database:
     image: postgres:9.6-alpine
