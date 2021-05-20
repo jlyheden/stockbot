@@ -6,3 +6,5 @@
 /version.txt
 /venv-*
 /venv
+/.venv
+/.vscode
