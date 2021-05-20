@@ -29,7 +29,7 @@ def get_fundamental(*args, **kwargs):
 
 
 def stock_analytics_fields(*args, **kwargs):
-    fields = ", ".join(StockDomain.__table__.columns._data.keys())
+    fields = ", ".join(StockDomain.__table__.columns.keys())
     LOGGER.debug("Fields for StockDomain: {}".format(fields))
     return "Fields: {}".format(fields)
 

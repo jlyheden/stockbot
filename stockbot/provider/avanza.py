@@ -236,7 +236,7 @@ class AvanzaQueryService(BaseQuoteService):
 
     def __get_fund_quote(self, link):
         id_ = link.split("/")[5]
-        response = requests.get("https://www.avanza.se/_cqbe/fund/guide/{id_}".format(id_=id_))
+        response = requests.get("https://www.avanza.se/_api/fund-guide/guide/{id_}".format(id_=id_))
         response.raise_for_status()
         data = response.json()
         return AvanzaFundQuote(data=data)

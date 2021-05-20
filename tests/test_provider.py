@@ -213,7 +213,7 @@ class TestStockDomain(unittest.TestCase):
         q = self.service.get_quote('AAPL')
         do = StockDomain()
         do.from_google_finance_quote(q)
-        for field in StockDomain.__table__.columns._data.keys():
+        for field in StockDomain.__table__.columns.keys():
             value = getattr(do, field)
             if type(value) is float and field not in accepted_empty_fields:
                 if value == 0.0:
@@ -346,7 +346,7 @@ class TestAvanzaQueryService(unittest.TestCase):
     def test_get_fund(self):
         ticker = "avanza zero"
         quote = self.service.get_quote(ticker)
-        self.assertEqual("Name: Avanza Zero, %1D: -0.92469, %1M: 2.44344, %1Y: 12.802740000000002, %YTD: 1.47718, Fee: 0.0%, Rating: 3/5, Top 3 Holdings: Atlas Copco A:SE:8.01%|Ericsson B:SE:7.35%|Volvo B:SE:6.52%", str(quote))
+        self.assertEqual(str(quote), "Name: Avanza Zero, %1D: 1.75663, %1M: 2.08861, %1Y: 47.45233, %YTD: 21.5053, Fee: 0.0%, Rating: 3/5, Top 3 Holdings: Atlas Copco A:SE:7.91%|Ericsson B:SE:6.55%|Evolution:SE:6.5%")
 
     @vcr.use_cassette('mock/vcr_cassettes/avanza/quote/xact_ravaror.yaml')
     def test_get_etf_quote(self):
