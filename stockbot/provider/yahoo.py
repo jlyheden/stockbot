@@ -79,6 +79,10 @@ class YahooQueryService(BaseQuoteService):
     # search results probably don't change that much so cache them
     search_cache = {}
 
+    headers = {
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
+    }
+
     def __init__(self, *args, **kwargs):
         pass
 
@@ -86,7 +90,8 @@ class YahooQueryService(BaseQuoteService):
         search_result = self.search(ticker)
         if not search_result.is_empty():
             t = search_result.get_tickers()[0]
-            response = requests.get("https://query1.finance.yahoo.com/v7/finance/options/{t}".format(t=t))
+            response = requests.get("https://query1.finance.yahoo.com/v7/finance/options/{t}".format(t=t),
+                                    headers=self.headers)
             response.raise_for_status()
             return YahooQuote(response.json())
         else:
@@ -98,6 +103,7 @@ class YahooQueryService(BaseQuoteService):
             'https://query2.finance.yahoo.com/v1/finance/search?q='
             '{query}&lang=en-US&region=US&quotesCount=1&newsCount=0&enableFuzzyQuery=false&quotesQueryId'
             '=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa'
-            '&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true'.format(query=query_encoded))
+            '&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true'.format(query=query_encoded),
+            headers=self.headers)
         response.raise_for_status()
         return YahooSearchResult(response.json())
