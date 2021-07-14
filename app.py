@@ -108,13 +108,11 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
     def on_welcome(self, c, e):
         c.join(self.channel)
-        if os.path.exists(".git/HEAD"):
-            with open(".git/HEAD", "r") as ref_f:
-                ref = ref_f.read().split(":")[1].strip()
-                with open(".git/{}".format(ref), "r") as sha_f:
-                    self.connection.privmsg(self.channel,
-                                            "\x0306,13 I'M \x03\x0313,06 BACK! \x03\x0306 Running version\x03: \x0314{}\x03".
-                                            format(sha_f.read().strip()))
+        commit_hash = os.getenv("COMMIT_HASH", None)
+        if commit_hash:
+            self.connection.privmsg(self.channel,
+                                    "\x0306,13 I'M \x03\x0313,06 BACK! \x03\x0306 Running version\x03: \x0314{}\x03".
+                                    format(commit_hash.strip()))
 
     def on_privmsg(self, c, e):
         sender = e.source.nick
@@ -129,7 +127,8 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         my_nickname = irc.strings.lower(self.connection.get_nickname())
         message = e.arguments[0]
         split = message.split(" ")
-        to_me = (split[0].endswith(":") or split[1].endswith("(IRC):")) and irc.strings.lower(split[0].rstrip(":")) == my_nickname
+        LOGGER.debug(split)
+        to_me = (split[0].endswith(":") or (len(split) > 1 and split[1] == "(IRC):")) and irc.strings.lower(split[0].rstrip(":")) == my_nickname
 
         if to_me:
             commands = [irc.strings.lower(x) for x in split[1:]]
