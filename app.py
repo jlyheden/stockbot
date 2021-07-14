@@ -126,12 +126,11 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         sender = e.source.nick
         my_nickname = irc.strings.lower(self.connection.get_nickname())
         message = e.arguments[0]
-        split = message.split(" ")
-        LOGGER.debug(split)
-        to_me = (split[0].endswith(":") or (len(split) > 1 and split[1] == "(IRC):")) and irc.strings.lower(split[0].rstrip(":")) == my_nickname
+        nick_msg_split = message.split(":")
+        respond = irc.strings.lower(nick_msg_split[0]) in [my_nickname, "{} (irc)".format(my_nickname)] and len(nick_msg_split) == 2
 
-        if to_me:
-            commands = [irc.strings.lower(x) for x in split[1:]]
+        if respond:
+            commands = [irc.strings.lower(x) for x in nick_msg_split[1].split(" ")]
             try:
                 root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
                                                               "instance": self, "sender": sender},
