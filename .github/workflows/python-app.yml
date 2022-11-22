@@ -25,6 +25,8 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/master'
     steps:
       -
         name: Set up QEMU
@@ -43,4 +45,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jlyheden/stockbot:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/stockbot:latest
+          build-args: |
+            COMMIT_HASH=${{ github.sha }}

@@ -12,4 +12,7 @@ COPY /stockbot /stockbot
 
 VOLUME ["/persistence"]
 
+ARG COMMIT_HASH
+ENV COMMIT_HASH=$COMMIT_HASH
+
 CMD ["/usr/bin/env", "python", "app.py"]
