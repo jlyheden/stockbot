@@ -66,9 +66,11 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
     def health_check(self):
         if self.connection.is_connected():
+            LOGGER.debug("Connected {}".format(self.connection.is_connected()))
             self.failed_health_checks = 0
         else:
             self.failed_health_checks += 1
+            LOGGER.debug("Not connect {}, failed checks {}".format(self.connection.is_connected(), self.failed_health_checks))
             if self.failed_health_checks >= self.max_failed_health_checks:
                 LOGGER.error("Still not connected after {} seconds, killing the bot "
                              .format(60 * self.failed_health_checks))
