@@ -65,11 +65,11 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         self.quote_service_factory = QuoteServiceFactory()
         self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
         self.scheduler_interval = 3600
-        self.last_check = datetime.now()
-        self.last_server_ping = None
+        self.last_check = None
+        self.last_server_ping = datetime.now()
 
     def health_check(self):
-        if (datetime.now() - self.last_check).seconds > int(configuration.die_when_not_pinged_in_s):
+        if (datetime.now() - self.last_server_ping).seconds > int(configuration.die_when_not_pinged_in_s):
             self.die("BAI")
 
     def stock_check_scheduler(self):
