@@ -191,6 +191,9 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
                 return
             self.dcc_connect(address, port)
 
+    def on_ping(self, e):
+        LOGGER.debug("Got pinged, event: {}".format(e))
+
 
 if __name__ == '__main__':
 
