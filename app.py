@@ -63,6 +63,7 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
         self.scheduler_interval = 3600
         self.last_check = None
+        self.last_server_ping = None
 
     def health_check(self):
         if self.connection.is_connected():
@@ -191,7 +192,8 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
                 return
             self.dcc_connect(address, port)
 
-    def on_ping(self, e):
+    def on_ping(self, c, e):
+        self.last_server_ping = datetime.now()
         LOGGER.debug("Got pinged, event: {}".format(e))
 
 
