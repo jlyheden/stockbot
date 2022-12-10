@@ -51,37 +51,28 @@ class ScheduleHandlerAlways(object):
 class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
 
     def __init__(self, **kwargs):
-        super(IRCBot, self).__init__([(configuration.server_name, int(configuration.server_port), configuration.server_password)], configuration.nick,
-                                     configuration.nick, **kwargs)
+        super(IRCBot, self).__init__([(configuration.server_name, int(configuration.server_port),
+                                       configuration.server_password)], configuration.nick, configuration.nick,
+                                     **kwargs)
         self.channel = configuration.channel_name
         self.failed_health_checks = 0
         self.max_failed_health_checks = 10
         self.scheduler = configuration.scheduler
-        self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
-        self.reactor.scheduler.execute_every(60, self.health_check)
+        if self.scheduler:
+            self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
+        if configuration.die_when_not_pinged:
+            self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
         self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
         self.scheduler_interval = 3600
-        self.last_check = None
+        self.last_check = datetime.now()
         self.last_server_ping = None
 
     def health_check(self):
-        if self.connection.is_connected():
-            LOGGER.debug("Connected {}".format(self.connection.is_connected()))
-            self.failed_health_checks = 0
-        else:
-            self.failed_health_checks += 1
-            LOGGER.debug("Not connect {}, failed checks {}".format(self.connection.is_connected(), self.failed_health_checks))
-            if self.failed_health_checks >= self.max_failed_health_checks:
-                LOGGER.error("Still not connected after {} seconds, killing the bot "
-                             .format(60 * self.failed_health_checks))
-                self.die("BAI")
+        if (datetime.now() - self.last_check).seconds > int(configuration.die_when_not_pinged_in_s):
+            self.die("BAI")
 
     def stock_check_scheduler(self):
-
-        if not self.scheduler:
-            LOGGER.debug("Scheduler is disabled")
-            return
 
         if not self.connection.is_connected():
             LOGGER.debug("Not connected yet, hold off")
@@ -175,26 +166,8 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         else:
             self.connection.notice(target, colored_message)
 
-    def on_dccmsg(self, c, e):
-        # non-chat DCC messages are raw bytes; decode as text
-        text = e.arguments[0].decode('utf-8')
-        c.privmsg("You said: " + text)
-
-    def on_dccchat(self, c, e):
-        if len(e.arguments) != 2:
-            return
-        args = e.arguments[1].split()
-        if len(args) == 4:
-            try:
-                address = ip_numstr_to_quad(args[2])
-                port = int(args[3])
-            except ValueError:
-                return
-            self.dcc_connect(address, port)
-
     def on_ping(self, c, e):
         self.last_server_ping = datetime.now()
-        LOGGER.debug("Got pinged, event: {}".format(e))
 
 
 if __name__ == '__main__':

@@ -4,7 +4,9 @@ DEFAULT_VALUES = {
     "scheduler": "false",
     "database_url": "sqlite:///:memory:",
     "server_password": "",
-    "server_use_ssl": "false"
+    "server_use_ssl": "false",
+    "die_when_not_pinged": "false",
+    "die_when_not_pinged_in_s": "600"
 }
 
 
