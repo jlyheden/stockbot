@@ -1,5 +1,6 @@
 from . import root_command, Command, BlockingExecuteCommand, ProxyCommand
 from epicstore_api import EpicGamesStoreAPI
+from datetime import datetime
 import logging
 
 LOGGER = logging.getLogger(__name__)
@@ -29,9 +30,10 @@ def get_latest_free_game(*args, **kwargs):
             if game_promotions and free_game['price']['totalPrice']['discountPrice'] == 0:
                 promotion_data = game_promotions[0]['promotionalOffers'][0]
                 start_date_iso, end_date_iso = (
-                    promotion_data['startDate'][:-1], promotion_data['endDate'][:-1]
+                    promotion_data['startDate'], promotion_data['endDate']
                 )
-                return f"Free game: {free_game['title']}, URL: {game_url}, Ends at: {end_date_iso}"
+                end_date_datetime = datetime.strptime(end_date_iso, "%Y-%m-%dT%H:%M:%S.%f%z")
+                return f"Game: {free_game['title']}, URL: {game_url}, Ends at: {end_date_datetime.astimezone()}"
         return "Nope"
     except Exception as e:
         LOGGER.exception("failed to get free games", e)
