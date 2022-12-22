@@ -22,6 +22,7 @@ def _get_free_games():
 
 
 def get_latest_free_game(*args, **kwargs):
+    response = []
     try:
         for free_game in _get_free_games():
             LOGGER.debug(free_game)
@@ -33,11 +34,17 @@ def get_latest_free_game(*args, **kwargs):
                     promotion_data['startDate'], promotion_data['endDate']
                 )
                 end_date_datetime = datetime.strptime(end_date_iso, "%Y-%m-%dT%H:%M:%S.%f%z")
-                return f"Game: {free_game['title']}, URL: {game_url}, Ends at: {end_date_datetime.astimezone()}"
-        return "Nope"
+                response.append(f"Game: {free_game['title']}, URL: {game_url}, Ends at: {end_date_datetime.astimezone()}")
     except Exception as e:
         LOGGER.exception("failed to get free games", e)
         return "Something broke"
+    else:
+        if len(response) == 0:
+            return "Nothing free today"
+        elif len(response) == 1:
+            return response[0]
+        else:
+            return response
 
 
 game_command = Command(name="game", short_name="g")
