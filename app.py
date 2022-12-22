@@ -26,29 +26,7 @@ logging.basicConfig(level=getattr(logging, LOGLEVEL),
 LOGGER = logging.getLogger(__name__)
 
 
-class ScheduleHandler(object):
-
-    days = [1, 2, 3, 4, 5]
-    hours = [9, 10, 11, 12, 13, 14, 15, 16, 17]
-
-    def timer_should_execute(self, dt):
-        """
-
-        :param dt:
-        :type dt: datetime
-        :return:
-        """
-        return (dt.isoweekday() in self.days) and (dt.hour in self.hours)
-
-
-class ScheduleHandlerAlways(object):
-
-    @staticmethod
-    def timer_should_execute(*args):
-        return True
-
-
-class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
+class IRCBot(SingleServerIRCBot):
 
     def __init__(self, **kwargs):
         super(IRCBot, self).__init__([(configuration.server_name, int(configuration.server_port),
@@ -57,56 +35,56 @@ class IRCBot(SingleServerIRCBot, ScheduleHandlerAlways):
         self.channel = configuration.channel_name
         self.failed_health_checks = 0
         self.max_failed_health_checks = 10
-        self.scheduler = configuration.scheduler
-        if self.scheduler:
-            self.reactor.scheduler.execute_every(60, self.stock_check_scheduler)
+
+        if configuration.scheduler:
+            self.reactor.scheduler.execute_every(60, self.execute_every_60_seconds)
         if configuration.die_when_not_pinged:
             self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
-        self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
-        self.scheduler_interval = 3600
-        self.last_check = None
+        self.ephemeral_oneshot_timers = set([])
         self.last_server_ping = datetime.now()
+
+        # self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
 
     def health_check(self):
         if (datetime.now() - self.last_server_ping).seconds > int(configuration.die_when_not_pinged_in_s):
             self.die("BAI")
 
-    def stock_check_scheduler(self):
-
+    def execute_every_60_seconds(self):
         if not self.connection.is_connected():
             LOGGER.debug("Not connected yet, hold off")
             return
 
-        now = datetime.now()
-
-        if self.last_check is not None:
-            if int(now.timestamp()) - self.last_check < self.scheduler_interval:
-                return
-
-        # TODO: not so configurable, fix
-        if not self.timer_should_execute(now):
-            return
-
-        for command in self.commands:
-            try:
-                root_command.execute(*command.split(" "), command_args={"service_factory": self.quote_service_factory,
-                                     "instance": self}, callback=self.command_callback, callback_args={})
-            except Exception as e:
-                LOGGER.exception("failed to execute scheduled command '{}'".format(command))
-
-        self.last_check = int(now.timestamp())
+        for timer in self.ephemeral_oneshot_timers:
+            if timer.should_fire():
+                try:
+                    root_command.execute(*timer.command.split(" "),
+                                         command_args={"service_factory": self.quote_service_factory,
+                                                       "instance": self}, callback=self.command_callback,
+                                         callback_args={})
+                except Exception as e:
+                    LOGGER.exception("failed to execute scheduled command '{}'".format(timer.command))
+                finally:
+                    self.ephemeral_oneshot_timers.discard(timer)
 
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
+
+    def _startup_commands(self):
+        # TODO: make configurable
+        try:
+            root_command.execute(*("game", "epic", "track"), command_args={"instance": self})
+        except Exception as e:
+            LOGGER.exception("startup commands failed", e)
 
     def on_welcome(self, c, e):
         c.join(self.channel)
         commit_hash = os.getenv("COMMIT_HASH", None)
         if commit_hash:
             self.connection.privmsg(self.channel,
-                                    "\x0306,13 I'M \x03\x0313,06 BACK! \x03\x0306 Running version\x03: \x0314{}\x03".
+                                    "\x0306,13 I'M \x03\x0313,06 BACK! \x03\x0306 commit\x03: \x0314{}\x03".
                                     format(commit_hash.strip()))
+        self._startup_commands()
 
     def on_privmsg(self, c, e):
         sender = e.source.nick
