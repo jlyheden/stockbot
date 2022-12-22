@@ -8,4 +8,4 @@ class OneshotTimer(object):
         self.fire_after = fire_after
 
     def should_fire(self):
-        return datetime.now() > self.fire_after
+        return datetime.now() > self.fire_after.astimezone()
