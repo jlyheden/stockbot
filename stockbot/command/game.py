@@ -36,38 +36,31 @@ def _get_free_games():
     return rv
 
 
-def start_tracking_free_games(*args, **kwargs):
+def get_latest_free_games(*args, **kwargs):
+    response = []
     bot = kwargs.get('instance')
     try:
         free_games = _get_free_games()
-        latest_time = max([x["end_date"] for x in free_games])
-        bot.ephemeral_oneshot_timers.add(OneshotTimer("epic", latest_time))
-    except Exception as e:
-        LOGGER.exception("failed to start tracking free games", e)
-
-
-def get_latest_free_game(*args, **kwargs):
-    response = []
-    try:
-        for free_game in _get_free_games():
+        for free_game in free_games:
             response.append(f"Game: {free_game['name']}, URL: {free_game['url']}, Ends at: {free_game['end_date'].astimezone()}")
     except Exception as e:
         LOGGER.exception("failed to get free games", e)
         return "Something broke"
     else:
+        try:
+            latest_time = max([x["end_date"] for x in free_games])
+            bot.ephemeral_oneshot_timers.add(OneshotTimer(("game", "epic", "now"), latest_time))
+        except Exception as e:
+            LOGGER.exception("failed to create the ephemeral oneshot timer", e)
         if len(response) == 0:
             return "Nothing free today"
-        elif len(response) == 1:
-            return response[0]
         else:
             return response
 
 
 game_command = Command(name="game", short_name="g")
 epic_command = Command(name="epic", short_name="e")
-epic_command.register(BlockingExecuteCommand(name="now", short_name="n", execute_command=get_latest_free_game,
-                                             expected_num_args=0))
-epic_command.register(BlockingExecuteCommand(name="track", execute_command=start_tracking_free_games,
+epic_command.register(BlockingExecuteCommand(name="now", short_name="n", execute_command=get_latest_free_games,
                                              expected_num_args=0))
 game_command.register(epic_command)
 root_command.register(game_command)

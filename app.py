@@ -73,7 +73,7 @@ class IRCBot(SingleServerIRCBot):
     def _startup_commands(self):
         # TODO: make configurable
         try:
-            root_command.execute(*("game", "epic", "track"), command_args={"instance": self})
+            root_command.execute(*("game", "epic", "now"), command_args={"instance": self})
         except Exception as e:
             LOGGER.exception("startup commands failed", e)
 
