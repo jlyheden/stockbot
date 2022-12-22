@@ -9,11 +9,9 @@ from datetime import datetime
 
 import irc.strings
 from irc.bot import SingleServerIRCBot
-from irc.client import ip_numstr_to_quad
 
 from stockbot.configuration import configuration
 from stockbot.db import create_tables
-from stockbot.persistence import DatabaseCollection, ScheduledCommand
 from stockbot.command import root_command
 from stockbot.provider import QuoteServiceFactory
 from stockbot.util import colorify
@@ -22,7 +20,7 @@ from stockbot.util import colorify
 # Set up logging
 LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
 logging.basicConfig(level=getattr(logging, LOGLEVEL),
-                    format="%(asctime)s %(levelname)s %(module)s.%(funcName)s.%(filename)s:%(lineno)d : %(message)s")
+                    format="%(levelname)s %(module)s.%(funcName)s.%(filename)s:%(lineno)d : %(message)s")
 LOGGER = logging.getLogger(__name__)
 
 
@@ -58,7 +56,7 @@ class IRCBot(SingleServerIRCBot):
         for timer in self.ephemeral_oneshot_timers:
             if timer.should_fire():
                 try:
-                    root_command.execute(*timer.command.split(" "),
+                    root_command.execute(*timer.command,
                                          command_args={"service_factory": self.quote_service_factory,
                                                        "instance": self}, callback=self.command_callback,
                                          callback_args={})
