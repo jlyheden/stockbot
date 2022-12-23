@@ -31,7 +31,7 @@ class TestOneshotTimer(unittest.TestCase):
 
     def test_hash(self):
         fire_after = datetime.strptime("2022-12-12T16:00:00.0000Z", "%Y-%m-%dT%H:%M:%S.%f%z")
-        timer1 = OneshotTimer(("cmd"), fire_after)
-        timer2 = OneshotTimer(("cmd"), fire_after)
+        timer1 = OneshotTimer(("cmd", "argument"), fire_after)
+        timer2 = OneshotTimer(("cmd", "argument"), fire_after)
 
         self.assertEqual(timer1, timer2)

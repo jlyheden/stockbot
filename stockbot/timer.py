@@ -9,7 +9,7 @@ class OneshotTimer(object):
         self.command = command
         self.fire_after = fire_after
         self.fire_after_epoch = self.fire_after.astimezone().timestamp() + self.seconds_slack
-        self.identity = f"{self.command.join('_')}_{self.fire_after_epoch}"
+        self.identity = f"{'_'.join(self.command)}_{self.fire_after_epoch}"
 
     def should_fire(self):
         return datetime.now().timestamp() > self.fire_after_epoch
