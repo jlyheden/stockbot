@@ -9,7 +9,7 @@ LOGGER = logging.getLogger(__name__)
 
 def _get_free_games():
     rv = []
-    api = EpicGamesStoreAPI()
+    api = EpicGamesStoreAPI(country="SE")
     free_games = api.get_free_games()['data']['Catalog']['searchStore']['elements']
 
     # Few odd items do not seems game and don't have the promotion attribute, so let's check it !
