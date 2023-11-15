@@ -50,6 +50,7 @@ class YahooQuote(BaseQuote):
             ])
         self.fields.extend([
             ["Market", self.market],
+            ["Chart", "https://finance.yahoo.com/chart/{}".format(self.symbol)],
             ["Update Time", self.timestamp_str]
         ])
 
