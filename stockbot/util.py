@@ -31,6 +31,10 @@ class ColorHelper(object):
     def purple(cls, value):
         return "\x0306{}\x03".format(value)
 
+    @classmethod
+    def greenish(cls, value):
+        return "\x0310{}\x03".format(value)
+
 
 def colorify(msg):
 
@@ -105,8 +109,11 @@ def colorify(msg):
                         else:
                             value_replace = ColorHelper.grey(value)
                     else:
-                        # a non-number gets colored grey
-                        value_replace = ColorHelper.grey(value)
+                        if value.startswith("http://") or value.startswith("https://"):
+                            value_replace = ColorHelper.greenish(value)
+                        else:
+                            # a non-number gets colored grey
+                            value_replace = ColorHelper.grey(value)
                 finally:
                     s_replace = r"{k}: {v}".format(k=ColorHelper.purple(key), v=value_replace)
 
