@@ -409,7 +409,7 @@ class TestYahooQueryService(unittest.TestCase):
 
     @vcr.use_cassette('mock/vcr_cassettes/yahoo/quote/omx_stockholm.yaml')
     def test_get_existing_index(self):
-        text = "omx stockholm"
+        text = "stockholm"
         result = self.service.get_quote(text)
         self.assertRegexpMatches(str(result), "^Name: OMX Stockholm 30 Index, Price: [0-9\.]+, Low Price: [0-9\.]+, High Price: [0-9\.]+, Percent Change 1 Day: [0-9\.\-]+, Market: se_market, Chart: https://finance.yahoo.com/chart/%5EOMX, Update Time: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
 
