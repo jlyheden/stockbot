@@ -2,6 +2,7 @@ import logging
 import requests
 import urllib.parse
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 from stockbot.provider.base import BaseQuoteService, BaseQuote
 
@@ -84,6 +85,9 @@ class YahooQueryService(BaseQuoteService):
         "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
     }
 
+    cookies = {}
+    crumb = None
+
     def __init__(self, *args, **kwargs):
         pass
 
@@ -91,20 +95,86 @@ class YahooQueryService(BaseQuoteService):
         search_result = self.search(ticker)
         if not search_result.is_empty():
             t = search_result.get_tickers()[0]
-            response = requests.get("https://query1.finance.yahoo.com/v7/finance/options/{t}".format(t=t),
-                                    headers=self.headers)
+            response = self._get_with_cookie_refresh("https://query2.finance.yahoo.com/v7/finance/options/{t}".format(
+                t=t))
             response.raise_for_status()
             return YahooQuote(response.json())
         else:
+            print(search_result.o)
             return YahooFallbackQuote()
 
     def search(self, query):
         query_encoded = urllib.parse.quote(query)
-        response = requests.get(
-            'https://query2.finance.yahoo.com/v1/finance/search?q='
-            '{query}&lang=en-US&region=US&quotesCount=1&newsCount=0&enableFuzzyQuery=false&quotesQueryId'
-            '=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa'
-            '&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true'.format(query=query_encoded),
-            headers=self.headers)
-        response.raise_for_status()
-        return YahooSearchResult(response.json())
+        if query_encoded not in self.search_cache:
+            response = requests.get('https://query2.finance.yahoo.com/v1/finance/search', params={
+                "q": query_encoded,
+                "lang": "en-US",
+                "region": "US",
+                "quotesCount": "1",
+                "newsCount": "0",
+                "enableFuzzyQuery": "false",
+                "quotesQueryId": "tss_match_phrase_query",
+                "multiQuoteQueryId": "multi_quote_single_token_query",
+                "newsQueryId": "news_cie_vespa",
+                "enableCb": "true",
+                "enableNavLinks": "true",
+                "enableEnhancedTrivialQuery": "true"
+            }, headers=self.headers)
+            response.raise_for_status()
+            self.search_cache[query_encoded] = response.json()
+        return YahooSearchResult(self.search_cache[query_encoded])
+
+    def _get_with_cookie_refresh(self, url, params={}):
+        response = requests.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
+                                headers=self.headers)
+        if response.status_code in [401, 403]:
+            self._get_cookies_and_crumb()
+            response = requests.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
+                                    headers=self.headers)
+        return response
+
+    # copy paste from https://github.com/ranaroussi/yfinance/blob/main/yfinance/data.py but without configuration bloat
+    def _get_cookies_and_crumb(self):
+
+        self.cookies = {}
+        self.crumb = None
+
+        base_args = {
+            'headers': self.headers
+        }
+
+        get_args = {**base_args, 'url': 'https://guce.yahoo.com/consent'}
+        with requests.Session() as s:
+            response = s.get(**get_args)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            csrfTokenInput = soup.find('input', attrs={'name': 'csrfToken'})
+            csrfToken = csrfTokenInput['value']
+            sessionIdInput = soup.find('input', attrs={'name': 'sessionId'})
+            sessionId = sessionIdInput['value']
+
+            originalDoneUrl = 'https://finance.yahoo.com/'
+            namespace = 'yahoo'
+            data = {
+                'agree': ['agree', 'agree'],
+                'consentUUID': 'default',
+                'sessionId': sessionId,
+                'csrfToken': csrfToken,
+                'originalDoneUrl': originalDoneUrl,
+                'namespace': namespace,
+            }
+            post_args = {**base_args,
+                'url': f'https://consent.yahoo.com/v2/collectConsent?sessionId={sessionId}',
+                'data': data}
+            get_args = {**base_args,
+                'url': f'https://guce.yahoo.com/copyConsent?sessionId={sessionId}',
+                'data': data}
+            s.post(**post_args)
+            s.get(**get_args)
+            self.cookies = s.cookies
+
+            get_args = {
+                'url': 'https://query2.finance.yahoo.com/v1/test/getcrumb',
+                'headers': self.headers,
+            }
+            r = s.get(**get_args)
+            self.crumb = r.text
