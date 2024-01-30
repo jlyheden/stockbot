@@ -245,7 +245,7 @@ class TestCommand(unittest.TestCase):
 
         command = ["hi", "stockbot"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("hello friend", res)
+        self.assertEquals(["hello friend"], res)
 
     @vcr.use_cassette('mock/vcr_cassettes/nasdaq/scraper.yaml')
     def test_execute_scrape_nasdaq(self):

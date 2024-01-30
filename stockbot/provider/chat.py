@@ -34,8 +34,4 @@ class ChatService(object):
             role='assistant',
             content=response
         ))
-        return self._strip_message(response)
-
-    @staticmethod
-    def _strip_message(m):
-        return " ".join(m.split("\n"))
+        return response
