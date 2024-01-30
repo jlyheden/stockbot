@@ -9,17 +9,14 @@ class ChatService(object):
 
     def __init__(self):
         self.conversation_history = []
-        self.conversation_start = None
+        self.conversation_last_tz = None
         LOGGER.info("init the chat service")
 
     def say(self, msg):
-        if not self.conversation_start:
-            LOGGER.info("starting new conversation")
-            self.conversation_start = datetime.now()
-        elif (datetime.now() - self.conversation_start).seconds > 600:
+        if self.conversation_last_tz and (datetime.now() - self.conversation_last_tz).seconds > 600:
             LOGGER.info("expiring old conversation")
-            self.conversation_start = datetime.now()
             self.conversation_history.clear()
+        self.conversation_last_tz = datetime.now()
         self.conversation_history.append(dict(
             role='user',
             content=msg
