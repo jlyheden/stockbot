@@ -14,6 +14,7 @@ from stockbot.configuration import configuration
 from stockbot.db import create_tables
 from stockbot.command import root_command
 from stockbot.provider import QuoteServiceFactory
+from stockbot.provider.chat import ChatService
 from stockbot.util import colorify
 
 
@@ -39,6 +40,7 @@ class IRCBot(SingleServerIRCBot):
         if configuration.die_when_not_pinged:
             self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
+        self.chat_service = ChatService()
         self.ephemeral_oneshot_timers = set([])
         self.last_server_ping = datetime.now()
 

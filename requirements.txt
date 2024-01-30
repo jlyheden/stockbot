@@ -6,3 +6,5 @@ SQLAlchemy
 psycopg2
 git+https://github.com/jlyheden/python-libfi.git@master
 epicstore_api
+g4f[all]
+

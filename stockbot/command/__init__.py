@@ -14,10 +14,15 @@ class Command(object):
         self.help = kwargs.get('help', None)
         self.parent_command = None
         self.subcommands = []
+        self.fallback_command = None
 
     def register(self, command):
         command.parent_command = self
         self.subcommands.append(command)
+
+    def register_fallback(self, fallback_command):
+        fallback_command.parent_command = self
+        self.fallback_command = fallback_command
 
     def execute(self, *args, **kwargs):
         """
@@ -30,6 +35,8 @@ class Command(object):
         LOGGER.debug("Item: {}".format(e))
         c = [x for x in self.subcommands if x.name == e or x.short_name == e]
         if len(c) == 0:
+            if self.fallback_command:
+                return self.fallback_command.execute(*args[1:], **kwargs)
             return None
         return c[0].execute(*args[1:], **kwargs)
 
@@ -59,6 +66,7 @@ class Command(object):
 
     def printable_self_help(self):
         return "Usage: {}".format(self.help)
+
 
 class ProxyCommand(Command):
 
@@ -155,3 +163,4 @@ import stockbot.command.ibindex
 import stockbot.command.news
 import stockbot.command.scheduler
 import stockbot.command.game
+import stockbot.command.chat
