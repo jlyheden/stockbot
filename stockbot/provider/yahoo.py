@@ -104,10 +104,9 @@ class YahooQueryService(BaseQuoteService):
             return YahooFallbackQuote()
 
     def search(self, query):
-        query_encoded = urllib.parse.quote(query)
-        if query_encoded not in self.search_cache:
+        if query not in self.search_cache:
             response = requests.get('https://query2.finance.yahoo.com/v1/finance/search', params={
-                "q": query_encoded,
+                "q": query,
                 "lang": "en-US",
                 "region": "US",
                 "quotesCount": "1",
@@ -121,8 +120,8 @@ class YahooQueryService(BaseQuoteService):
                 "enableEnhancedTrivialQuery": "true"
             }, headers=self.headers)
             response.raise_for_status()
-            self.search_cache[query_encoded] = response.json()
-        return YahooSearchResult(self.search_cache[query_encoded])
+            self.search_cache[query] = response.json()
+        return YahooSearchResult(self.search_cache[query])
 
     def _get_with_cookie_refresh(self, url, params={}):
         response = requests.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
