@@ -16,13 +16,17 @@ class ChatService(object):
         if self.conversation_last_tz and (datetime.now() - self.conversation_last_tz).seconds > 600:
             LOGGER.info("expiring old conversation")
             self.conversation_history.clear()
+            self.conversation_history.append(dict(
+                role='system',
+                content='Respond professionally and helpfully. Provide concise and easy to understand answers. Do not use emoji characters in the response.'
+            ))
         self.conversation_last_tz = datetime.now()
         self.conversation_history.append(dict(
             role='user',
             content=msg
         ))
         response = g4f.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             provider=g4f.Provider.Bing,
             messages=self.conversation_history,
             stream=False
