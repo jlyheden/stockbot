@@ -16,7 +16,7 @@ set_cookies(".bing.com", {
 class ChatService(object):
 
     def __init__(self):
-        self.client = Client(provider=Bing, image_provider=BingCreateImages)
+        self.client = Client(image_provider=BingCreateImages)
         self.conversation_history = []
         self.conversation_last_tz = None
         LOGGER.info("init the chat service")
