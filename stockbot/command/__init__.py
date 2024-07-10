@@ -104,15 +104,19 @@ class NonBlockingExecuteCommand(Command):
     def __init__(self, *args, **kwargs):
         super(NonBlockingExecuteCommand, self).__init__(*args, **kwargs)
         self.exclusive = kwargs.get('exclusive', True)
+        self.return_prompts = kwargs.get('return_prompts', False)
 
     def execute(self, *args, **kwargs):
         cb = kwargs.get('callback', None)
         cb_args = kwargs.get('callback_args', {})
         thread_name = "thread-{}".format("_".join(args))
         if self.exclusive and self.is_already_running(thread_name):
-            if callable(cb):
-                return cb("Task is currently running, hold your horses")
-            return "Task is currently running, hold your horses"
+            if self.return_prompts:
+                if callable(cb):
+                    return cb("Task is currently running, hold your horses")
+                return "Task is currently running, hold your horses"
+            else:
+                return
         if callable(self.execute_command):
             thread = CommandThread(name=thread_name, target=self.execute_command, args=args,
                                    kwargs=kwargs.get('command_args'), daemon=False)
@@ -120,9 +124,10 @@ class NonBlockingExecuteCommand(Command):
             thread.start()
         else:
             raise RuntimeError("execute_command not callable")
-        if callable(cb):
-            return cb("Task started")
-        return "Task started"
+        if self.return_prompts:
+            if callable(cb):
+                return cb("Task started")
+            return "Task started"
 
     @staticmethod
     def is_already_running(thread_name):

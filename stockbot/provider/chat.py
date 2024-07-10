@@ -35,7 +35,7 @@ class ChatService(object):
             content=msg
         ))
         response = self.client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o",
             messages=self.conversation_history,
             stream=False
         )

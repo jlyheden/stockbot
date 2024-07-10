@@ -1,4 +1,4 @@
-from . import root_command, Command, BlockingExecuteCommand, ProxyCommand
+from . import root_command, NonBlockingExecuteCommand
 
 import logging
 
@@ -17,7 +17,7 @@ def chat(*args, **kwargs):
         return response_list
     except Exception as e:
         LOGGER.exception("chat failed")
-        return "FAIL '{}'".format(str(e))
+        return "FAIL '{}'".format(repr(e))
 
 
 def image(*args, **kwargs):
@@ -28,8 +28,8 @@ def image(*args, **kwargs):
         return "Check this out: {}".format(response)
     except Exception as e:
         LOGGER.exception("image generation failed")
-        return "FAIL '{}'".format(str(e))
+        return "FAIL '{}'".format(repr(e))
 
 
-root_command.register(BlockingExecuteCommand(name="chat", execute_command=chat))
-root_command.register(BlockingExecuteCommand(name="image", execute_command=image))
+root_command.register(NonBlockingExecuteCommand(name="chat", execute_command=chat, exclusive=True))
+root_command.register(NonBlockingExecuteCommand(name="image", execute_command=image, exclusive=True))

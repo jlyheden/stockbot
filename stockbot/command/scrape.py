@@ -103,6 +103,6 @@ scrape_command = Command(name="scrape")
 scrape_command.register(BlockingExecuteCommand(name="nasdaq", execute_command=nasdaq_scraper_task))
 scrape_command.register(BlockingExecuteCommand(name="stats", execute_command=scrape_stats))
 scrape_command.register(NonBlockingExecuteCommand(name="stocks", execute_command=stock_scrape_task, exclusive=True,
-                        help="<currency> <nasdaq-market-name>", expected_num_args=2))
+                        help="<currency> <nasdaq-market-name>", expected_num_args=2, return_prompts=True))
 
 root_command.register(scrape_command)

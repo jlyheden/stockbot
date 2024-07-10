@@ -1,5 +1,6 @@
 import sys
 import logging
+import threading
 
 #logging.disable(logging.ERROR)
 
@@ -24,3 +25,8 @@ def callback(result):
 bot = Fakebot()
 
 root_command.execute(*sys.argv[1:], command_args={"service_factory": QuoteServiceFactory(), "instance": bot}, callback=callback)
+
+# wait for any nonblocking to finish
+for thread in threading.enumerate():
+    if thread.name != "MainThread":
+        thread.join()
