@@ -20,4 +20,16 @@ def chat(*args, **kwargs):
         return "borken"
 
 
-root_command.register_fallback(BlockingExecuteCommand(name="chat", execute_command=chat))
+def image(*args, **kwargs):
+    try:
+        instance = kwargs.get('instance')
+        prompt = " ".join(args[1:])
+        response = instance.chat_service.image(prompt)
+        return "Check this out: {}".format(response)
+    except Exception as e:
+        LOGGER.exception("image generation failed")
+        return "borken"
+
+
+root_command.register(BlockingExecuteCommand(name="chat", execute_command=chat))
+root_command.register(BlockingExecuteCommand(name="image", execute_command=image))
