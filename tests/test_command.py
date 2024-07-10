@@ -241,11 +241,17 @@ class TestCommand(unittest.TestCase):
         self.assertEquals("Scheduler: disabled", res)
         self.assertFalse(self.ircbot.scheduler)
 
+    def test_execute_chat_command(self):
+
+        command = ["chat", "hi", "stockbot"]
+        res = self.__cmd_wrap(*command)
+        self.assertEquals(["hello friend"], res)
+
     def test_execute_fallback_command(self):
 
         command = ["hi", "stockbot"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals(["hello friend"], res)
+        self.assertIsNone(res)
 
     @vcr.use_cassette('mock/vcr_cassettes/nasdaq/scraper.yaml')
     def test_execute_scrape_nasdaq(self):
