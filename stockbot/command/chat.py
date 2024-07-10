@@ -17,7 +17,7 @@ def chat(*args, **kwargs):
         return response_list
     except Exception as e:
         LOGGER.exception("chat failed")
-        return "borken"
+        return "FAIL '{}'".format(str(e))
 
 
 def image(*args, **kwargs):
@@ -28,7 +28,7 @@ def image(*args, **kwargs):
         return "Check this out: {}".format(response)
     except Exception as e:
         LOGGER.exception("image generation failed")
-        return "borken"
+        return "FAIL '{}'".format(str(e))
 
 
 root_command.register(BlockingExecuteCommand(name="chat", execute_command=chat))
