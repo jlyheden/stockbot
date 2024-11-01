@@ -41,7 +41,7 @@ class IRCBot(SingleServerIRCBot):
             self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
         self.chat_service = ChatService()
-        self.ephemeral_oneshot_timers = set([])
+        self.ephemeral_oneshot_timers = set()
         self.last_server_ping = datetime.now()
 
         # self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
@@ -55,6 +55,8 @@ class IRCBot(SingleServerIRCBot):
             LOGGER.debug("Not connected yet, hold off")
             return
 
+        fired_timers = set()
+
         for timer in self.ephemeral_oneshot_timers:
             if timer.should_fire():
                 try:
@@ -65,7 +67,10 @@ class IRCBot(SingleServerIRCBot):
                 except Exception as e:
                     LOGGER.exception("failed to execute scheduled command '{}'".format(timer.command))
                 finally:
-                    self.ephemeral_oneshot_timers.discard(timer)
+                    fired_timers.add(timer)
+
+        for fired_timer in fired_timers:
+          self.ephemeral_oneshot_timers.discard(fired_timer)
 
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
