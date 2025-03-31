@@ -65,15 +65,26 @@ class YahooSearchResult(object):
 
     def __init__(self, o):
         self.o = o
+        self.tickers = []
+        if "quotes" in self.o:
+            self.tickers.extend(self.__ranked_tickers())
+
+    def __ranked_tickers(self):
+        for idx, _ in enumerate(self.o["quotes"]):
+            # assign higher weight to stockholm instruments
+            if "exchange" in self.o["quotes"][idx] and self.o["quotes"][idx]["exchange"] == "STO":
+                self.o["quotes"][idx]["score"] += self.o["quotes"][idx]["score"]
+            if "score" not in self.o["quotes"][idx]:
+                self.o["quotes"][idx]["score"] = 0
+        return sorted(self.o["quotes"], key=lambda d: d["score"], reverse=True)
 
     def get_tickers(self):
-        return [x["symbol"] for x in self.o["quotes"] if "symbol" in x]
+        return [x["symbol"] for x in self.tickers if "symbol" in x]
 
     def is_empty(self):
         return not (
-                "quotes" in self.o and
-                len(self.o["quotes"]) > 0 and
-                any([True for x in self.o["quotes"] if "symbol" in x])
+                len(self.tickers) > 0 and
+                any([True for x in self.tickers if "symbol" in x])
         )
 
 
@@ -109,7 +120,7 @@ class YahooQueryService(BaseQuoteService):
                 "q": query,
                 "lang": "en-US",
                 "region": "US",
-                "quotesCount": "1",
+                "quotesCount": "10",
                 "newsCount": "0",
                 "enableFuzzyQuery": "false",
                 "quotesQueryId": "tss_match_phrase_query",
