@@ -168,4 +168,3 @@ import stockbot.command.ibindex
 import stockbot.command.news
 import stockbot.command.scheduler
 import stockbot.command.game
-import stockbot.command.chat
