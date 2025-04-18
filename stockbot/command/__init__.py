@@ -161,7 +161,6 @@ root_command.register(BlockingExecuteCommand(name="help", execute_command=root_c
                                              help="show help section"))
 
 import stockbot.command.quote
-import stockbot.command.insider
 import stockbot.command.ibindex
 import stockbot.command.news
 import stockbot.command.scheduler
