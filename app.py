@@ -15,7 +15,7 @@ from stockbot.db import create_tables
 from stockbot.command import root_command
 from stockbot.provider import QuoteServiceFactory
 from stockbot.util import colorify
-
+from stockbot.timer import OncePerDayTimer
 
 # Set up logging
 LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
@@ -40,6 +40,7 @@ class IRCBot(SingleServerIRCBot):
             self.reactor.scheduler.execute_every(60, self.health_check)
         self.quote_service_factory = QuoteServiceFactory()
         self.ephemeral_oneshot_timers = set()
+        self.daily_timers = set()
         self.last_server_ping = datetime.now()
 
         # self.commands = DatabaseCollection(type=ScheduledCommand, attribute="command")
@@ -53,9 +54,7 @@ class IRCBot(SingleServerIRCBot):
             LOGGER.debug("Not connected yet, hold off")
             return
 
-        fired_timers = set()
-
-        for timer in self.ephemeral_oneshot_timers:
+        for timer in self.daily_timers:
             if timer.should_fire():
                 try:
                     root_command.execute(*timer.command,
@@ -63,22 +62,13 @@ class IRCBot(SingleServerIRCBot):
                                                        "instance": self}, callback=self.command_callback,
                                          callback_args={})
                 except Exception as e:
-                    LOGGER.exception("failed to execute scheduled command '{}'".format(timer.command))
-                finally:
-                    fired_timers.add(timer)
-
-        for fired_timer in fired_timers:
-          self.ephemeral_oneshot_timers.discard(fired_timer)
+                    LOGGER.exception(f"failed to execute scheduled command '{timer.command}'")
 
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
 
     def _startup_commands(self):
-        # TODO: make configurable
-        try:
-            root_command.execute(*("game", "epic", "now"), command_args={"instance": self})
-        except Exception as e:
-            LOGGER.exception("startup commands failed", e)
+        self.daily_timers.add(OncePerDayTimer(["game", "reddit"], fire_at_hour=0, fire_at_minute=0))
 
     def on_welcome(self, c, e):
         c.join(self.channel)

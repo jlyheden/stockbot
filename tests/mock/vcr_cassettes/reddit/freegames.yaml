@@ -1,0 +1,523 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/134.0.0.0 Safari/537.36
+    method: GET
+    uri: https://www.reddit.com/r/FreeGameFindings/new.rss
+  response:
+    body:
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><feed xmlns=\"http://www.w3.org/2005/Atom\"\
+        \ xmlns:media=\"http://search.yahoo.com/mrss/\"><category term=\"FreeGameFindings\"\
+        \ label=\"r/FreeGameFindings\"/><updated>2025-04-18T15:34:50+00:00</updated><icon>https://www.redditstatic.com/icon.png/</icon><id>/r/FreeGameFindings/new.rss</id><link\
+        \ rel=\"self\" href=\"https://www.reddit.com/r/FreeGameFindings/new.rss\"\
+        \ type=\"application/atom+xml\" /><link rel=\"alternate\" href=\"https://www.reddit.com/r/FreeGameFindings/new\"\
+        \ type=\"text/html\" /><logo>https://b.thumbs.redditmedia.com/-JZSzsoyGev5T_O52L5iKqpVIKVOFfgztgPUvkiT4SQ.png</logo><subtitle>/r/FreeGameFindings\
+        \ is based around finding free game promotions all over the place! Be it Steam,\
+        \ Epic, Origin, Ubisoft Connect, GOG, Xbox, Playstation, or Nintendo Consoles,\
+        \ we will find every last free Game and DLC promotion we can, and get it to\
+        \ you!</subtitle><title>newest submissions : FreeGameFindings</title><entry><author><name>/u/pantaloon_io</name><uri>https://www.reddit.com/user/pantaloon_io</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k247fk/psa_pantaloons_partnered_game_for_april_is/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/M3oq5U1qTR9h_5vWE3hIlec0dXqARtFgAxgdVcteUDY.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=ca855631f7e783fe2edebe2a2e584e2521f44e27&quot;\
+        \ alt=&quot;[PSA] Pantaloon's partnered game for April is Windowkill; 3000\
+        \ copies dropping on April 29 for Steam (via newsletter, read comments)&quot;\
+        \ title=&quot;[PSA] Pantaloon's partnered game for April is Windowkill; 3000\
+        \ copies dropping on April 29 for Steam (via newsletter, read comments)&quot;\
+        \ /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &lt;!-- SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;Hello!\
+        \ Not posted here in some time - but April is a big month for us, so thought\
+        \ I&amp;#39;d swing by. For April we&amp;#39;ve partnered with Torcado to\
+        \ dish out 3000 Steam keys for &lt;a href=&quot;https://store.steampowered.com/app/2726450/Windowkill/&quot;&gt;Windowkill&lt;/a&gt;;\
+        \ a twin-stick shooter that allows you to manipulate the screen real estate.\
+        \ Keys will be dished out to newsletter subscribers on April 29th, but you\
+        \ can guarantee your key by solving Pantaloon&amp;#39;s monthly puzzle (deadline\
+        \ for solve is April 27, 11:59 BST), which is available for free via our &lt;a\
+        \ href=&quot;https://pantaloon-io.itch.io/puzzletrunk&quot;&gt;Puzzletrunk&lt;/a&gt;\
+        \ game. &lt;/p&gt; &lt;p&gt;Definitely some brain-juice required to guarantee\
+        \ your key, or you can leave it to fate. We&amp;#39;re well stocked with keys\
+        \ this month, though -- GL! &lt;/p&gt; &lt;/div&gt;&lt;!-- SC_ON --&gt; &amp;#32;\
+        \ submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/pantaloon_io&quot;&gt;\
+        \ /u/pantaloon_io &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://www.pantaloon.io/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k247fk/psa_pantaloons_partnered_game_for_april_is/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1k247fk</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/M3oq5U1qTR9h_5vWE3hIlec0dXqARtFgAxgdVcteUDY.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=ca855631f7e783fe2edebe2a2e584e2521f44e27\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1k247fk/psa_pantaloons_partnered_game_for_april_is/\"\
+        \ /><updated>2025-04-18T12:53:01+00:00</updated><published>2025-04-18T12:53:01+00:00</published><title>[PSA]\
+        \ Pantaloon's partnered game for April is Windowkill; 3000 copies dropping\
+        \ on April 29 for Steam (via newsletter, read comments)</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1hwr2/psa_epic_fashion_police_squad_gloomhaven_the_last/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/D0JHucv1Bdv8kejgkxRnyzp4ktzyxlYAPv-uLyLO1vg.jpg?width=640&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=fdd5cfd06312dd00da136914e7f591f53dde312d&quot;\
+        \ alt=&quot;[PSA] (Epic) Fashion Police Squad, Gloomhaven, The Last Show of\
+        \ Mr. Chardish\uFF5C(GOG) Berserk Boy, Blood Omen: Legacy of Kain, The Last\
+        \ Spell, Wild Country\uFF5C(Amazon) Genesis Noir\uFF5Care complimentary w/\
+        \ Prime Gaming&quot; title=&quot;[PSA] (Epic) Fashion Police Squad, Gloomhaven,\
+        \ The Last Show of Mr. Chardish\uFF5C(GOG) Berserk Boy, Blood Omen: Legacy\
+        \ of Kain, The Last Spell, Wild Country\uFF5C(Amazon) Genesis Noir\uFF5Care\
+        \ complimentary w/ Prime Gaming&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt;\
+        \ &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://gaming.amazon.com/home?filter=Game&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1hwr2/psa_epic_fashion_police_squad_gloomhaven_the_last/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1k1hwr2</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/D0JHucv1Bdv8kejgkxRnyzp4ktzyxlYAPv-uLyLO1vg.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=fdd5cfd06312dd00da136914e7f591f53dde312d\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1k1hwr2/psa_epic_fashion_police_squad_gloomhaven_the_last/\"\
+        \ /><updated>2025-04-17T17:03:06+00:00</updated><published>2025-04-17T17:03:06+00:00</published><title>[PSA]\
+        \ (Epic) Fashion Police Squad, Gloomhaven, The Last Show of Mr. Chardish\uFF5C\
+        (GOG) Berserk Boy, Blood Omen: Legacy of Kain, The Last Spell, Wild Country\uFF5C\
+        (Amazon) Genesis Noir\uFF5Care complimentary w/ Prime Gaming</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1f7mo/epic_games_mobile_game_botanicula_firestone/&quot;&gt;\
+        \ &lt;img src=&quot;https://a.thumbs.redditmedia.com/j332_q3l34f5gYrVfh1g0wh5FRNpzp2VCmKbPbV4Vu0.jpg&quot;\
+        \ alt=&quot;[Epic Games Mobile] (Game) Botanicula &amp;amp; Firestone Online\
+        \ Idle RPG&quot; title=&quot;[Epic Games Mobile] (Game) Botanicula &amp;amp;\
+        \ Firestone Online Idle RPG&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &lt;!--\
+        \ SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;&lt;a href=&quot;https://preview.redd.it/di8y7h7c1fve1.png?width=751&amp;amp;format=png&amp;amp;auto=webp&amp;amp;s=a03db78d129465b4f4f6efa0fe50b05bff4d8529&quot;&gt;https://preview.redd.it/di8y7h7c1fve1.png?width=751&amp;amp;format=png&amp;amp;auto=webp&amp;amp;s=a03db78d129465b4f4f6efa0fe50b05bff4d8529&lt;/a&gt;&lt;/p&gt;\
+        \ &lt;h1&gt;\U0001F4DD &lt;a href=&quot;https://www.epicgames.com/account/transactions?productName=egs&quot;&gt;Transactions\
+        \ Page&lt;/a&gt; (To see if you claimed or not)&lt;/h1&gt; &lt;h1&gt;\u23E9\
+        \ Instant Checkout (Login to &lt;a href=&quot;https://store.epicgames.com/&quot;&gt;Epic\
+        \ Games&lt;/a&gt; first to use)&lt;/h1&gt; &lt;table&gt;&lt;thead&gt; &lt;tr&gt;\
+        \ &lt;th align=&quot;left&quot;&gt;Item&lt;/th&gt; &lt;th align=&quot;left&quot;&gt;Instant\
+        \ Checkout&lt;/th&gt; &lt;/tr&gt; &lt;/thead&gt;&lt;tbody&gt; &lt;tr&gt; &lt;td\
+        \ align=&quot;left&quot;&gt;\U0001F3AE &lt;strong&gt;CLAIM ALL&lt;/strong&gt;&lt;/td&gt;\
+        \ &lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://store.epicgames.com/purchase?offers=1-5c7501617f3449c5a6eed7590392f9fa-f7f49b55954542f7bf033c0a8178580b&amp;amp;offers=1-5c7501617f3449c5a6eed7590392f9fa-87d918791806421c846f5fd07e44f1d1&amp;amp;offers=1-bda8d2133655435982b9118972792328-079984d920864c7bb9f0c5f3c066907c&amp;amp;offers=1-bda8d2133655435982b9118972792328-b21bae1f16b5471682d9269502c7dafd&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;tr&gt; &lt;td align=&quot;left&quot;&gt;\U0001F4F1 &lt;strong&gt;Botanicula&lt;/strong&gt;\
+        \ \uFEFF\uFEFF(Android)&lt;/td&gt; &lt;td align=&quot;left&quot;&gt;&lt;a\
+        \ href=&quot;https://store.epicgames.com/purchase?offers=1-5c7501617f3449c5a6eed7590392f9fa-f7f49b55954542f7bf033c0a8178580b&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;tr&gt; &lt;td align=&quot;left&quot;&gt;\U0001F34E &lt;strong&gt;Botanicula&lt;/strong&gt;\uFEFF\
+        \uFEFF (iOS)&lt;/td&gt; &lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://store.epicgames.com/purchase?offers=1-5c7501617f3449c5a6eed7590392f9fa-87d918791806421c846f5fd07e44f1d1&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;tr&gt; &lt;td align=&quot;left&quot;&gt;\U0001F4F1 &lt;strong&gt;Firestone\
+        \ Online Idle RPG&lt;/strong&gt; (Android)\uFEFF&lt;/td&gt; &lt;td align=&quot;left&quot;&gt;&lt;a\
+        \ href=&quot;https://store.epicgames.com/purchase?offers=1-bda8d2133655435982b9118972792328-079984d920864c7bb9f0c5f3c066907c&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;tr&gt; &lt;td align=&quot;left&quot;&gt;\U0001F34E &lt;strong&gt;Firestone\
+        \ Online Idle RPG&lt;/strong&gt; (iOS)\uFEFF\uFEFF&lt;/td&gt; &lt;td align=&quot;left&quot;&gt;&lt;a\
+        \ href=&quot;https://store.epicgames.com/purchase?offers=1-bda8d2133655435982b9118972792328-b21bae1f16b5471682d9269502c7dafd&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;/tbody&gt;&lt;/table&gt; &lt;h1&gt;\U0001F3AE Botanicula&lt;/h1&gt;\
+        \ &lt;ul&gt; &lt;li&gt;&lt;strong&gt;\u231B Rating\uFF0F\u26D4 Blacklist&lt;/strong&gt;\uFF5C\
+        None&lt;/li&gt; &lt;/ul&gt; &lt;h1&gt;\U0001F3AE Firestone Online Idle RPG&lt;/h1&gt;\
+        \ &lt;ul&gt; &lt;li&gt;&lt;strong&gt;\u231B Rating\uFF0F\u26D4 Blacklist&lt;/strong&gt;\uFF5C\
+        None&lt;/li&gt; &lt;/ul&gt; &lt;p&gt; &lt;/p&gt; &lt;p&gt;To download and\
+        \ play the mobiles games:&lt;/p&gt; &lt;ul&gt; &lt;li&gt;Android is open Globally.&lt;/li&gt;\
+        \ &lt;li&gt;iOS is only available in European Union Regions.&lt;/li&gt; &lt;/ul&gt;\
+        \ &lt;p&gt;But you can claim both platforms on any browser (PC/Mobile) without\
+        \ need mobile app intalled.&lt;/p&gt; &lt;/div&gt;&lt;!-- SC_ON --&gt; &amp;#32;\
+        \ submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1f7mo/epic_games_mobile_game_botanicula_firestone/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1f7mo/epic_games_mobile_game_botanicula_firestone/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1k1f7mo</id><media:thumbnail\
+        \ url=\"https://a.thumbs.redditmedia.com/j332_q3l34f5gYrVfh1g0wh5FRNpzp2VCmKbPbV4Vu0.jpg\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1k1f7mo/epic_games_mobile_game_botanicula_firestone/\"\
+        \ /><updated>2025-04-17T15:12:04+00:00</updated><published>2025-04-17T15:12:04+00:00</published><title>[Epic\
+        \ Games Mobile] (Game) Botanicula &amp; Firestone Online Idle RPG</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.epicgames.com/p/firestone-online-idle-rpg-bfd04b&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1ex3a/epic_games_other_firestone_online_idle_rpg/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1k1ex3a</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1k1ex3a/epic_games_other_firestone_online_idle_rpg/\"\
+        \ /><updated>2025-04-17T15:00:07+00:00</updated><published>2025-04-17T15:00:07+00:00</published><title>[Epic\
+        \ Games] (Other) Firestone Online Idle RPG - Special Offer</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.epicgames.com/p/botanicula-50043d&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k1ewza/epic_games_game_botanicula/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1k1ewza</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1k1ewza/epic_games_game_botanicula/\"\
+        \ /><updated>2025-04-17T15:00:00+00:00</updated><published>2025-04-17T15:00:00+00:00</published><title>[Epic\
+        \ Games] (Game) Botanicula</title></entry><entry><author><name>/u/iambaldy</name><uri>https://www.reddit.com/user/iambaldy</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k0pijr/steam_game_atmasphere/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/9QCWEP4M98umL-auerRe-3_89VVpitBEEwJYC-U6L5E.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=95f12fa2a17d12bb8399bb6a02ab59ee2318e4a8&quot;\
+        \ alt=&quot;[Steam] (Game) AtmaSphere&quot; title=&quot;[Steam] (Game) AtmaSphere&quot;\
+        \ /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &amp;#32; submitted by &amp;#32;\
+        \ &lt;a href=&quot;https://www.reddit.com/user/iambaldy&quot;&gt; /u/iambaldy\
+        \ &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.steampowered.com/app/753660/AtmaSphere/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1k0pijr/steam_game_atmasphere/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1k0pijr</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/9QCWEP4M98umL-auerRe-3_89VVpitBEEwJYC-U6L5E.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=95f12fa2a17d12bb8399bb6a02ab59ee2318e4a8\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1k0pijr/steam_game_atmasphere/\"\
+        \ /><updated>2025-04-16T17:03:07+00:00</updated><published>2025-04-16T17:03:07+00:00</published><title>[Steam]\
+        \ (Game) AtmaSphere</title></entry><entry><author><name>/u/RegionalPrices</name><uri>https://www.reddit.com/user/RegionalPrices</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jzwxiy/pc_other_lineage_ii_alienware_supply_pack/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/B7rk3MJDZ81VWtzpdqVlLJgCCU2G-WUhjBcSDsu-8n8.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=a956dee7c4e8c2c8fc64168c46f3f9c2eac272a4&quot;\
+        \ alt=&quot;[PC] (Other) Lineage II - Alienware Supply Pack&quot; title=&quot;[PC]\
+        \ (Other) Lineage II - Alienware Supply Pack&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt;\
+        \ &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/RegionalPrices&quot;&gt;\
+        \ /u/RegionalPrices &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://na.alienwarearena.com/ucf/show/2172447/boards/contest-and-giveaways-global/Giveaway/lineage-ii-alienware-supply-pack-key-giveaway&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jzwxiy/pc_other_lineage_ii_alienware_supply_pack/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jzwxiy</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/B7rk3MJDZ81VWtzpdqVlLJgCCU2G-WUhjBcSDsu-8n8.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=a956dee7c4e8c2c8fc64168c46f3f9c2eac272a4\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jzwxiy/pc_other_lineage_ii_alienware_supply_pack/\"\
+        \ /><updated>2025-04-15T16:55:38+00:00</updated><published>2025-04-15T16:55:38+00:00</published><title>[PC]\
+        \ (Other) Lineage II - Alienware Supply Pack</title></entry><entry><author><name>/u/Feline_Futanari</name><uri>https://www.reddit.com/user/Feline_Futanari</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz6sxp/steam_game_docaay/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/bjdNIOiZTCfGwAn6WTcqiYGKbCBUZHNav0RFQGYaOR4.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=798dbed806e5d9bd899d45995b485627b3b1f153&quot;\
+        \ alt=&quot;[Steam] (Game) DOCAAY&quot; title=&quot;[Steam] (Game) DOCAAY&quot;\
+        \ /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &lt;!-- SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;DOCAAY\
+        \ is a free game that is confirmed to be getting removed/delisted from Steam\
+        \ soon according to the game&amp;#39;s most recent newspost by the developer.&lt;/p&gt;\
+        \ &lt;/div&gt;&lt;!-- SC_ON --&gt; &amp;#32; submitted by &amp;#32; &lt;a\
+        \ href=&quot;https://www.reddit.com/user/Feline_Futanari&quot;&gt; /u/Feline_Futanari\
+        \ &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.steampowered.com/app/3182450/DOCAAY/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz6sxp/steam_game_docaay/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jz6sxp</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/bjdNIOiZTCfGwAn6WTcqiYGKbCBUZHNav0RFQGYaOR4.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=798dbed806e5d9bd899d45995b485627b3b1f153\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jz6sxp/steam_game_docaay/\"\
+        \ /><updated>2025-04-14T18:55:26+00:00</updated><published>2025-04-14T18:55:26+00:00</published><title>[Steam]\
+        \ (Game) DOCAAY</title></entry><entry><author><name>/u/AutoModerator</name><uri>https://www.reddit.com/user/AutoModerator</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;!-- SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;To increase\
+        \ visibility, the mega threads are posted on a weekly basis. This is being\
+        \ done following the overall discussion of Mega Threads via &lt;em&gt;FGF\
+        \ Update&lt;/em&gt; - &lt;a href=&quot;https://redd.it/jkxyzw&quot;&gt;https://redd.it/jkxyzw&lt;/a&gt;&lt;/p&gt;\
+        \ &lt;hr/&gt; &lt;hr/&gt; &lt;p&gt;Please use the below threads for your posts.\
+        \ :)&lt;/p&gt; &lt;h2&gt;&lt;a href=&quot;https://redd.it/p0ijjx&quot;&gt;&lt;strong&gt;Exiled\
+        \ Giveaways Mega Thread&lt;/strong&gt; (#2)&lt;/a&gt;&lt;/h2&gt; &lt;h2&gt;&lt;a\
+        \ href=&quot;https://redd.it/p0ik3q&quot;&gt;&lt;strong&gt;Itchio Mega Thread&lt;/strong&gt;\
+        \ (#10)&lt;/a&gt;&lt;/h2&gt; &lt;hr/&gt; &lt;hr/&gt; &lt;p&gt;&lt;strong&gt;Want\
+        \ to setup alerts to these threads? RSS Feed information can be found in our\
+        \ wiki!&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/wiki/rssfeed&quot;&gt;https://www.reddit.com/r/FreeGameFindings/wiki/rssfeed&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;\
+        \ &lt;p&gt;Included is information about our discord bot and general RSS feed\
+        \ stuff. Definitely give it a look!&lt;/p&gt; &lt;/div&gt;&lt;!-- SC_ON --&gt;\
+        \ &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/AutoModerator&quot;&gt;\
+        \ /u/AutoModerator &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz3xdd/exiled_giveaways_and_itchio_mega_threads/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz3xdd/exiled_giveaways_and_itchio_mega_threads/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1jz3xdd</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jz3xdd/exiled_giveaways_and_itchio_mega_threads/\"\
+        \ /><updated>2025-04-14T17:00:33+00:00</updated><published>2025-04-14T17:00:33+00:00</published><title>Exiled\
+        \ Giveaways and Itch.io Mega Threads</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz17hx/steam_game_metro_2033_redux/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/I6KswyXwbfjaSRfeZyp3O2il_Qy2CjdwOJbDFYwTpdg.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=8a817e9e2296d4171f0d60d7decd07cff82ed330&quot;\
+        \ alt=&quot;[Steam] (Game) Metro 2033 Redux&quot; title=&quot;[Steam] (Game)\
+        \ Metro 2033 Redux&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &amp;#32;\
+        \ submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.steampowered.com/app/286690/Metro_2033_Redux/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz17hx/steam_game_metro_2033_redux/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jz17hx</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/I6KswyXwbfjaSRfeZyp3O2il_Qy2CjdwOJbDFYwTpdg.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=8a817e9e2296d4171f0d60d7decd07cff82ed330\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jz17hx/steam_game_metro_2033_redux/\"\
+        \ /><updated>2025-04-14T15:09:08+00:00</updated><published>2025-04-14T15:09:08+00:00</published><title>[Steam]\
+        \ (Game) Metro 2033 Redux</title></entry><entry><author><name>/u/iambaldy</name><uri>https://www.reddit.com/user/iambaldy</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz163u/gog_game_metro_2033_redux/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/2h6vBOFi-7hi9ZHoztSG26wDzK_YbqKa8LL_KKmLpEw.jpg?width=640&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=73efcfdddfd9e97a9a0844483006f75c2569a7e6&quot;\
+        \ alt=&quot;[GOG] (Game) Metro 2033 Redux&quot; title=&quot;[GOG] (Game) Metro\
+        \ 2033 Redux&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &amp;#32; submitted\
+        \ by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/iambaldy&quot;&gt;\
+        \ /u/iambaldy &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://www.gog.com/en/game/metro_2033_redux&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jz163u/gog_game_metro_2033_redux/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jz163u</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/2h6vBOFi-7hi9ZHoztSG26wDzK_YbqKa8LL_KKmLpEw.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=73efcfdddfd9e97a9a0844483006f75c2569a7e6\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jz163u/gog_game_metro_2033_redux/\"\
+        \ /><updated>2025-04-14T15:07:32+00:00</updated><published>2025-04-14T15:07:32+00:00</published><title>[GOG]\
+        \ (Game) Metro 2033 Redux</title></entry><entry><author><name>/u/EinHaDe</name><uri>https://www.reddit.com/user/EinHaDe</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jxr09e/steam_game_combat_force/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/q3VnoIlh1z8eOlYTxGzdvcMUf3QLKv0p4-uX1gU4FaQ.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=5c876f70555f5aedc11111871addb1c36261f75c&quot;\
+        \ alt=&quot;[Steam] (Game) Combat Force&quot; title=&quot;[Steam] (Game) Combat\
+        \ Force&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &amp;#32; submitted by\
+        \ &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/EinHaDe&quot;&gt;\
+        \ /u/EinHaDe &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://gleam.io/66avT/free-x1000-combat-force-steam-keys&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jxr09e/steam_game_combat_force/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jxr09e</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/q3VnoIlh1z8eOlYTxGzdvcMUf3QLKv0p4-uX1gU4FaQ.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=5c876f70555f5aedc11111871addb1c36261f75c\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jxr09e/steam_game_combat_force/\"\
+        \ /><updated>2025-04-12T20:47:28+00:00</updated><published>2025-04-12T20:47:28+00:00</published><title>[Steam]\
+        \ (Game) Combat Force</title></entry><entry><author><name>/u/Acrobatic-Bed-7382</name><uri>https://www.reddit.com/user/Acrobatic-Bed-7382</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jxkd17/steam_game_cavern_of_dreams/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/q1PTPQ8mztB6EDyCgfEUQHzM8mBtT1Mx4DCeTO-ARfk.jpg?width=640&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=6faaf56dd29396689e2f965488790c016cbc41ec&quot;\
+        \ alt=&quot;[Steam] (Game) Cavern of Dreams&quot; title=&quot;[Steam] (Game)\
+        \ Cavern of Dreams&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &lt;!-- SC_OFF\
+        \ --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;1100 copies of &lt;a href=&quot;https://store.steampowered.com/app/2059660/Cavern_of_Dreams/&quot;&gt;Cavern\
+        \ of Dreams&lt;/a&gt;&lt;/p&gt; &lt;p&gt;To get one for yourself - go to the\
+        \ &lt;a href=&quot;https://gleam.io/c8hjU/hitsquad-giveaway-cavern-of-dreams&quot;&gt;gleam&lt;/a&gt;,\
+        \ required actions are:&lt;/p&gt; &lt;ul&gt; &lt;li&gt;Get 50 channel points\
+        \ and redeem the twitch channel reward at twitch. tv / hitsquadgodfather &lt;ul&gt;\
+        \ &lt;li&gt;If you&amp;#39;re new to hsgf, you get these points just by hitting\
+        \ the follow button&lt;/li&gt; &lt;li&gt;If you&amp;#39;ve been on the hsgf\
+        \ twitch stream before and you don&amp;#39;t already have enough channel points\
+        \ leftover, it could take you about 30 minutes to get 50 channel points in\
+        \ order to redeem the channel points reward&lt;/li&gt; &lt;/ul&gt;&lt;/li&gt;\
+        \ &lt;li&gt;Join the hitsquad discord and verify yourself&lt;/li&gt; &lt;li&gt;Make\
+        \ sure your steam account is linked to your gleam (no alts, etc)&lt;/li&gt;\
+        \ &lt;/ul&gt; &lt;p&gt;That&amp;#39;s it! If you have any problems, you can\
+        \ ask around on the discord, usually plenty of people happy to help.&lt;/p&gt;\
+        \ &lt;/div&gt;&lt;!-- SC_ON --&gt; &amp;#32; submitted by &amp;#32; &lt;a\
+        \ href=&quot;https://www.reddit.com/user/Acrobatic-Bed-7382&quot;&gt; /u/Acrobatic-Bed-7382\
+        \ &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://gleam.io/c8hjU/hitsquad-giveaway-cavern-of-dreams&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jxkd17/steam_game_cavern_of_dreams/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jxkd17</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/q1PTPQ8mztB6EDyCgfEUQHzM8mBtT1Mx4DCeTO-ARfk.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=6faaf56dd29396689e2f965488790c016cbc41ec\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jxkd17/steam_game_cavern_of_dreams/\"\
+        \ /><updated>2025-04-12T15:51:18+00:00</updated><published>2025-04-12T15:51:18+00:00</published><title>[Steam]\
+        \ (Game) Cavern of Dreams</title></entry><entry><author><name>/u/SwaggyDrew</name><uri>https://www.reddit.com/user/SwaggyDrew</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/SwaggyDrew&quot;&gt;\
+        \ /u/SwaggyDrew &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://account.elderscrollsonline.com/en-us/redeem-code&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jwucgs/pcpsxbox_other_elder_scrolls_online_ingame_pet/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1jwucgs</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jwucgs/pcpsxbox_other_elder_scrolls_online_ingame_pet/\"\
+        \ /><updated>2025-04-11T16:40:36+00:00</updated><published>2025-04-11T16:40:36+00:00</published><title>[PC/PS/XBox]\
+        \ (Other) Elder Scrolls Online In-Game Pet Monkey</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jwrx7i/indiegala_game_journey_of_the_sword/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/9e_4SZsfJcJPgj4mw204RT_htyx9DuOMGCFfVphsWFs.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=794edd140975f626b7bf555459ddb7c98e08c31a&quot;\
+        \ alt=&quot;[Indiegala] (Game) Journey of the Sword&quot; title=&quot;[Indiegala]\
+        \ (Game) Journey of the Sword&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt;\
+        \ &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://freebies.indiegala.com/journey-of-the-sword&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jwrx7i/indiegala_game_journey_of_the_sword/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jwrx7i</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/9e_4SZsfJcJPgj4mw204RT_htyx9DuOMGCFfVphsWFs.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=794edd140975f626b7bf555459ddb7c98e08c31a\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jwrx7i/indiegala_game_journey_of_the_sword/\"\
+        \ /><updated>2025-04-11T14:58:35+00:00</updated><published>2025-04-11T14:58:35+00:00</published><title>[Indiegala]\
+        \ (Game) Journey of the Sword</title></entry><entry><author><name>/u/LighteningOneIN</name><uri>https://www.reddit.com/user/LighteningOneIN</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw2vzf/psa_dreadout_2_amazon_endless_space_definitive/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/D0JHucv1Bdv8kejgkxRnyzp4ktzyxlYAPv-uLyLO1vg.jpg?width=640&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=fdd5cfd06312dd00da136914e7f591f53dde312d&quot;\
+        \ alt=&quot;[PSA] DreadOut 2 (Amazon), ENDLESS\u2122 Space - Definitive Edition\
+        \ (Amazon), God\u2019s Trigger (GOG), New York Mysteries: Power of Art Collector\u2019\
+        s Edition (Legacy), Projection: First Light (Amazon), Faraway: Director\u2019\
+        s Cut (Amazon) are complimentary with Prime Gaming&quot; title=&quot;[PSA]\
+        \ DreadOut 2 (Amazon), ENDLESS\u2122 Space - Definitive Edition (Amazon),\
+        \ God\u2019s Trigger (GOG), New York Mysteries: Power of Art Collector\u2019\
+        s Edition (Legacy), Projection: First Light (Amazon), Faraway: Director\u2019\
+        s Cut (Amazon) are complimentary with Prime Gaming&quot; /&gt; &lt;/a&gt;\
+        \ &lt;/td&gt;&lt;td&gt; &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/LighteningOneIN&quot;&gt;\
+        \ /u/LighteningOneIN &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://gaming.amazon.com/home?filter=Game&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw2vzf/psa_dreadout_2_amazon_endless_space_definitive/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jw2vzf</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/D0JHucv1Bdv8kejgkxRnyzp4ktzyxlYAPv-uLyLO1vg.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=fdd5cfd06312dd00da136914e7f591f53dde312d\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jw2vzf/psa_dreadout_2_amazon_endless_space_definitive/\"\
+        \ /><updated>2025-04-10T17:01:06+00:00</updated><published>2025-04-10T17:01:06+00:00</published><title>[PSA]\
+        \ DreadOut 2 (Amazon), ENDLESS\u2122 Space - Definitive Edition (Amazon),\
+        \ God\u2019s Trigger (GOG), New York Mysteries: Power of Art Collector\u2019\
+        s Edition (Legacy), Projection: First Light (Amazon), Faraway: Director\u2019\
+        s Cut (Amazon) are complimentary with Prime Gaming</title></entry><entry><author><name>/u/RegionalPrices</name><uri>https://www.reddit.com/user/RegionalPrices</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/RegionalPrices&quot;&gt;\
+        \ /u/RegionalPrices &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.epicgames.com/p/idle-champions-of-the-forgotten-realms&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw1eqn/epic_games_other_idle_champions_of_the_forgotten/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1jw1eqn</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jw1eqn/epic_games_other_idle_champions_of_the_forgotten/\"\
+        \ /><updated>2025-04-10T15:59:02+00:00</updated><published>2025-04-10T15:59:02+00:00</published><title>[Epic\
+        \ Games] (Other) Idle Champions of the Forgotten Realms - Astarion's Champions\
+        \ of Renown Pack</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw08qd/epic_games_mobile_game_bridge_constructor_the/&quot;&gt;\
+        \ &lt;img src=&quot;https://b.thumbs.redditmedia.com/RCMJUv8oW_tVRgFmsdJK-Se3G57mWlAJmVhW4HUTS-w.jpg&quot;\
+        \ alt=&quot;[Epic Games Mobile] (Game) Bridge Constructor: The Walking Dead&quot;\
+        \ title=&quot;[Epic Games Mobile] (Game) Bridge Constructor: The Walking Dead&quot;\
+        \ /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &lt;!-- SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;&lt;a\
+        \ href=&quot;https://preview.redd.it/snbxlh9731ue1.png?width=753&amp;amp;format=png&amp;amp;auto=webp&amp;amp;s=1429fed4513f2b35bb0e2d3c23aee6c51259bc9b&quot;&gt;https://preview.redd.it/snbxlh9731ue1.png?width=753&amp;amp;format=png&amp;amp;auto=webp&amp;amp;s=1429fed4513f2b35bb0e2d3c23aee6c51259bc9b&lt;/a&gt;&lt;/p&gt;\
+        \ &lt;h1&gt;\U0001F4DD &lt;a href=&quot;https://www.epicgames.com/account/transactions?productName=egs&quot;&gt;Transactions\
+        \ Page&lt;/a&gt; (To see if you claimed or not)&lt;/h1&gt; &lt;h1&gt;\u23E9\
+        \ Instant Checkout (Login to &lt;a href=&quot;https://store.epicgames.com/&quot;&gt;Epic\
+        \ Games&lt;/a&gt; first to use)&lt;/h1&gt; &lt;table&gt;&lt;thead&gt; &lt;tr&gt;\
+        \ &lt;th align=&quot;left&quot;&gt;Item&lt;/th&gt; &lt;th align=&quot;left&quot;&gt;Instant\
+        \ Checkout&lt;/th&gt; &lt;/tr&gt; &lt;/thead&gt;&lt;tbody&gt; &lt;tr&gt; &lt;td\
+        \ align=&quot;left&quot;&gt;\U0001F3AE &lt;strong&gt;CLAIM ALL&lt;/strong&gt;&lt;/td&gt;\
+        \ &lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://store.epicgames.com/purchase?offers=1-39697c68e46b48d2b75e17bdc417d859-18a651ae98d745eb8420f47bdb6406f3&amp;amp;offers=1-39697c68e46b48d2b75e17bdc417d859-6fd580cec714477397ac48fdd4fdf442&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;tr&gt; &lt;td align=&quot;left&quot;&gt;\U0001F4F1 &lt;strong&gt;Bridge\
+        \ Constructor: The Walking Dead&lt;/strong&gt;\uFEFF\uFEFF (Android)&lt;/td&gt;\
+        \ &lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://store.epicgames.com/purchase?offers=1-39697c68e46b48d2b75e17bdc417d859-18a651ae98d745eb8420f47bdb6406f3&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;tr&gt; &lt;td align=&quot;left&quot;&gt;\U0001F34E &lt;strong&gt;Bridge\
+        \ Constructor: The Walking Dead&lt;/strong&gt; \uFEFF\uFEFF (iOS)&lt;/td&gt;\
+        \ &lt;td align=&quot;left&quot;&gt;&lt;a href=&quot;https://store.epicgames.com/purchase?offers=1-39697c68e46b48d2b75e17bdc417d859-6fd580cec714477397ac48fdd4fdf442&quot;&gt;BaseGame&lt;/a&gt;&lt;/td&gt;\
+        \ &lt;/tr&gt; &lt;/tbody&gt;&lt;/table&gt; &lt;h1&gt;\U0001F3AE Bridge Constructor:\
+        \ The Walking Dead&lt;/h1&gt; &lt;ul&gt; &lt;li&gt;&lt;strong&gt;\u231B Rating\uFF0F\
+        \u26D4 Blacklist&lt;/strong&gt;\uFF5CNone&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;\
+        \ &lt;/p&gt; &lt;p&gt;To &lt;strong&gt;download and play the mobiles games&lt;/strong&gt;:&lt;/p&gt;\
+        \ &lt;ul&gt; &lt;li&gt;&lt;strong&gt;Android&lt;/strong&gt; is open &lt;strong&gt;Globally&lt;/strong&gt;.&lt;/li&gt;\
+        \ &lt;li&gt;&lt;strong&gt;iOS&lt;/strong&gt; is only available in &lt;strong&gt;European\
+        \ Union Regions&lt;/strong&gt;.&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;But you can\
+        \ &lt;strong&gt;claim both platforms on any browser&lt;/strong&gt; &lt;em&gt;(PC/Mobile)&lt;/em&gt;\
+        \ &lt;strong&gt;without need mobile app intalled&lt;/strong&gt;.&lt;/p&gt;\
+        \ &lt;/div&gt;&lt;!-- SC_ON --&gt; &amp;#32; submitted by &amp;#32; &lt;a\
+        \ href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt; /u/MeguminShiro\
+        \ &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw08qd/epic_games_mobile_game_bridge_constructor_the/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw08qd/epic_games_mobile_game_bridge_constructor_the/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jw08qd</id><media:thumbnail\
+        \ url=\"https://b.thumbs.redditmedia.com/RCMJUv8oW_tVRgFmsdJK-Se3G57mWlAJmVhW4HUTS-w.jpg\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jw08qd/epic_games_mobile_game_bridge_constructor_the/\"\
+        \ /><updated>2025-04-10T15:09:39+00:00</updated><published>2025-04-10T15:09:39+00:00</published><title>[Epic\
+        \ Games Mobile] (Game) Bridge Constructor: The Walking Dead</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.epicgames.com/p/arcadegeddon-arcadgeddon-f2p-promo-bundle-dc81c5&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw00g5/epic_games_dlc_arcadegeddon_arcadegeddon/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1jw00g5</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jw00g5/epic_games_dlc_arcadegeddon_arcadegeddon/\"\
+        \ /><updated>2025-04-10T15:00:03+00:00</updated><published>2025-04-10T15:00:03+00:00</published><title>[Epic\
+        \ Games] (DLC) Arcadegeddon - Arcadegeddon</title></entry><entry><author><name>/u/MeguminShiro</name><uri>https://www.reddit.com/user/MeguminShiro</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/MeguminShiro&quot;&gt;\
+        \ /u/MeguminShiro &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.epicgames.com/p/river-city-girls-e6f608&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jw00fm/epic_games_game_river_city_girls/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1jw00fm</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jw00fm/epic_games_game_river_city_girls/\"\
+        \ /><updated>2025-04-10T15:00:02+00:00</updated><published>2025-04-10T15:00:02+00:00</published><title>[Epic\
+        \ Games] (Game) River City Girls</title></entry><entry><author><name>/u/Acrobatic-Bed-7382</name><uri>https://www.reddit.com/user/Acrobatic-Bed-7382</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jvmeja/steam_game_trivia_vault_boxing_trivia/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/q1PTPQ8mztB6EDyCgfEUQHzM8mBtT1Mx4DCeTO-ARfk.jpg?width=640&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=6faaf56dd29396689e2f965488790c016cbc41ec&quot;\
+        \ alt=&quot;[Steam] (Game) Trivia Vault: Boxing Trivia&quot; title=&quot;[Steam]\
+        \ (Game) Trivia Vault: Boxing Trivia&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt;\
+        \ &lt;!-- SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;Hitsquadgodfather\
+        \ twitch is giving away 2000 copies of a steam game this time: &lt;a href=&quot;https://store.steampowered.com/app/821520/Trivia_Vault_Boxing_Trivia/&quot;&gt;Trivia\
+        \ Vault Boxing Trivia&lt;/a&gt; . It&amp;#39;s a bit easier than the last\
+        \ one, almost no idle time (for older users), and only needs discord verification\
+        \ and steam linking this time.&lt;/p&gt; &lt;p&gt;Maybe this a +1 game? I\
+        \ don&amp;#39;t know how to check that. Doesn&amp;#39;t seem to have cards.\
+        \ But it has 5000 achievements if you really want those, haha! I&amp;#39;m\
+        \ going to post the key I just got in the comments, because I&amp;#39;m not\
+        \ interested in this, but figured I&amp;#39;d share.&lt;/p&gt; &lt;p&gt;For\
+        \ those who know hitsquadgodfather, you already know the drill. If you don&amp;#39;t\
+        \ like his giveaways or if you got banned in the past for suspected cheating\
+        \ or something like that, then you can easily ignore this. If you don&amp;#39;t\
+        \ know about this (or only check occasionally), then that&amp;#39;s why I&amp;#39;m\
+        \ posting.&lt;/p&gt; &lt;p&gt;So &lt;a href=&quot;https://gleam.io/sxion/hitsquad-giveaway-trivia-vault-boxing-trivia&quot;&gt;gleam\
+        \ link&lt;/a&gt; is already posted. This time these are the easier requirements:&lt;/p&gt;\
+        \ &lt;ul&gt; &lt;li&gt;Get 50 twitch channel points at twitch .tv/ hitsquadgodfather\
+        \ &lt;ul&gt; &lt;li&gt;If you&amp;#39;re new to his stream you get enough\
+        \ points automatically when you follow&lt;/li&gt; &lt;li&gt;If you&amp;#39;re\
+        \ not new to his stream you probably already have 50 channel points. But if\
+        \ you don&amp;#39;t I think it takes about 30 minutes? As soon as that little\
+        \ &amp;quot;bonus channel points&amp;quot; green box pops up, if you click\
+        \ it you&amp;#39;ll have enough points.&lt;/li&gt; &lt;/ul&gt;&lt;/li&gt;\
+        \ &lt;li&gt;Join the discord and get discord verified&lt;/li&gt; &lt;li&gt;Enter\
+        \ using steam (you link it to gleam and gleam does the verification)&lt;/li&gt;\
+        \ &lt;/ul&gt; &lt;p&gt;That&amp;#39;s it! No need to get channel/voucher-approved\
+        \ this time. I think there&amp;#39;s a link for that if you want to start\
+        \ earning points for good games. that&amp;#39;s what really makes hitsquadgodfather&amp;#39;s\
+        \ twitch stream worth it. I&amp;#39;ve gotten dozens of great games on there\
+        \ over the years, including a ton of great indie games and not a few awesome\
+        \ AAA games like Gotham Knights, Midnight Suns, Mortal Kombat XL, Kingdom\
+        \ Come Deliverance, and Hellblade Senua&amp;#39;s Sacrifice. So if you want\
+        \ to get better games than Trivia Vault (that&amp;#39;s why I&amp;#39;m there),\
+        \ you just get verified for channel point vouchers and then play some minigames\
+        \ or just idle the stream and save up. To do this extra stuff there are region\
+        \ restrictions like mentioned last time (just a few countries are restricted).&lt;/p&gt;\
+        \ &lt;p&gt;But, he&amp;#39;s also got some channel point game redeems that\
+        \ change pretty often (and I&amp;#39;m pretty sure they&amp;#39;re not region\
+        \ restricted at all). A few of them are really great games and might take\
+        \ a few days of idling to get. Others (some GOG codes) you can get within\
+        \ like 1.5 hrs or something. So, plenty of games to stock up in your library.&lt;/p&gt;\
+        \ &lt;p&gt;The gleam should be pretty straightforward, but if you have any\
+        \ questions about the whole system works (for getting other games), feel free\
+        \ to ask in the discord. The community there is usually really helpful and\
+        \ happy to answer questions. Enjoy!&lt;/p&gt; &lt;/div&gt;&lt;!-- SC_ON --&gt;\
+        \ &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/Acrobatic-Bed-7382&quot;&gt;\
+        \ /u/Acrobatic-Bed-7382 &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://gleam.io/sxion/hitsquad-giveaway-trivia-vault-boxing-trivia&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jvmeja/steam_game_trivia_vault_boxing_trivia/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jvmeja</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/q1PTPQ8mztB6EDyCgfEUQHzM8mBtT1Mx4DCeTO-ARfk.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=6faaf56dd29396689e2f965488790c016cbc41ec\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jvmeja/steam_game_trivia_vault_boxing_trivia/\"\
+        \ /><updated>2025-04-10T01:34:30+00:00</updated><published>2025-04-10T01:34:30+00:00</published><title>[Steam]\
+        \ (Game) Trivia Vault: Boxing Trivia</title></entry><entry><author><name>/u/colderz</name><uri>https://www.reddit.com/user/colderz</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jv2b6l/steam_game_granny_kick_neighbor/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/YDdDreCIbL-hEucZuglG1ZzPHAgnhfrI-OPfmLjj5-0.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=8a17c2bb0ebf04d607822fb751f9d2335e1b79d1&quot;\
+        \ alt=&quot;[Steam] (Game) Granny Kick Neighbor&quot; title=&quot;[Steam]\
+        \ (Game) Granny Kick Neighbor&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt;\
+        \ &lt;!-- SC_OFF --&gt;&lt;div class=&quot;md&quot;&gt;&lt;p&gt;Announcement:&lt;/p&gt;\
+        \ &lt;p&gt;&lt;a href=&quot;https://steamcommunity.com/games/1301290/announcements/detail/541102606924120126&quot;&gt;https://steamcommunity.com/games/1301290/announcements/detail/541102606924120126&lt;/a&gt;&lt;/p&gt;\
+        \ &lt;/div&gt;&lt;!-- SC_ON --&gt; &amp;#32; submitted by &amp;#32; &lt;a\
+        \ href=&quot;https://www.reddit.com/user/colderz&quot;&gt; /u/colderz &lt;/a&gt;\
+        \ &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://store.steampowered.com/app/1301290/&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jv2b6l/steam_game_granny_kick_neighbor/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jv2b6l</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/YDdDreCIbL-hEucZuglG1ZzPHAgnhfrI-OPfmLjj5-0.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=8a17c2bb0ebf04d607822fb751f9d2335e1b79d1\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jv2b6l/steam_game_granny_kick_neighbor/\"\
+        \ /><updated>2025-04-09T10:16:01+00:00</updated><published>2025-04-09T10:16:01+00:00</published><title>[Steam]\
+        \ (Game) Granny Kick Neighbor</title></entry><entry><author><name>/u/EinHaDe</name><uri>https://www.reddit.com/user/EinHaDe</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jut817/steam_game_money_theft/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/u3xqj-4zJGn2cVM55H3xC7vQKjLYJyHHSRwIDTGN8ao.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=7aa5a8860aa88a9d5eb3815b61e4ad7597f25833&quot;\
+        \ alt=&quot;[Steam] (Game) Money Theft&quot; title=&quot;[Steam] (Game) Money\
+        \ Theft&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt; &amp;#32; submitted by\
+        \ &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/EinHaDe&quot;&gt;\
+        \ /u/EinHaDe &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://gleam.io/v6dWH/free-x2000-money-theft-steam-keys&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jut817/steam_game_money_theft/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jut817</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/u3xqj-4zJGn2cVM55H3xC7vQKjLYJyHHSRwIDTGN8ao.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=7aa5a8860aa88a9d5eb3815b61e4ad7597f25833\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jut817/steam_game_money_theft/\"\
+        \ /><updated>2025-04-09T00:40:57+00:00</updated><published>2025-04-09T00:40:57+00:00</published><title>[Steam]\
+        \ (Game) Money Theft</title></entry><entry><author><name>/u/0xy1113311</name><uri>https://www.reddit.com/user/0xy1113311</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&lt;table&gt; &lt;tr&gt;&lt;td&gt; &lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jub587/steam_dlc_lostmagic_adventurers_starter_kit/&quot;&gt;\
+        \ &lt;img src=&quot;https://external-preview.redd.it/fwyrAhAF3klsUT-DeVF9V176BdRk0BJohs9H8DhWkes.jpg?width=320&amp;amp;crop=smart&amp;amp;auto=webp&amp;amp;s=582fa527dc561fb7d49a130d4ef3b79c05de1254&quot;\
+        \ alt=&quot;[Steam] (DLC) LostMagic - Adventurer's Starter Kit&quot; title=&quot;[Steam]\
+        \ (DLC) LostMagic - Adventurer's Starter Kit&quot; /&gt; &lt;/a&gt; &lt;/td&gt;&lt;td&gt;\
+        \ &amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/0xy1113311&quot;&gt;\
+        \ /u/0xy1113311 &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://givee.club/event/968&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1jub587/steam_dlc_lostmagic_adventurers_starter_kit/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;\
+        \ &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content><id>t3_1jub587</id><media:thumbnail\
+        \ url=\"https://external-preview.redd.it/fwyrAhAF3klsUT-DeVF9V176BdRk0BJohs9H8DhWkes.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=582fa527dc561fb7d49a130d4ef3b79c05de1254\"\
+        \ /><link href=\"https://www.reddit.com/r/FreeGameFindings/comments/1jub587/steam_dlc_lostmagic_adventurers_starter_kit/\"\
+        \ /><updated>2025-04-08T11:22:17+00:00</updated><published>2025-04-08T11:22:17+00:00</published><title>[Steam]\
+        \ (DLC) LostMagic - Adventurer's Starter Kit</title></entry><entry><author><name>/u/darkehx</name><uri>https://www.reddit.com/user/darkehx</uri></author><category\
+        \ term=\"FreeGameFindings\" label=\"r/FreeGameFindings\"/><content type=\"\
+        html\">&amp;#32; submitted by &amp;#32; &lt;a href=&quot;https://www.reddit.com/user/darkehx&quot;&gt;\
+        \ /u/darkehx &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href=&quot;https://www.xbox.com/en-US/games/store/the-elite-vehicle-livery-pack/C03TZXZP824K/0001&quot;&gt;[link]&lt;/a&gt;&lt;/span&gt;\
+        \ &amp;#32; &lt;span&gt;&lt;a href=&quot;https://www.reddit.com/r/FreeGameFindings/comments/1ju1z6v/xbox_dlc_split_second_the_elite_vehicle_livery/&quot;&gt;[comments]&lt;/a&gt;&lt;/span&gt;</content><id>t3_1ju1z6v</id><link\
+        \ href=\"https://www.reddit.com/r/FreeGameFindings/comments/1ju1z6v/xbox_dlc_split_second_the_elite_vehicle_livery/\"\
+        \ /><updated>2025-04-08T01:31:11+00:00</updated><published>2025-04-08T01:31:11+00:00</published><title>[Xbox]\
+        \ (DLC) Split Second - &quot;The Elite&quot; Vehicle Livery Pack</title></entry></feed>"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - private, max-age=3600
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '51770'
+      Date:
+      - Fri, 18 Apr 2025 15:34:50 GMT
+      NEL:
+      - '{"report_to": "w3-reporting-nel", "max_age": 14400, "include_subdomains":
+        false, "success_fraction": 1.0, "failure_fraction": 1.0}'
+      Report-To:
+      - '{"group": "w3-reporting-nel", "max_age": 14400, "include_subdomains": true,  "endpoints":
+        [{ "url": "https://w3-reporting-nel.reddit.com/reports" }]}, {"group": "w3-reporting",
+        "max_age": 14400, "include_subdomains": true, "endpoints": [{ "url": "https://w3-reporting.reddit.com/reports"
+        }]}, {"group": "w3-reporting-csp", "max_age": 14400, "include_subdomains":
+        true, "endpoints": [{ "url": "https://w3-reporting-csp.reddit.com/reports"
+        }]}'
+      Server:
+      - snooserv
+      Set-Cookie:
+      - session_tracker=gv77xnUfFyITT5EVZF.0.1744990489972.Z0FBQUFBQm9BbkVhNFI3Tk1LMERSQWpqUUdWZXVDZnJBQVpqZkRDd1FUREtwdl9adGJ1T2NJMHpCZ2FrdWdkR2VjYWZzbk1peTBCbzNVZzB6TmVGWFJRamVhT2NGMmtGTEFIZTJFWnlOd1p0ZmFBcjJkWEZXeGNDTFVRZmlZR002VEdsLXpUQ0N1LUY;
+        Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 18-Apr-2025 17:34:50
+        GMT; secure; SameSite=None; Secure
+      - csv=2; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None
+      - edgebucket=Bwn9frVtMbWAZXA7FS; Domain=reddit.com; Max-Age=63071999; Path=/;  secure
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains
+      Via:
+      - 1.1 varnish
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+      content-type:
+      - application/atom+xml; charset=UTF-8
+      x-ratelimit-remaining:
+      - '98.0'
+      x-ratelimit-reset:
+      - '310'
+      x-ratelimit-used:
+      - '2'
+      x-ua-compatible:
+      - IE=edge
+    status:
+      code: 200
+      message: OK
+version: 1
