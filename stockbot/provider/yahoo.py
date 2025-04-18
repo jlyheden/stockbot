@@ -81,6 +81,9 @@ class YahooSearchResult(object):
     def get_tickers(self):
         return [x["symbol"] for x in self.tickers if "symbol" in x]
 
+    def result_as_list(self):
+        return ["Name: {}".format(n["symbol"]) for n in self.tickers]
+
     def is_empty(self):
         return not (
                 len(self.tickers) > 0 and

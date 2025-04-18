@@ -160,9 +160,7 @@ root_command = Command(name="root")
 root_command.register(BlockingExecuteCommand(name="help", execute_command=root_command.show_help,
                                              help="show help section"))
 
-import stockbot.command.fundamental
 import stockbot.command.quote
-import stockbot.command.scrape
 import stockbot.command.insider
 import stockbot.command.ibindex
 import stockbot.command.news
