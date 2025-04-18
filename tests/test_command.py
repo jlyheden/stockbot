@@ -7,8 +7,16 @@ from unittest.mock import patch
 from stockbot.command import root_command
 from stockbot.db import Session, create_tables, drop_tables
 from stockbot.persistence import DatabaseCollection, ScheduledCommand
-from stockbot.provider import QuoteServiceFactory, NasdaqCompany
-from stockbot.provider.google import GoogleFinanceSearchResult, GoogleFinanceQueryService, StockDomain
+from stockbot.provider import QuoteServiceFactory
+
+
+class FakeQuoteServiceSearchResult(object):
+
+    def __init__(self, result):
+        self.result = result
+
+    def result_as_list(self):
+        return ["Ticker: {}, Market: {}, Name: {}".format(n["t"], n["e"], n["n"]) for n in self.result["matches"]]
 
 
 class FakeQuoteService(object):
@@ -19,7 +27,7 @@ class FakeQuoteService(object):
     def search(self, query):
         if query == 'none-type-response':
             return None
-        return GoogleFinanceSearchResult(result={
+        return FakeQuoteServiceSearchResult(result={
             "matches": [
                 {"t": "FOO", "e": "Foo Market", "n": "Foo Company"}
             ]
@@ -99,45 +107,6 @@ class TestCommand(unittest.TestCase):
         command = ["quote", "get_fresh", "fakeprovider", "fresh"]
         res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
         self.assertEquals("I'm fresh", str(res))
-
-    def test_lucky_quote_and_quick_get_command(self):
-
-        class FakeQuote(object):
-
-            def __init__(self, data={}):
-                self.data = data
-
-            def is_empty(self):
-                return len(self.data.items()) == 0
-
-            def __str__(self):
-                return "Ticker: {}".format(self.data.get("ticker"))
-
-        class FakeQuoteServiceLocal(object):
-
-            def get_quote(self, ticker):
-                if ticker == "fancyticker":
-                    return FakeQuote()
-                else:
-                    return FakeQuote(data={"ticker": "AWESOMO"})
-
-            def search(self, query):
-                return GoogleFinanceSearchResult(result={
-                    "matches": [
-                        {"t": "AWESOMO", "e": "Foo Market", "n": "Foo Company"}
-                    ]
-                })
-
-        factory = QuoteServiceFactory()
-        factory.providers = {"fakeprovider": FakeQuoteServiceLocal}
-        command = ["q", "gl", "fakeprovider", "fancyticker"]
-        res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
-        self.assertEquals("Ticker: AWESOMO", str(res))
-
-        factory.providers = {"avanza": FakeQuoteServiceLocal}
-        command = ["qq", "fancyticker"]
-        res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
-        self.assertEquals("Ticker: AWESOMO", str(res))
 
     def test_quote_get_command_invalid_input(self):
 
@@ -246,69 +215,6 @@ class TestCommand(unittest.TestCase):
         command = ["hi", "stockbot"]
         res = self.__cmd_wrap(*command)
         self.assertIsNone(res)
-
-    @vcr.use_cassette('mock/vcr_cassettes/nasdaq/scraper.yaml')
-    def test_execute_scrape_nasdaq(self):
-
-        command = ["scrape", "nasdaq"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals("Scraped 657 companies from Nasdaq", res)
-
-        command = ["scrape", "stats"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals("Scraped: nordic large cap=201, nordic mid cap=219, nordic small cap=237", res)
-
-    @patch('time.sleep')
-    @vcr.use_cassette('mock/vcr_cassettes/google/quote/scrape_large_cap.yaml')
-    def test_execute_nonblocking_scrape_stocks(self, sleep_mock):
-
-        # Mock sleep in the scrape task
-        sleep_mock.return_value = False
-
-        companies = [
-            NasdaqCompany(name="AAK", ticker="AAK", currency="SEK", category="bla", segment="nordic large cap"),
-            NasdaqCompany(name="ABB Ltd", ticker="ABB", currency="SEK", category="bla", segment="nordic large cap")
-        ]
-        self.session.add_all(companies)
-        self.session.commit()
-
-        command = ["scrape", "stocks", "sek", "nordic", "large", "cap"]
-        root_command.execute(*command, command_args={'service': GoogleFinanceQueryService()},
-                             callback=self.ircbot.callback)
-
-        self.assertEquals("Task started", self.ircbot.callback_args[0])
-
-        for t in threading.enumerate():
-            if t.name == "thread-sek_nordic_large_cap":
-                t.join()
-
-        self.assertEquals("Done scraping segment 'nordic large cap' currency 'SEK' - scraped 2 companies",
-                          self.ircbot.callback_args[0])
-
-        for c in companies:
-            row = self.session.query(StockDomain).filter(StockDomain.ticker == c.ticker).first()
-            self.assertNotEquals(None, row)
-
-    def test_execute_analytics_fields(self):
-
-        command = ["fundamental", "fields"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals("Fields: id, name, ticker, net_profit_margin_last_q, net_profit_margin_last_y, operating_margin_last_q, operating_margin_last_y, ebitd_margin_last_q, ebitd_margin_last_y, roaa_last_q, roaa_last_y, roae_last_q, roae_last_y, market_cap, price_to_earnings, beta, earnings_per_share, dividend_yield, latest_dividend", res)
-
-    def test_execute_analytics_top(self):
-        # TODO: fix test data
-
-        command = ["fundamental", "top", "5", "net_profit_margin_last_q"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals(["Nothing found"], res)
-
-        command = ["fundamental", "top", "foobar", "net_profit_margin_last_q"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals(["Error: foobar is not a number sherlock"], res)
-
-        command = ["fundamental", "top", "5", "this_field_doesnt_exist"]
-        res = self.__cmd_wrap(*command)
-        self.assertEquals(["Error: 'this_field_doesnt_exist' is not a valid field"], res)
 
     def test_quote_hints(self):
         command = ["quote", "hint", "list", "yahoo"]

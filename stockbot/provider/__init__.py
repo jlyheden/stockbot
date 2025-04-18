@@ -1,10 +1,5 @@
 import logging
 from .ibindex import IbIndexQueryService
-from .nasdaq import NasdaqIndexScraper, NasdaqCompany
-from .google import StockDomain, GoogleFinanceQueryService
-from .bloomberg import BloombergQueryService
-from .avanza import AvanzaQueryService
-from .ig import IGQueryService
 from .yahoo import YahooQueryService
 from stockbot.db import Base
 from sqlalchemy import Column, String
@@ -19,23 +14,9 @@ class ProviderHints(Base):
     dst = Column(String)
 
 
-class Analytics(object):
-
-    def sort_by(self, c, attributes, reverse=False, max_results=None):
-        result = sorted(c, key=lambda q: [getattr(q, x) for x in attributes], reverse=reverse)
-        if isinstance(max_results, int):
-            return result[:max_results]
-        else:
-            return result
-
-
 class QuoteServiceFactory(object):
 
     providers = {
-        "google": GoogleFinanceQueryService,
-        "bloomberg": BloombergQueryService,
-        "avanza": AvanzaQueryService,
-        "ig": IGQueryService,
         "ibindex": IbIndexQueryService,
         "yahoo": YahooQueryService
     }
