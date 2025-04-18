@@ -3,6 +3,5 @@ irc
 lxml
 beautifulsoup4
 SQLAlchemy
-psycopg2
 epicstore_api==0.1.7
 

@@ -2,6 +2,8 @@ from . import root_command, Command, BlockingExecuteCommand, ProxyCommand
 from ..timer import OneshotTimer
 from epicstore_api import EpicGamesStoreAPI
 from datetime import datetime
+from ..service.reddit import RedditFreeGamesService
+from ..db import Session
 import logging
 
 LOGGER = logging.getLogger(__name__)
@@ -58,7 +60,27 @@ def get_latest_free_games(*args, **kwargs):
             return response
 
 
+def get_latest_free_games_reddit(*args, **kwargs):
+    response = []
+    try:
+        with Session() as session:
+            reddit_service = RedditFreeGamesService()
+            reddit_service.refresh(session)
+            free_games = reddit_service.gimme(session)
+            for free_game in free_games:
+                title = free_game.title.replace(": ", " ")
+                if len(title) > 200:
+                    title = f"{title[:200]}..."
+                response.append(f"Game: {title}, URL: {free_game.link}, Published: {free_game.published}")
+        return response
+    except Exception as e:
+        LOGGER.exception("failed to get free reddit games", e)
+        return "Something broke"
+
+
 game_command = Command(name="game", short_name="g")
+game_command.register(BlockingExecuteCommand(name="reddit", execute_command=get_latest_free_games_reddit,
+                                             expected_num_args=0))
 epic_command = Command(name="epic", short_name="e")
 epic_command.register(BlockingExecuteCommand(name="now", short_name="n", execute_command=get_latest_free_games,
                                              expected_num_args=0))
@@ -66,4 +88,3 @@ game_command.register(epic_command)
 root_command.register(game_command)
 root_command.register(ProxyCommand(name="epic", proxy_command=("game", "epic", "now"), help="",
                                    expected_num_args=0))
-

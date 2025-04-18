@@ -2,6 +2,7 @@ version: '3'
 
 services:
 
+  # docker exec -it stockbot_client_1 irssi connect --connect=ircserver --password=secret --nick=foobar
   client:
     image: irssi
     entrypoint: ["cat"]
@@ -19,11 +20,10 @@ services:
       CHANNEL_NAME: "#testchannel"
       NICK: "stockmurph"
       LOGLEVEL: "DEBUG"
-      DATABASE_URL: "postgres://bot:password@database:5432/ircbotdb"
+      DATABASE_URL: "sqlite:////db/db.db"
       SCHEDULER: "true"
-      LYHEDEN_BASE_URL: ${LYHEDEN_BASE_URL}
-      LYHEDEN_USERNAME: ${LYHEDEN_USERNAME}
-      LYHEDEN_PASSWORD: ${LYHEDEN_PASSWORD}
+    volumes:
+      - db:/db
 
   ircserver:
     image: inspircd/inspircd-docker:latest
@@ -33,9 +33,5 @@ services:
     environment:
       INSP_CONNECT_PASSWORD: "secret"
 
-  database:
-    image: postgres:9.6-alpine
-    environment:
-      POSTGRES_DB: "ircbotdb"
-      POSTGRES_USER: "bot"
-      POSTGRES_PASSWORD: "password"
+volumes:
+  db:
