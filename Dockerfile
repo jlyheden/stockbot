@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-RUN apt-get update && apt-get --no-install-recommends install -y git libpq-dev build-essential
+RUN apt-get update && apt-get --no-install-recommends install -y git build-essential
 
 ADD requirements.txt /tmp
 

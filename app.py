@@ -15,7 +15,7 @@ from stockbot.db import create_tables
 from stockbot.command import root_command
 from stockbot.provider import QuoteServiceFactory
 from stockbot.util import colorify
-from stockbot.timer import OncePerDayTimer
+from stockbot.timer import OncePerHourTimer
 
 # Set up logging
 LOGLEVEL = os.getenv("LOGLEVEL", "info").upper()
@@ -68,7 +68,7 @@ class IRCBot(SingleServerIRCBot):
         c.nick(c.get_nickname() + "_")
 
     def _startup_commands(self):
-        self.daily_timers.add(OncePerDayTimer(["game", "reddit"], fire_at_hour=0, fire_at_minute=0))
+        self.daily_timers.add(OncePerHourTimer(["game", "reddit"], fire_at_minute=0))
 
     def on_welcome(self, c, e):
         c.join(self.channel)
