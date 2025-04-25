@@ -19,8 +19,10 @@ class RedditFreeGameHistory(Base):
 
 class RedditFreeGamesService(object):
 
-    @staticmethod
-    def refresh(session: Session) -> None:
+    def __init__(self, ignore_words: list = ()):
+        self.ignore_words = ignore_words
+
+    def refresh(self, session: Session) -> None:
         response = requests.get("https://www.reddit.com/r/FreeGameFindings/new.rss", headers={
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
         })
@@ -29,8 +31,11 @@ class RedditFreeGamesService(object):
         ns = {'atom': 'http://www.w3.org/2005/Atom'}
 
         for entry in tree.findall('atom:entry', namespaces=ns):
+            title = entry.find('atom:title', namespaces=ns).text
+            if any(word in title for word in self.ignore_words):
+                continue
             game = RedditFreeGameHistory(
-                title=entry.find('atom:title', namespaces=ns).text,
+                title=title,
                 link=entry.find('atom:link', namespaces=ns).attrib["href"],
                 published=datetime.fromisoformat(entry.find('atom:published', namespaces=ns).text),
                 seen=False

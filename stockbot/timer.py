@@ -42,3 +42,23 @@ class OncePerDayTimer(object):
 
     def __hash__(self):
         return hash(self.identity)
+
+
+class OncePerHourTimer(object):
+
+    def __init__(self, command, fire_at_minute):
+        self.command = command
+        self.fire_at_minute = fire_at_minute
+        self.identity = f"{'_'.join(self.command)}_{self.fire_at_minute}"
+
+    def should_fire(self):
+        now = datetime.now()
+        return now.minute == self.fire_at_minute
+
+    def __eq__(self, other):
+        if hasattr(other, "identity"):
+            return self.identity == other.identity
+        return False
+
+    def __hash__(self):
+        return hash(self.identity)

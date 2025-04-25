@@ -24,3 +24,10 @@ class TestConfiguration(unittest.TestCase):
     def test_get_env_bool(self):
         self.assertEquals(True, Configuration().bool_true)
         self.assertEquals(False, Configuration().bool_false)
+
+    @patch.dict(os.environ, {'GAME_IGNORE_LIST': '[G1],[G2]'})
+    def test_get_env_list(self):
+        self.assertEquals(["[G1]", "[G2]"], Configuration().game_ignore_list)
+
+    def test_get_empty_env_list(self):
+        self.assertEquals([], Configuration().game_ignore_list)
