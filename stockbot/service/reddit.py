@@ -32,7 +32,7 @@ class RedditFreeGamesService(object):
 
         for entry in tree.findall('atom:entry', namespaces=ns):
             title = entry.find('atom:title', namespaces=ns).text
-            if any(word in title for word in self.ignore_words):
+            if any(word.lower() in title.lower() for word in self.ignore_words):
                 continue
             game = RedditFreeGameHistory(
                 title=title,
