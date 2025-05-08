@@ -247,7 +247,6 @@ class IntegrationTestCommand(unittest.TestCase):
     def setUp(self) -> None:
         create_tables()
 
-    @unittest.skip
     @vcr.use_cassette('mock/vcr_cassettes/hints/yahoo.yaml')
     def test_quote_get_with_hints(self):
 

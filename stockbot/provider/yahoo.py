@@ -158,7 +158,7 @@ class YahooQueryService(BaseQuoteService):
         }
 
         get_args = {**base_args, 'url': 'https://guce.yahoo.com/consent'}
-        with requests.Session() as s:
+        with requests.Session(impersonate="chrome") as s:
             response = s.get(**get_args)
             soup = BeautifulSoup(response.content, 'html.parser')
             csrfTokenInput = soup.find('input', attrs={'name': 'csrfToken'})
