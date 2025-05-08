@@ -3,4 +3,4 @@ irc
 lxml
 beautifulsoup4
 SQLAlchemy
-
+curl_cffi

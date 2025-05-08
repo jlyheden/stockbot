@@ -1,5 +1,5 @@
 import logging
-import requests
+from curl_cffi import requests
 import urllib.parse
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -119,7 +119,7 @@ class YahooQueryService(BaseQuoteService):
 
     def search(self, query):
         if query not in self.search_cache:
-            response = requests.get('https://query2.finance.yahoo.com/v1/finance/search', params={
+            response = self._get_with_cookie_refresh('https://query2.finance.yahoo.com/v1/finance/search', params={
                 "q": query,
                 "lang": "en-US",
                 "region": "US",
@@ -132,19 +132,20 @@ class YahooQueryService(BaseQuoteService):
                 "enableCb": "true",
                 "enableNavLinks": "true",
                 "enableEnhancedTrivialQuery": "true"
-            }, headers=self.headers)
+            })
             response.raise_for_status()
             self.search_cache[query] = response.json()
         return YahooSearchResult(self.search_cache[query])
 
     def _get_with_cookie_refresh(self, url, params={}):
-        response = requests.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
-                                headers=self.headers)
-        if response.status_code in [401, 403]:
-            self._get_cookies_and_crumb()
-            response = requests.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
-                                    headers=self.headers)
-        return response
+        with requests.Session(impersonate="chrome") as s:
+            response = s.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
+                             headers=self.headers)
+            if response.status_code in [401, 403]:
+                self._get_cookies_and_crumb()
+                response = s.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
+                                        headers=self.headers)
+            return response
 
     # copy paste from https://github.com/ranaroussi/yfinance/blob/main/yfinance/data.py but without configuration bloat
     def _get_cookies_and_crumb(self):
