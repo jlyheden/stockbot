@@ -24,8 +24,10 @@ class TestRedditFreeGamesService(unittest.TestCase):
         drop_tables()
         create_tables()
         with Session() as session:
-            sut = RedditFreeGamesService(ignore_words=["[PSA]"])
+            sut = RedditFreeGamesService(ignore_words=["[PSA]", "gleam.io"])
             sut.refresh(session)
             games = sut.gimme(session)
             for game in games:
                 self.assertNotIn("[PSA]", game.title)
+                # dirty
+                self.assertNotIn("[Steam] (Game) Combat Force", game.title)
