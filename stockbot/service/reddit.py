@@ -1,9 +1,13 @@
 import requests
+import logging
 from datetime import datetime
 from stockbot.db import Base, Session
 from lxml import etree
 from sqlalchemy import Column, String, DateTime, Boolean, Integer, select, update
 from sqlalchemy.exc import IntegrityError
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class RedditFreeGameHistory(Base):
@@ -34,6 +38,7 @@ class RedditFreeGamesService(object):
             title = entry.find('atom:title', namespaces=ns).text
             content = entry.find('atom:content', namespaces=ns).text
             if any(word.lower() in title.lower() or word.lower() in content.lower() for word in self.ignore_words):
+                LOGGER.info(f"Ignoring game: {title}")
                 continue
             game = RedditFreeGameHistory(
                 title=title,
