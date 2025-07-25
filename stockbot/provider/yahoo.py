@@ -69,6 +69,8 @@ class YahooSearchResult(object):
         self.tickers = []
         if "quotes" in self.o:
             self.tickers.extend(self.__ranked_tickers())
+        LOGGER.info(f"search query: {self.query}")
+        LOGGER.info(f"search result: {self.tickers}")
 
     def __ranked_tickers(self):
         for idx, _ in enumerate(self.o["quotes"]):

@@ -82,7 +82,7 @@ class IRCBot(SingleServerIRCBot):
     def on_privmsg(self, c, e):
         sender = e.source.nick
         message = e.arguments[0]
-        commands = [irc.strings.lower(x) for x in message.split(" ")]
+        commands = [x for x in message.split(" ")]
         root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
                                                       "instance": self, "sender": sender},
                              callback=self.command_callback_priv, callback_args={"sender": sender})
@@ -95,7 +95,7 @@ class IRCBot(SingleServerIRCBot):
         respond = irc.strings.lower(nick_msg_split[0]) in [my_nickname, "{} (irc)".format(my_nickname)] and len(nick_msg_split) == 2
 
         if respond:
-            commands = [irc.strings.lower(x) for x in nick_msg_split[1].split(" ") if len(x) > 0]
+            commands = [x for x in nick_msg_split[1].split(" ") if len(x) > 0]
             try:
                 root_command.execute(*commands, command_args={"service_factory": self.quote_service_factory,
                                                               "instance": self, "sender": sender},
