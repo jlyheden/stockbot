@@ -63,8 +63,9 @@ class YahooQuote(BaseQuote):
 
 class YahooSearchResult(object):
 
-    def __init__(self, o):
+    def __init__(self, o, query):
         self.o = o
+        self.query = query
         self.tickers = []
         if "quotes" in self.o:
             self.tickers.extend(self.__ranked_tickers())
@@ -72,10 +73,12 @@ class YahooSearchResult(object):
     def __ranked_tickers(self):
         for idx, _ in enumerate(self.o["quotes"]):
             # assign higher weight to stockholm instruments
-            if "exchange" in self.o["quotes"][idx] and self.o["quotes"][idx]["exchange"] == "STO":
-                self.o["quotes"][idx]["score"] += self.o["quotes"][idx]["score"]
             if "score" not in self.o["quotes"][idx]:
                 self.o["quotes"][idx]["score"] = 0
+            if "exchange" in self.o["quotes"][idx] and self.o["quotes"][idx]["exchange"] == "STO":
+                self.o["quotes"][idx]["score"] += self.o["quotes"][idx]["score"]
+            if "symbol" in self.o["quotes"][idx] and self.o["quotes"][idx]["symbol"] == self.query:
+                self.o["quotes"][idx]["score"] += 1000000000
         return sorted(self.o["quotes"], key=lambda d: d["score"], reverse=True)
 
     def get_tickers(self):
@@ -135,7 +138,7 @@ class YahooQueryService(BaseQuoteService):
             })
             response.raise_for_status()
             self.search_cache[query] = response.json()
-        return YahooSearchResult(self.search_cache[query])
+        return YahooSearchResult(self.search_cache[query], query)
 
     def _get_with_cookie_refresh(self, url, params={}):
         with requests.Session(impersonate="chrome") as s:
@@ -144,7 +147,7 @@ class YahooQueryService(BaseQuoteService):
             if response.status_code in [401, 403]:
                 self._get_cookies_and_crumb()
                 response = s.get(url, cookies=self.cookies, params={**params, **{"crumb": self.crumb}},
-                                        headers=self.headers)
+                                 headers=self.headers)
             return response
 
     # copy paste from https://github.com/ranaroussi/yfinance/blob/main/yfinance/data.py but without configuration bloat
@@ -177,11 +180,11 @@ class YahooQueryService(BaseQuoteService):
                 'namespace': namespace,
             }
             post_args = {**base_args,
-                'url': f'https://consent.yahoo.com/v2/collectConsent?sessionId={sessionId}',
-                'data': data}
+                         'url': f'https://consent.yahoo.com/v2/collectConsent?sessionId={sessionId}',
+                         'data': data}
             get_args = {**base_args,
-                'url': f'https://guce.yahoo.com/copyConsent?sessionId={sessionId}',
-                'data': data}
+                        'url': f'https://guce.yahoo.com/copyConsent?sessionId={sessionId}',
+                        'data': data}
             s.post(**post_args)
             s.get(**get_args)
             self.cookies = s.cookies
