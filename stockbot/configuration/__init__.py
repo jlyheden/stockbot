@@ -7,7 +7,8 @@ DEFAULT_VALUES = {
     "server_use_ssl": "false",
     "die_when_not_pinged": "false",
     "die_when_not_pinged_in_s": "600",
-    "game_ignore_list": ""
+    "game_ignore_list": "",
+    "should_colorify": "true"
 }
 
 

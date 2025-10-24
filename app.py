@@ -124,7 +124,7 @@ class IRCBot(SingleServerIRCBot):
     def colorify_send(self, target, msg):
         # irc.client.MessageTooLong: Messages limited to 512 bytes including CR/LF
         colored_message = colorify(msg)
-        if len(colored_message) > 512:
+        if len(colored_message) > 512 or not configuration.should_colorify:
             self.connection.privmsg(target, msg[:512])
         else:
             self.connection.privmsg(target, colored_message)
@@ -132,7 +132,7 @@ class IRCBot(SingleServerIRCBot):
     def colorify_notice(self, target, msg):
         # irc.client.MessageTooLong: Messages limited to 512 bytes including CR/LF
         colored_message = colorify(msg)
-        if len(colored_message) > 512:
+        if len(colored_message) > 512 or not configuration.should_colorify:
             self.connection.notice(target, msg[:512])
         else:
             self.connection.notice(target, colored_message)
