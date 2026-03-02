@@ -17,7 +17,7 @@ class TestRedditFreeGamesService(unittest.TestCase):
             self.assertGreater(len(games), 0)
 
             games_again = sut.gimme(session)
-            self.assertEquals(len(games_again), 0)
+            self.assertEqual(len(games_again), 0)
 
     @vcr.use_cassette('mock/vcr_cassettes/reddit/freegames.yaml')
     def test_refresh_with_ignore_words(self):
