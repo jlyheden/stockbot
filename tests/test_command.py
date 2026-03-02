@@ -75,7 +75,7 @@ class TestCommand(unittest.TestCase):
 
         command = ["quote", "get", "fakeprovider", "aapl"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Here's your fake quote for aapl", res)
+        self.assertEqual("Here's your fake quote for aapl", res)
 
     def test_quote_get_fresh_command(self):
 
@@ -106,13 +106,13 @@ class TestCommand(unittest.TestCase):
 
         command = ["quote", "get_fresh", "fakeprovider", "fresh"]
         res = root_command.execute(*command, command_args={"service_factory": factory, "instance": self.ircbot})
-        self.assertEquals("I'm fresh", str(res))
+        self.assertEqual("I'm fresh", str(res))
 
     def test_quote_get_command_invalid_input(self):
 
         command = ["quote", "get", "invalid-provider", "aapl"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("No such provider 'invalid-provider'", res)
+        self.assertEqual("No such provider 'invalid-provider'", res)
 
     def test_quote_search_command(self):
 
@@ -144,17 +144,17 @@ class TestCommand(unittest.TestCase):
         # blank state
         command = ["scheduler", "command", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("No commands added", res)
+        self.assertEqual("No commands added", res)
 
         # add command
         command = ["scheduler", "command", "add", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Added command: quote get google foobar", res)
+        self.assertEqual("Added command: quote get google foobar", res)
 
         # add command again and fail gracefully
         command = ["scheduler", "command", "add", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Command already in list", res)
+        self.assertEqual("Command already in list", res)
 
         # verify command is there
         command = ["scheduler", "command", "get"]
@@ -164,50 +164,50 @@ class TestCommand(unittest.TestCase):
         # remove command
         command = ["scheduler", "command", "remove", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Removed command: quote get google foobar", res)
+        self.assertEqual("Removed command: quote get google foobar", res)
 
         # verify command is not there
         command = ["scheduler", "command", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("No commands added", res)
+        self.assertEqual("No commands added", res)
 
         # remove it again and fail gracefully
         command = ["scheduler", "command", "remove", "quote", "get", "google", "foobar"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Command not in list", res)
+        self.assertEqual("Command not in list", res)
 
     def test_execute_scheduler_interval_command(self):
 
         # default state
         command = ["scheduler", "interval", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Interval: 3600 seconds", res)
+        self.assertEqual("Interval: 3600 seconds", res)
 
         # update interval
         command = ["scheduler", "interval", "set", "60"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("New interval: 60 seconds", res)
+        self.assertEqual("New interval: 60 seconds", res)
 
         # get updated state
         command = ["scheduler", "interval", "get"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Interval: 60 seconds", res)
+        self.assertEqual("Interval: 60 seconds", res)
 
         # set garbage input
         command = ["scheduler", "interval", "set", "horseshit"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Can't set interval from garbage input, must be of an int", res)
+        self.assertEqual("Can't set interval from garbage input, must be of an int", res)
 
     def test_execute_scheduler_toggle_command(self):
 
         command = ["scheduler", "enable"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Scheduler: enabled", res)
+        self.assertEqual("Scheduler: enabled", res)
         self.assertTrue(self.ircbot.scheduler)
 
         command = ["scheduler", "disable"]
         res = self.__cmd_wrap(*command)
-        self.assertEquals("Scheduler: disabled", res)
+        self.assertEqual("Scheduler: disabled", res)
         self.assertFalse(self.ircbot.scheduler)
 
     def test_execute_fallback_command(self):

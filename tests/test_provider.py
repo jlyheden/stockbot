@@ -24,7 +24,7 @@ class TestQuoteServiceFactory(unittest.TestCase):
 
     def test_get_existing_provider(self):
         factory = QuoteServiceFactory()
-        self.assertEquals(YahooQueryService, type(factory.get_service("yahoo")))
+        self.assertEqual(YahooQueryService, type(factory.get_service("yahoo")))
 
 
 class TestIbIndexQueryService(unittest.TestCase):
@@ -36,39 +36,39 @@ class TestIbIndexQueryService(unittest.TestCase):
     def test_search_for_existing_quote(self):
         text = "investor"
         result = self.service.search(text)
-        self.assertEquals("Result: Ticker: INVE B", str(result))
+        self.assertEqual("Result: Ticker: INVE B", str(result))
 
     @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
     def test_search_for_non_existing_quote(self):
         text = "abcdefghijlkmnop"
         result = self.service.search(text)
-        self.assertEquals("Result: Nada", str(result))
+        self.assertEqual("Result: Nada", str(result))
 
     @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
     def test_search_with_multiple_matches(self):
         text = "invest"
         result = self.service.search(text)
-        self.assertEquals("Result: Ticker: HAV B | Ticker: INVE B", str(result))
+        self.assertEqual("Result: Ticker: HAV B | Ticker: INVE B", str(result))
 
     @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
     def test_search_with_multiple_matches_ranked_result(self):
         text = "invest"
         result = self.service.search(text)
         result.get_ranked_ticker()
-        self.assertEquals("INVE B", result.get_ranked_ticker())
+        self.assertEqual("INVE B", result.get_ranked_ticker())
 
     @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
     def test_query_existing_quote(self):
         text = "inve b"
         result = self.service.get_quote(text)
-        self.assertEquals("Name: Investor B, NAV rebate percentage (reported): 15.455, NAV rebate percentage ("
+        self.assertEqual("Name: Investor B, NAV rebate percentage (reported): 15.455, NAV rebate percentage ("
                           "calculated): 21.330, NAV datechange: 2020-04-22 00:00:00", str(result))
 
     @vcr.use_cassette('mock/vcr_cassettes/ibindex/quote/all.yaml')
     def test_query_nonexisting_quote(self):
         text = "abcdefghijklmnop"
         result = self.service.get_quote(text)
-        self.assertEquals("No such quote: abcdefghijklmnop", str(result))
+        self.assertEqual("No such quote: abcdefghijklmnop", str(result))
 
 
 class TestYahooQueryService(unittest.TestCase):
@@ -88,7 +88,7 @@ class TestYahooQueryService(unittest.TestCase):
     def test_get_no_such_instrument(self):
         text = "foo bar baz"
         result = self.service.get_quote(text)
-        self.assertEquals("Didn't find anything", str(result))
+        self.assertEqual("Didn't find anything", str(result))
 
     @unittest.skip
     @vcr.use_cassette('mock/vcr_cassettes/yahoo/quote/microsoft.yaml')

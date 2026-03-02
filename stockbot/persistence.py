@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 from stockbot.db import Session, Base
-import collections
+import collections.abc
 
 
 class ScheduledTicker(Base):
@@ -38,7 +38,7 @@ def db_session(func):
     return func_wrapper
 
 
-class DatabaseCollection(collections.Iterable, list):
+class DatabaseCollection(collections.abc.Iterable, list):
 
     """
     Funky custom list implementation that will deal with database persistence
