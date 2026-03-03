@@ -147,7 +147,7 @@ if __name__ == '__main__':
 
     kwargs = {}
     if configuration.server_use_ssl:
-        ssl_factory = irc.connection.Factory(wrapper=ssl.wrap_socket)
+        ssl_factory = irc.connection.Factory(wrapper=ssl.SSLContext().wrap_socket)
         kwargs["connect_factory"] = ssl_factory
     bot = IRCBot(**kwargs)
 
