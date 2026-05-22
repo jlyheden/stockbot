@@ -1,5 +1,6 @@
 import requests
 import logging
+import os
 from datetime import datetime
 from stockbot.db import Base, Session
 from lxml import etree
@@ -50,6 +51,8 @@ class RedditFreeGamesService(object):
             try:
                 session.commit()
             except IntegrityError:
+                if os.getenv("LOG_REDDIT_EXCEPTION", "false") == "true":
+                    LOGGER.exception(f"This should not be an issue but maybe it is, for title '{title}'")
                 # Handle unique constraints, ask for forgiveness instead of permission
                 session.rollback()
 
