@@ -16,8 +16,8 @@ class RedditFreeGameHistory(Base):
     __tablename__ = 'reddit_free_game_history'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String, index=True, unique=True)
-    link = Column(String)
+    title = Column(String)
+    link = Column(String, index=True, unique=True)
     published = Column(DateTime)
     seen = Column(Boolean)
 
